@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class KakaoUserInfo implements OAuth2UserInfo{
 	
-	private Map<String, Object> attributes; //oauth2user가 들고 있는 getAttributes()를 받을 그릇 id 값만 사용할 것임 
+	private Map<String, Object> attributes; //oauth2 user가 들고 있는 getAttributes()를 받을 그릇 id 값만 사용할 것임
 	
     public KakaoUserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
@@ -22,7 +22,7 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 
     @Override
 	public String getProvider() {
-		// kakao을 리턴
+		// kakao를 리턴
 		return "kakao";
 	}
 

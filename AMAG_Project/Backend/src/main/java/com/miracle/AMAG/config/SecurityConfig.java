@@ -57,7 +57,7 @@ public class SecurityConfig {
 				// 4-1 그 정보를 토대로 회원가입을 자동으로 진행시키기도 함
 				// 4-2 (이메일,전화번호,이름,아이디)쇼핑몰 -> (집주소), 백화점 -> VIP등급
 				// 구글 로그인이 완료된 뒤의 후처리로 코드를 받는 것이 아니라 (액세스토큰+사용자프로필을 한방에 받게 된다)
-				// 이것이 OAuth의 개편함이다
+				// 이것이 OAuth의 편함이다
 				.userInfoEndpoint()
 				.userService(principalOauth2UserService);
 

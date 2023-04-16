@@ -30,7 +30,7 @@ public class IndexController {
 	@GetMapping({ "", "/" })
 	public String index(@AuthenticationPrincipal PrincipalDetails principal, Model model) {
 		
-		//로그 성공시 메인화면에세션 정보(security session Authentication 정보를 mustache로 전달)
+		//로그인 성공시 메인화면에세션 정보(security session Authentication 정보를 mustache로 전달)
 		if (principal != null) {
 	    	System.out.println("PrincipalDetails : " + principal.getUser());
 	    	System.out.println("PrincipalDetails : " + principal.getUser().getUsername());
@@ -38,9 +38,7 @@ public class IndexController {
 	    	userInfoData.put("username", principal.getUser().getUsername());
 	    	userInfoData.put("email", principal.getUser().getEmail());
 	    	model.addAttribute("userInfo", userInfoData);
-	    	
 		}
-		
 		return "index";
 	}
 

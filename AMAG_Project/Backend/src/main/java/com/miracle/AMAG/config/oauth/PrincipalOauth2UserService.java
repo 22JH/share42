@@ -47,9 +47,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 			oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
 		}  else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
 			System.out.println("카카오로 로그인 요청~~");
-			//System.out.println(oAuth2User.getAttributes());			
-			//System.out.println(oAuth2User.getAttributes().get("id"));
-			//System.out.println(oAuth2User.getAttributes().get("kakao_account"));			
 			oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
 		}
 		else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
@@ -58,9 +55,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 		} else {
 			System.out.println("우리는 구글, 카카오, 네이버만 지원해요 ㅎㅎ");
 		}
-
-		//System.out.println("oAuth2UserInfo.getProvider() : " + oAuth2UserInfo.getProvider());
-		//System.out.println("oAuth2UserInfo.getProviderId() : " + oAuth2UserInfo.getProviderId());
 		Optional<User> userOptional =
 				userRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
 		

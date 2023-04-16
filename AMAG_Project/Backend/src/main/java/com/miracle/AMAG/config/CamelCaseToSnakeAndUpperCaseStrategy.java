@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.miracle.AMAG.config;
 
 import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.boot.model.naming.Identifier;

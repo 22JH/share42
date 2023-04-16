@@ -1,6 +1,6 @@
-package com.example.demo.config.auth;
+package com.miracle.AMAG.config.auth;
 
-import com.example.demo.model.User;
+import com.miracle.AMAG.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 
 // Authentication 객체에 저장할 수 있는 유일한 타입
-public class PrincipalDetails implements UserDetails, OAuth2User{
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
 	private static final long serialVersionUID = 1L;
 	private User user;

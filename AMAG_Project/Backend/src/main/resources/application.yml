@@ -30,7 +30,7 @@ spring:
       ddl-auto: update #create update none
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-        physical-strategy: com.example.demo.config.CamelCaseToSnakeAndUpperCaseStrategy
+        physical-strategy: com.miracle.AMAG.config.CamelCaseToSnakeAndUpperCaseStrategy
 
     properties:
       hibernate:

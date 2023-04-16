@@ -1,8 +1,8 @@
-package com.example.demo.controller;
+package com.miracle.AMAG.controller;
 
-import com.example.demo.config.auth.PrincipalDetails;
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
+import com.miracle.AMAG.config.auth.PrincipalDetails;
+import com.miracle.AMAG.model.User;
+import com.miracle.AMAG.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
-package com.example.demo.config;
+package com.miracle.AMAG.config;
 
-import com.example.demo.config.oauth.PrincipalOauth2UserService;
+import com.miracle.AMAG.config.oauth.PrincipalOauth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

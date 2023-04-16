@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.miracle.AMAG.config;
 
 import org.springframework.boot.web.servlet.view.MustacheViewResolver;
 import org.springframework.context.annotation.Configuration;

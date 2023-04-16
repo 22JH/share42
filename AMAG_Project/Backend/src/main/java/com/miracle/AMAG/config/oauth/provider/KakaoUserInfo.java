@@ -1,4 +1,4 @@
-package com.example.demo.config.oauth.provider;
+package com.miracle.AMAG.config.oauth.provider;
 
 
 import java.util.HashMap;

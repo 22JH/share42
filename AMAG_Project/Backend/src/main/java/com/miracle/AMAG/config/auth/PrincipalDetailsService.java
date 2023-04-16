@@ -1,7 +1,8 @@
-package com.example.demo.config.auth;
+package com.miracle.AMAG.config.auth;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
+
+import com.miracle.AMAG.model.User;
+import com.miracle.AMAG.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

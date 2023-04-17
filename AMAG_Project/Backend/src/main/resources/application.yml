@@ -1,0 +1,70 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/security?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
+    username: ssafy
+    password: ssafy
+
+  logging:
+    level:
+      org.hibernate:
+        type.descriptor.sql: trace
+        SQL: debug
+
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .mustache
+
+  jpa:
+    hibernate:
+      ddl-auto: validate #create update none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: com.miracle.AMAG.config.CamelCaseToSnakeAndUpperCaseStrategy
+
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+image:
+  url:
+    windows: C:/Users/SSAFY/Downloads/images
+    linux: /home/ubuntu/images
+
+servlet:
+  multipart:
+    max-file-size: 20MB
+
+mail:
+  smtp:
+    auth: true
+    starttls:
+      required: true
+      enable: true
+    socketFactory:
+      class: jakarta.net.ssl.SSLSocketFactory
+      fallback: false
+      port: 465
+    port: 465
+
+admin:
+  mail:
+  name: CarBorn ???
+  password:
+
+klaytn:
+  accessKeyId:
+  secretAccessKey:
+  authorization:
+  chainId:

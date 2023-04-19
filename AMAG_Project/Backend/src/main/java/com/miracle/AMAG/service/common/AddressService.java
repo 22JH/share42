@@ -7,6 +7,7 @@ import com.miracle.AMAG.util.network.Get;
 import com.miracle.AMAG.util.network.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,7 +18,8 @@ import java.util.Map;
 @Service
 public class AddressService {
 
-    private final String APP_KEY = "5fcd8a6948d0eb38356fe8045792670c";
+    @Value("${kakao.restApiKey}")
+    private String APP_KEY;
 
     public Map<String, Object> getGeoAddress(String address) {
         try {

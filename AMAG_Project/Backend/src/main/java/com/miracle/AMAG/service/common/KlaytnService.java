@@ -1,14 +1,14 @@
 package com.miracle.AMAG.service.common;
 
+import com.miracle.AMAG.util.common.HTTPUtils;
+import com.miracle.AMAG.util.network.Header;
+import com.miracle.AMAG.util.network.Post;
+import com.miracle.AMAG.util.network.RequestBody;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import site.carborn.util.common.HTTPUtils;
-import site.carborn.util.network.Header;
-import site.carborn.util.network.Post;
-import site.carborn.util.network.RequestBody;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

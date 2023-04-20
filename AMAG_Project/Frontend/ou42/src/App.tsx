@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
 import Login from "./routes/auth/logIn/Login";
 import { css, Global } from "@emotion/react";
+import KakaoMap from "./components/map/kakaoMap";
 
 const globalStyle = css`
   body {
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/Kakaomap" element={<KakaoMap />} />
         </Routes>
       </Router>
     </>

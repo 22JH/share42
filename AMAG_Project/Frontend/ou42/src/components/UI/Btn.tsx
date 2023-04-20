@@ -11,9 +11,11 @@ interface PropType {
 
 export default function Btn({ width, height, color, content }: PropType) {
   const btnStyle = css`
-    width: ${width};
-    height: ${height};
-    color: ${color};
+    width: ${width}%;
+    height: ${height}%;
+    background-color: ${color};
+    position: relative;
+    border-radius: 5px;
   `;
-  return <button>{content}</button>;
+  return <button css={btnStyle}>{content}</button>;
 }

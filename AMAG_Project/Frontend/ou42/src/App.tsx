@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./routes/Home";
+import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
 import Login from "./routes/auth/logIn/Login";
 import { css, Global } from "@emotion/react";
@@ -20,7 +20,7 @@ function App() {
       <NavBar />
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </Router>

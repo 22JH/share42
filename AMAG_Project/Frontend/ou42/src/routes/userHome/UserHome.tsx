@@ -6,7 +6,11 @@ import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
 
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import { useInfiniteQuery } from "react-query";
+import {
+  useInfiniteQuery,
+  useQueryClient,
+  useQueryErrorResetBoundary,
+} from "react-query";
 
 import axios from "axios";
 import Loading from "../../components/Loading";
@@ -129,7 +133,7 @@ const intersectionOptions = {
 // 테스트 데이터
 const sampleData = [1, 2, 3, 4, 5, 6, 7, 8];
 
-export const getListFnc = ({ pageParam = 1 }) => {
+const getListFnc = ({ pageParam = 1 }) => {
   return axios({
     method: "get",
     url: `${API_URL}${pageParam}`,
@@ -137,15 +141,14 @@ export const getListFnc = ({ pageParam = 1 }) => {
 };
 
 // API_URL
-const API_URL = `https://jsonplaceholder.typicode.com/comment?postId=`;
+const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 
 function UserHomeList() {
   const [isLike, setIslike] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement | any>({});
-
   // 공유글 데이터 불러오는 query
-  const { fetchNextPage, data, hasNextPage, isFetched } = useInfiniteQuery(
-    "get-object-list",
+  const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
+    ["get-object-list"],
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
@@ -153,9 +156,7 @@ function UserHomeList() {
       },
       useErrorBoundary: true,
       suspense: true,
-      retry: 1,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
+      retry: 0,
     }
   );
 
@@ -170,8 +171,6 @@ function UserHomeList() {
       }
     });
   }, intersectionOptions);
-
-  console.log(isFetched);
 
   // data가 변경될 떄마다 새로운 요소를 감시한다.
   useEffect(() => {
@@ -230,12 +229,62 @@ function UserHomeList() {
   );
 }
 
+const errorMsgStyle = css`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+
+  & p {
+    display: inline-block;
+    width: 60%;
+    text-align: center;
+  }
+
+  p:nth-of-type(1) {
+    margin: 30% 0 0 0;
+    font-weight: 900;
+    font-size: 1.2rem;
+  }
+  p:nth-of-type(2) {
+    margin: 0 0 0 0;
+    font-size: 0.8rem;
+  }
+  p:nth-of-type(3) {
+    margin: 0 0 5% 0;
+    font-size: 0.8rem;
+  }
+
+  & > button {
+    border: none;
+    display: inline-block;
+    width: 60%;
+    height: 3vh;
+    font-size: 0.7rem;
+    font-weight: 900;
+    background-color: #0cdee8;
+    color: white;
+  }
+`;
+
 const ErrorMsg = (error: any) => {
+  const { reset } = useQueryErrorResetBoundary();
+
+  const queryClient = useQueryClient();
+  const refetch = () => {
+    return queryClient.refetchQueries(["get-object-list"]);
+  };
+
+  const reTry = () => {
+    reset();
+    refetch();
+  };
   return (
-    <div>
-      {/* You can use your own styling and methods of handling error */}
-      <p>Something went wrong!</p>
-      <p>{error.error.message}</p>
+    <div css={errorMsgStyle}>
+      <p>잠시 후 다시 시도해주세요</p>
+      <p>요청을 처리하는데</p>
+      <p>실패했습니다.</p>
+      <button onClick={reTry}>다시시도</button>
     </div>
   );
 };

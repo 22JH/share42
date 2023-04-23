@@ -25,21 +25,11 @@ class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // 에러 리포팅 서비스에 에러를 기록할 수도 있습니다.
-    console.error("Uncaught error:", error, errorInfo);
-  }
-
   public render() {
     const { hasError, error } = this.state;
 
     if (hasError) {
-      return (
-        <>
-          <this.props.fallback error={error} />
-          <button>재시도</button>
-        </>
-      );
+      return <this.props.fallback error={error} />;
     }
 
     return this.props.children;

@@ -4,7 +4,9 @@ import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
 import Login from "./routes/auth/logIn/Login";
 import { css, Global } from "@emotion/react";
-import KakaoMap from "./components/map/kakaoMap";
+import UseMapComponent from "./components/map/UseMapComponent";
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const globalStyle = css`
   body {
@@ -15,15 +17,26 @@ const globalStyle = css`
 `;
 
 function App() {
+  const [notNav, setNotNav] = useState(true);
+  const { pathname } = window.location
+
+  useEffect(() => {
+    if (pathname === '/usemap') {
+      setNotNav(false)
+    } else {
+      setNotNav(true)
+    }
+  }, [pathname])
+
   return (
     <>
       <Global styles={globalStyle} />
-      <NavBar />
+      { notNav ? <NavBar /> : null }
       <Router>
         <Routes>
           <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/Kakaomap" element={<KakaoMap />} />
+          <Route path="/usemap" element={<UseMapComponent />} />
         </Routes>
       </Router>
     </>

@@ -4,6 +4,8 @@ import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
 import Login from "./routes/auth/logIn/Login";
 import { css, Global } from "@emotion/react";
+import AdminHome from "./routes/admin/AdminHome";
+import AdminReport from "./routes/admin/AdminReport";
 
 const globalStyle = css`
   body {
@@ -14,14 +16,18 @@ const globalStyle = css`
 `;
 
 function App() {
+  const pathName = window.location.pathname;
+
   return (
     <>
       <Global styles={globalStyle} />
-      <NavBar />
+      {!pathName.includes("admin") ? <NavBar /> : null}
       <Router>
         <Routes>
           <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/admin/home" element={<AdminHome />} />
+          <Route path="/admin/report" element={<AdminReport />} />
         </Routes>
       </Router>
     </>

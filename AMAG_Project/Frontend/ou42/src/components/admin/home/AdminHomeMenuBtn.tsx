@@ -34,7 +34,7 @@ const container = css`
 
 const MENU_NUM = [
   ["신고내역", caution, "/admin/report"],
-  ["로그조회", logFile, "/admin/report"],
+  ["로그조회", logFile, "/admin/log"],
   ["기기조작", manufacturing, "/admin/report"],
   ["지도", map, "/admin/report"],
 ];

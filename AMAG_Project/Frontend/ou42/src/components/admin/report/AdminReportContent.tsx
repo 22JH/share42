@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 
 import testObject from "../../../assets/testObject.jpg";
 
-const contentStyle = css`
+export const contentStyle = css`
   width: 100%;
   border-bottom: 1px solid #dddddd;
   height: 14vh;

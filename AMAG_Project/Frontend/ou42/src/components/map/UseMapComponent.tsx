@@ -15,8 +15,8 @@ import BranchShareInfoComponent from './BranchShareInfoComponent'
 
 const mapStyle = css`
   & > div:nth-of-type(3) > div:nth-of-type(2) {
-    left: 45vw !important;
-    top: -7.8vh !important;
+    left: 190px !important;
+    top: -73px !important;
     transform: rotate(90deg);
   }
 
@@ -27,7 +27,7 @@ const mapStyle = css`
 `;
 
 const useMarkers = () => {
-  const { isLoading, error, data } = useQuery("users", GetMarkers);
+  const { isLoading, error, data } = useQuery("markers", GetMarkers);
   return { isLoading, error, markers: data };
 };
 
@@ -153,6 +153,7 @@ const UseMapComponent: React.FC = () => {
                   fontWeight: 900,
                   borderRadius: '50px',
                   userSelect: 'none',
+                  zIndex: 4,
                   cursor: 'pointer'
                 }}
               >
@@ -160,11 +161,12 @@ const UseMapComponent: React.FC = () => {
               </div>
             </CustomOverlayMap>
             {isOpen[marker.id] ? (
+            // 미해결 : 이거 오버레이 켤 때, 항상 화면 가운데에서 존재하게 하고 싶은데, 해결 못함
             <CustomOverlayMap position={{
               lat: marker.lat,
               lng: marker.lng,
             }}>
-              <BranchShareInfoComponent id={marker.id} setIsOpen={setIsOpen}/>
+              <BranchShareInfoComponent id={marker.id} setIsOpen={setIsOpen} address={marker.address} name={marker.content}/>
             </CustomOverlayMap>
           ) : null}
           </div>

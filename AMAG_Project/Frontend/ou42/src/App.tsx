@@ -21,7 +21,7 @@ function App() {
   const { pathname } = window.location
 
   useEffect(() => {
-    if (pathname === '/usemap') {
+    if (pathname === '/useshare' || pathname === '/admin/usemap' || pathname === '/share-registration') {
       setNotNav(false)
     } else {
       setNotNav(true)
@@ -36,7 +36,7 @@ function App() {
         <Routes>
           <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/usemap" element={<UseMapComponent />} />
+          <Route path="/useshare" element={<UseMapComponent />} />
         </Routes>
       </Router>
     </>

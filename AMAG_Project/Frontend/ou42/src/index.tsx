@@ -4,7 +4,21 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      useErrorBoundary: true,
+      suspense: true,
+      refetchOnWindowFocus: false,
+      keepPreviousData: true,
+    },
+    mutations: {
+      useErrorBoundary: true,
+      retry: false,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

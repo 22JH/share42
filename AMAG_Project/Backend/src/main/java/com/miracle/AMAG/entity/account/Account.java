@@ -1,23 +1,29 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.account;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ACCOUNT")
+@Table(name = "ACCOUNT",
+    uniqueConstraints = {
+        @UniqueConstraint(
+                name="ACCOUNT_UN",
+                columnNames = {"PHONE_NUMBER", "WALLET_HASH"}
+        )
+    }
+)
 @Getter
 @Setter
+@ToString
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 20)
@@ -32,7 +38,7 @@ public class Account {
     @Column(length = 20)
     private String nickname;
 
-    @Column(length = 20)
+    @Column(name = "PHONE_NUMBER", length = 20)
     private String phoneNumber;
 
     private LocalDate birth;
@@ -57,8 +63,6 @@ public class Account {
     @Column(length = 10)
     private String role;
 
-    @Column(length = 100)
+    @Column(name="WALLET_HASH",length = 100)
     private String walletHash;
 }
-
-//@Column(length = 50)

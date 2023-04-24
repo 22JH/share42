@@ -1,5 +1,6 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.account;
 
+import com.miracle.AMAG.entity.user.ShareArticle;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Like {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID")
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHARE_ARTICLE_ID")
+    @JoinColumn(name = "SHARE_ARTICLE_ID", nullable = false)
     private ShareArticle shareArticle;
 
     private LocalDateTime regDt;

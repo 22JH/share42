@@ -1,5 +1,7 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.community;
 
+import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.community.Community;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +16,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMMUNITY_ID")
+    @JoinColumn(name = "COMMUNITY_ID", nullable = false)
     private Community community;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID")
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
     private Account account;
 
     @Column(length = 100)

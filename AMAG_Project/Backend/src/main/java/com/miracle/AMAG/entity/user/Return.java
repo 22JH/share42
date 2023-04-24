@@ -1,32 +1,40 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.user;
 
+import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.locker.Locker;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "RETURN")
+@Table(name = "RETURN",
+        uniqueConstraints = {
+        @UniqueConstraint(
+                name="RETURN_UN",
+                columnNames = {"CONTRACT_HASH", "METADATA_URI"}
+        )
+})
 @Getter
 @Setter
 @NoArgsConstructor
 public class Return {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "LOCKER_ID")
+    @JoinColumn(name = "LOCKER_ID", nullable = false)
     private Locker locker;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID")
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHARE_ARTICLE_ID")
+    @JoinColumn(name = "SHARE_ARTICLE_ID", nullable = false)
     private ShareArticle shareArticle;
 
     @Column(length = 100)
@@ -34,12 +42,12 @@ public class Return {
 
     private LocalDateTime regDt;
 
-    private int returnType;
+    private byte returnType;
 
-    @Column(length = 100)
+    @Column(name="CONTRACT_HASH",length = 100)
     private String contractHash;
 
-    @Column(length = 100)
+    @Column(name="METADATA_URI",length = 100)
     private String metadataUri;
 
     private int price;

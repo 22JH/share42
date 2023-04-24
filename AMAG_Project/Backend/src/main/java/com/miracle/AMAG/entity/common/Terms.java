@@ -1,9 +1,6 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.common;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,10 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Terms {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 10)
-    private String categoty;
+    private String category;
 
     private String content;
 }

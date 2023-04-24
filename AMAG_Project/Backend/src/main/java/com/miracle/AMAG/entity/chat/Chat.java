@@ -1,5 +1,6 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.chat;
 
+import com.miracle.AMAG.entity.account.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Chat {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FROM_ID")
+    @JoinColumn(name = "FROM_ID", nullable = false)
     private Account fromId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TO_ID")
+    @JoinColumn(name = "TO_ID", nullable = false)
     private Account toId;
 
     @Column(length = 100)

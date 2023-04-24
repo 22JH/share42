@@ -1,5 +1,6 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.common;
 
+import com.miracle.AMAG.entity.account.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AuthNumber {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID")
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
     private Account account;
 
     @Column(length = 10)

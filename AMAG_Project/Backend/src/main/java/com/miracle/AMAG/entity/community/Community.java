@@ -1,5 +1,6 @@
-package com.miracle.AMAG.entity;
+package com.miracle.AMAG.entity.community;
 
+import com.miracle.AMAG.entity.account.Account;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,41 +9,33 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "SHARE_ARTICLE")
+@Table(name = "COMMUNITY")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ShareArticle {
+public class Community {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCOUNT_ID")
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
     private Account account;
 
     @Column(length = 10)
-    private String categoty;
+    private String category;
 
-    @Column(length = 10)
-    private String name;
+    @Column(length = 30)
+    private String title;
 
-    @Column(length = 10)
+    @Column(length = 200)
     private String content;
 
-    private int price;
-
-    private int sharePrice;
-
-    @Column(length = 10)
-    private String img;
+    private int hits;
 
     private LocalDateTime regDt;
 
     private LocalDateTime uptDt;
 
-    private int shareStatus;
-
     private boolean status;
-
-    private int hits;
 }

@@ -6,6 +6,7 @@ import Login from "./routes/auth/logIn/Login";
 import { css, Global } from "@emotion/react";
 import AdminHome from "./routes/admin/AdminHome";
 import AdminReport from "./routes/admin/AdminReport";
+import AdminLog from "./routes/admin/AdminLog";
 
 const globalStyle = css`
   body {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />
+          <Route path="/admin/log" element={<AdminLog />} />
         </Routes>
       </Router>
     </>

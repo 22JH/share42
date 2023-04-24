@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { MdArrowBackIosNew, MdBackup } from "react-icons/md";
+import { MdArrowBackIosNew } from "react-icons/md";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ const titleStyle = (contentName: string) => css`
     display: flex;
     align-items: center;
     margin: 5% 0 15% 4%;
+    font-weight: 900;
   }
 
   .content {

@@ -46,23 +46,6 @@ servlet:
   multipart:
     max-file-size: 20MB
 
-mail:
-  smtp:
-    auth: true
-    starttls:
-      required: true
-      enable: true
-    socketFactory:
-      class: jakarta.net.ssl.SSLSocketFactory
-      fallback: false
-      port: 465
-    port: 465
-
-admin:
-  mail:
-  name: CarBorn ???
-  password:
-
 klaytn:
   accessKeyId:
   secretAccessKey:

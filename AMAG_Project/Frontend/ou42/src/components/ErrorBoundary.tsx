@@ -1,4 +1,4 @@
-import React, { ErrorInfo, ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 interface Props {
   children?: ReactNode;
@@ -7,11 +7,9 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error: Error | null;
 }
 const initialState: State = {
   hasError: false,
-  error: null,
 };
 
 class ErrorBoundary extends React.Component<Props, State> {
@@ -22,14 +20,14 @@ class ErrorBoundary extends React.Component<Props, State> {
 
   public static getDerivedStateFromError(error: Error): State {
     // 다음 렌더링에서 폴백 UI가 보이도록 상태를 업데이트 합니다.
-    return { hasError: true, error };
+    return { hasError: true };
   }
 
   public render() {
-    const { hasError, error } = this.state;
+    const { hasError } = this.state;
 
     if (hasError) {
-      return <this.props.fallback error={error} />;
+      return <this.props.fallback />;
     }
 
     return this.props.children;

@@ -181,7 +181,7 @@ function UserHomeList() {
   }, [data]);
 
   // 좋아요 버튼 누름
-  const like = () => {
+  const like = (e: React.MouseEvent<SVGElement>) => {
     setIslike(!isLike);
   };
 
@@ -197,12 +197,16 @@ function UserHomeList() {
             }}
           >
             {isLike ? (
-              <div className="img-icon" onClick={like}>
-                <AiTwotoneHeart className="redHeart" size="30" />
+              <div className="img-icon">
+                <AiTwotoneHeart className="redHeart" size="30" onClick={like} />
               </div>
             ) : (
-              <div className="img-icon" onClick={like}>
-                <AiOutlineHeart style={{ fill: "white" }} size="30" />
+              <div className="img-icon">
+                <AiOutlineHeart
+                  style={{ fill: "white" }}
+                  size="30"
+                  onClick={like}
+                />
               </div>
             )}
             <img src={testObject} alt="test" className="img" />
@@ -267,7 +271,7 @@ const errorMsgStyle = css`
   }
 `;
 
-const ErrorMsg = (error: any) => {
+const ErrorMsg = () => {
   const { reset } = useQueryErrorResetBoundary();
 
   const queryClient = useQueryClient();

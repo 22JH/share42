@@ -5,7 +5,7 @@ import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
 import Login from "./routes/auth/Login";
 import Terms from "./routes/auth/Terms";
-// import SignUp from "./routes/auth/signUp/SignUp";
+import SignUp from "./routes/auth/SignUp";
 
 const globalStyle = css`
   body {
@@ -25,6 +25,7 @@ function App() {
           <Route path="/" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </Router>
     </>

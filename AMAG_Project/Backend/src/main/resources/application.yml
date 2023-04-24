@@ -64,10 +64,10 @@ admin:
   password:
 
 klaytn:
-  accessKeyId:
-  secretAccessKey:
-  authorization:
-  chainId:
+  accessKeyId: KASK93KADR4ZKEZ04LN6PZQ8
+  secretAccessKey: jKCjnMtIRt6TmnZSZkxpyJwTMqcelWoq8ZSP4u21
+  authorization: Basic S0FTSzkzS0FEUjRaS0VaMDRMTjZQWlE4OmpLQ2puTXRJUnQ2VG1uWlNaa3hweUp3VE1xY2VsV29xOFpTUDR1MjE=
+  chainId: 1001
 
 kakao:
   restApiKey: 0fac24e59c08f0d24e738ea0377dc42a

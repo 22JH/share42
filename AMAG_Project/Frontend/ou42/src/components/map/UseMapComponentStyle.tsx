@@ -91,3 +91,59 @@ export const Custom_zoomcontrol = css`
     border-bottom: 1px solid #fff;
   }
 `;
+
+export const mapStyle = css`
+  & > div:nth-of-type(3) > div:nth-of-type(2) {
+    left: 190px !important;
+    top: -73px !important;
+    transform: rotate(90deg);
+  }
+
+  & > div:nth-of-type(1) > div > div:nth-of-type(6) img {
+    z-index: 6 !important;
+    cursor: "pointer" !important;
+  }
+`;
+
+export const OverlayStyle = css`
+  width: 100vw;
+  height: 94.3vh;
+  background: white;
+  z-index: 11 !important;
+  cursor: auto !important;
+`;
+
+export const OverlayNameStyle = css`
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4f63d2;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 900;
+`;
+
+export const OverlayListStyle = css`
+  width: 100%;
+  height: calc(94.3vh - 10rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const OverlayAddressStyle = css`
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #4f63d2;
+  color: white;
+  font-size: 1.2rem;
+`;

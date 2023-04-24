@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+
 import {
   Map,
   ZoomControl,
@@ -11,20 +12,13 @@ import { useEffect, useState } from "react";
 import { GetMarkers } from "./api/ApiMap";
 import { useQuery } from "react-query";
 import markerImg from "./마크업.png";
-import BranchShareInfoComponent from './BranchShareInfoComponent'
+import BranchShareInfoComponent from './MarkerDetailShareInfoComponent'
+import { mapStyle } from "./UseMapComponentStyle";
 
-const mapStyle = css`
-  & > div:nth-of-type(3) > div:nth-of-type(2) {
-    left: 190px !important;
-    top: -73px !important;
-    transform: rotate(90deg);
-  }
-
-  & > div:nth-of-type(1) > div > div:nth-of-type(6) img {
-    z-index: 6 !important;
-    cursor: 'pointer' !important;
-  }
-`;
+interface positionProps {
+  lat: number,
+  lng: number 
+}
 
 const useMarkers = () => {
   const { isLoading, error, data } = useQuery("markers", GetMarkers);
@@ -34,6 +28,10 @@ const useMarkers = () => {
 const UseMapComponent: React.FC = () => {
   const { markers } = useMarkers();
   const [markersData, setMarkersData] = useState<null | any[]>(null);
+  const [position, setPosition] = useState<positionProps>({
+    lat: 36.107177733518384,
+    lng: 128.4193003234078
+  });
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
 
   // 현재 위치 파악하기(geolocation)
@@ -96,8 +94,8 @@ const UseMapComponent: React.FC = () => {
         css={mapStyle}
         center={{
           // 지도의 중심좌표
-          lat: 36.107177733518384,
-          lng: 128.4193003234078,
+          lat: position.lat,
+          lng: position.lng,
         }}
         style={{
           // 지도의 크기
@@ -105,6 +103,10 @@ const UseMapComponent: React.FC = () => {
           height: "100vh",
         }}
         level={3} // 지도의 확대 레벨
+        onDragEnd={(map) => setPosition({
+          lat: map.getCenter().getLat(),
+          lng: map.getCenter().getLng(),
+        })}
       >
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
@@ -132,8 +134,9 @@ const UseMapComponent: React.FC = () => {
               onClick={() => {
                 setIsOpen((prevState) => ({ ...prevState, [marker.id]: true }));
               }}
+              clickable={true} 
             />
-            <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+            {!isOpen[marker.id] ? <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
               // 커스텀 오버레이가 표시될 위치입니다
               position={{
                 lat: marker.lat,
@@ -159,12 +162,12 @@ const UseMapComponent: React.FC = () => {
               >
                 <span className="center">{marker.content}</span>
               </div>
-            </CustomOverlayMap>
+            </CustomOverlayMap> : null}
             {isOpen[marker.id] ? (
             // 미해결 : 이거 오버레이 켤 때, 항상 화면 가운데에서 존재하게 하고 싶은데, 해결 못함
             <CustomOverlayMap position={{
-              lat: marker.lat,
-              lng: marker.lng,
+              lat: position.lat-0.00022,
+              lng: position.lng,
             }}>
               <BranchShareInfoComponent id={marker.id} setIsOpen={setIsOpen} address={marker.address} name={marker.content}/>
             </CustomOverlayMap>

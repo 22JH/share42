@@ -14,6 +14,11 @@ spring:
     username: ssafy
     password: ssafy123!@#
 
+  data:
+    redis:
+      port: 6379
+      host: k8d102.p.ssafy.io
+
   logging:
     level:
       org.hibernate:
@@ -36,6 +41,11 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+jwt:
+  header: Authorization
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  token-validity-in-seconds: 86400
 
 image:
   url:

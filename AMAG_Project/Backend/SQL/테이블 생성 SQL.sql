@@ -349,6 +349,7 @@ CREATE TABLE `locker` (
   `ERROR` tinyint(4) NOT NULL COMMENT '고장 여부',
   `LOCK_STATUS` tinyint(4) NOT NULL COMMENT '잠금 여부',
   `NFC` varchar(100) NOT NULL COMMENT 'NFC 데이터',
+  `ARDUINO_SERIAL` varchar(30) NOT NULL COMMENT '아두이노 시리얼번호',
   PRIMARY KEY (`ID`),
   KEY `locker_locker_station_FK` (`LOCKER_STATION_ID`),
   KEY `locker_share_article_FK` (`SHARE_ARTICLE_ID`),
@@ -598,4 +599,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-23  1:37:09
+-- Dump completed on 2023-04-24 16:19:09

@@ -23,3 +23,15 @@ services:
     environment:
       TZ: Asia/Seoul
     restart: always
+
+  redis:
+    container_name: redis-server
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis/acl/users.acl:/etc/redis/users.acl
+    command: redis-server /usr/local/etc/redis/redis.conf

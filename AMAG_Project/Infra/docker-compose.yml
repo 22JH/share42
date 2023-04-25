@@ -1,0 +1,37 @@
+version: "3"
+services:
+  jenkins:
+    container_name: jenkins-server
+    image: jenkins/jenkins:lts
+    user: root
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+    ports:
+      - 8080:8080
+    restart: always
+
+  mariadb:
+    container_name: mariadb-server
+    image: mariadb:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: .mariadb_env
+    environment:
+      TZ: Asia/Seoul
+    restart: always
+
+  redis:
+    container_name: redis-server
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis/acl/users.acl:/etc/redis/users.acl
+    command: redis-server /usr/local/etc/redis/redis.conf

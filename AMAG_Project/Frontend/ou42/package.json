@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.12.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -19,6 +21,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-kakao-maps": "^0.0.13",
+    "react-kakao-maps-sdk": "^1.1.8",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
@@ -50,24 +54,17 @@
       "react-app",
       "react-app/jest"
     ],
-    "eslintConfig": {
-      "extends": [
-        "react-app"
-      ],
-      "rules": {
-        "no-unused-vars": "warn"
-      },
-      "overrides": [
-        {
-          "files": [
-            "**/*.ts?(x)"
-          ],
-          "rules": {
-            "max-len": "warn"
-          }
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts?(x)"
+        ],
+        "rules": {
+          "max-len": "warn",
+          "no-unused-vars": "warn"
         }
-      ]
-    }
+      }
+    ]
   },
   "browserslist": {
     "production": [
@@ -80,5 +77,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/kakao-js-sdk": "^1.39.1",
+    "json-server": "^0.17.3"
   }
 }

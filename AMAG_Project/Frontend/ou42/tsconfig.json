@@ -18,6 +18,6 @@
     "jsx": "react-jsx",
     "typeRoots": ["./node_modules/@types", "@types"]
   },
-  "types": ["react", "react-dom", "node"],
-  "include": ["src"]
+  "types": ["react", "react-dom", "node", "react-kakao-maps-sdk"],
+  "include": ["src", "src/global.d.ts"]
 }

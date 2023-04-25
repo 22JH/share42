@@ -11,6 +11,8 @@ import AdminOperation from "./routes/admin/AdminOperation";
 import UseMapComponent from "./components/map/UseMapComponent";
 import Terms from "./routes/auth/Terms";
 import SignUp from "./routes/auth/SignUp";
+import UserWelcome from "./routes/userHome/UserWelcome";
+import UserBeforeMain from "./routes/userHome/UserBeforeMain";
 
 const globalStyle = css`
   body {
@@ -29,7 +31,9 @@ function App() {
 
       <Router>
         <Routes>
-          <Route path="/" element={<UserHome />} />
+          <Route path="/" element={<UserWelcome />} />
+          <Route path="/start" element={<UserBeforeMain />} />
+          <Route path="/home" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />

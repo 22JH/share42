@@ -17,6 +17,11 @@ import Loading from "../../components/Loading";
 import ErrorBoundary from "../../components/ErrorBoundary";
 
 const content = css`
+  .sort-bar {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
   .container {
     display: flex;
     flex-wrap: wrap;
@@ -297,6 +302,7 @@ function UserHome() {
   return (
     <>
       <div css={content} id="scrollArea">
+        <div className="sort-bar">안녕</div>
         <div className="container">
           <ErrorBoundary fallback={ErrorMsg}>
             <Suspense fallback={<Loading />}>

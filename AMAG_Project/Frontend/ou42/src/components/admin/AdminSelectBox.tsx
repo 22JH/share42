@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import Btn from "./../UI/Btn";
 
-const container = css`
+const container = (pathName: string) => css`
   width: 90%;
   margin: 0 5% 0 5%;
-
+  height: 90vh;
   p {
     font-weight: 900;
     margin: 5% 0 3% 0;
@@ -25,7 +27,7 @@ const container = css`
     color: #000000;
 
     &:nth-of-type(2) {
-      margin: 0 0 8% 0;
+      margin: ${pathName === "/admin/operation" ? "0 0 0 0" : "0 0 8% 0"};
     }
   }
 `;
@@ -33,6 +35,8 @@ const container = css`
 function AdminSelectBox() {
   const [area, setArea] = useState<string>("");
   const [branch, setBranch] = useState<string>("");
+  const location = useLocation();
+  const pathName = location.pathname;
 
   const options = [
     { value: "서울", text: "서울" },
@@ -56,8 +60,13 @@ function AdminSelectBox() {
     }
   };
 
+  // 열기 버튼 함튼
+  const open = () => {
+    console.log("열기");
+  };
+
   return (
-    <div css={container}>
+    <div css={container(pathName)}>
       <p>지역선택</p>
       <select onClick={clickArea}>
         <option value="">지역을 선택해주세요</option>
@@ -77,6 +86,30 @@ function AdminSelectBox() {
           </option>
         ))}
       </select>
+      {pathName === "/admin/operation" ? (
+        <>
+          <p>번호선택</p>
+          <select onClick={clickBranch}>
+            <option value="">번호를 선택해주세요</option>
+            {options.map((option, index) => (
+              <option key={option.value} value={option.value}>
+                {option.text}
+              </option>
+            ))}
+          </select>
+          <Btn
+            width={100}
+            height={4.5}
+            color={"white"}
+            backGroundColor={"#0CDEE8"}
+            content={"열기"}
+            border={"1px solid #0CDEE8"}
+            marginTop={30}
+            fontWeight={900}
+            onClick={open}
+          />
+        </>
+      ) : null}
     </div>
   );
 }

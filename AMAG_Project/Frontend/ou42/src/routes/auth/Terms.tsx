@@ -171,7 +171,7 @@ export default function Temrs() {
         <Btn
           width={45}
           height={100}
-          color={"white"}
+          backGroundColor={"white"}
           content={"취소"}
           marginRight={20}
           onClick={() => navigate("/")}
@@ -179,7 +179,7 @@ export default function Temrs() {
         <Btn
           width={45}
           height={100}
-          color={"white"}
+          backGroundColor={"white"}
           content={"확인"}
           onClick={checkAvailable}
         />

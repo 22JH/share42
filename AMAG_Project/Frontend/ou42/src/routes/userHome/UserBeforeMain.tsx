@@ -1,79 +1,85 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const container = css`
   display: flex;
   height: 100vh;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   position: relative;
 
   #svg {
-    opacity: 1;
-    animation-name: svgAnimation;
-    animation-duration: 1.2s;
-  }
-
-  @keyframes svgAnimation {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+    position: fixed;
+    top: 15%;
   }
 
   .font {
-    position: absolute;
-    bottom: 8%;
     text-align: center;
-    font-size: 0.55rem;
-    animation-name: fontAnimation;
-    animation-duration: 1.2s;
+    bottom: 20%;
+    position: absolute;
+    top: 38%;
 
-    span:nth-of-type(1) {
-      color: #d14d72;
+    p:nth-of-type(1) {
       font-weight: 900;
+      font-size: 1.3rem;
+      margin-bottom: 5%;
     }
-
-    span:nth-of-type(2) {
-      color: #acacac;
+    p:nth-of-type(2) {
+      margin: 0;
     }
   }
 
-  @keyframes fontAnimation {
-    0% {
-      opacity: 0;
+  .btn {
+    position: absolute;
+    border: 0;
+    width: 50%;
+    height: 5%;
+    border-radius: 10px;
+    background-color: #ffabab;
+    color: white;
+    font-weight: 900;
+    font-size: 1rem;
+    bottom: 20%;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.54);
+  }
+
+  .login {
+    position: absolute;
+    bottom: 16%;
+    display: flex;
+
+    p {
+      margin: 0;
+      font-size: 0.8rem;
     }
-    100% {
-      opacity: 1;
+
+    p:nth-of-type(1) {
+      opacity: 0.3;
+      margin: 0 10px 0 0;
+    }
+
+    p:nth-of-type(2) {
+      color: #d14d72;
+      font-weight: 900;
     }
   }
 `;
 
-function UserWelcome() {
+function UserBeforeMain() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setTimeout(() => {
-      navigate("/start");
-    }, 1200);
-  }, []);
+  const goLogin = () => {
+    navigate("/login");
+  };
+
+  const goSignUp = () => {
+    navigate("/signup");
+  };
 
   return (
     <div css={container}>
-      <svg
-        width="250"
-        id="svg"
-        height="250"
-        viewBox="0 0 324 324"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-      >
+      <svg width="250" height="250" id="svg" viewBox="0 0 324 324" fill="none">
         <rect width="324" height="324" fill="url(#pattern0)" />
         <rect width="324" height="324" fill="url(#pattern1)" />
         <defs>
@@ -109,11 +115,20 @@ function UserWelcome() {
       </svg>
 
       <div className="font">
-        <span>Miracle </span>
-        <span>Copyright Miracle Corp. All Rights Reserved</span>
+        <p>비대면 물품 공유 플랫폼</p>
+        <p>우리서비스는 이런거에요 설명문구 두줄정도!</p>
+      </div>
+
+      <button className="btn" onClick={goLogin}>
+        시작하기
+      </button>
+
+      <div className="login">
+        <p>계정이 없으신가요?</p>
+        <p onClick={goSignUp}>회원가입</p>
       </div>
     </div>
   );
 }
 
-export default UserWelcome;
+export default UserBeforeMain;

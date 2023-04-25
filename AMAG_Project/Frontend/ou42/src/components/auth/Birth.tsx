@@ -22,7 +22,6 @@ export default function Birth({ setBirth }: PropType) {
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     setBirth(e.target.value);
-    console.log(e.target.value);
   };
   return (
     <div css={container}>

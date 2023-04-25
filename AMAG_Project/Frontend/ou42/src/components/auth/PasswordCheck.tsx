@@ -47,13 +47,16 @@ export default function PasswordCheck({ setPd }: PropType) {
         className="pdInput"
         onBlur={handlePdCheck1}
         placeholder="비밀번호를 입력해주세요"
+        type="password"
       />
+
       <div className="pdHeader">Confirm</div>
       <TextField
         size="small"
         className="pdInput"
         onBlur={handlePdCheck2}
         placeholder="비밀번호를 확인해 주세요"
+        type="password"
       />
       <div>{validPd}</div>
     </div>

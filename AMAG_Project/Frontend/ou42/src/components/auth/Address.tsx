@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import TextField from "@mui/material/TextField";
-import { addrType } from "../../routes/auth/SignUp";
 import { useState } from "react";
+import DropDown from "../UI/DropDown";
 
 interface PropType {
-  setAddr: React.Dispatch<React.SetStateAction<Partial<addrType>>>;
+  setSi: React.Dispatch<React.SetStateAction<string>>;
+  setGoon: React.Dispatch<React.SetStateAction<string>>;
+  setDong: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const container = css`
@@ -15,27 +17,30 @@ const container = css`
   flex-direction: column;
 
   .addrHeader {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
-  .selectOption {
+  .selectAddr {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: space-between;
   }
 `;
 
-export default function Address({ setAddr }: PropType) {
-  const [selected, setSelected] = useState<HTMLSelectElement | number>(0);
-  const ciOption = [1, 2, 3, 4, 5];
-  const guOption = [1, 2, 3, 4, 5];
-  const dongOption = [1, 2, 3, 4, 5];
+export default function Address({ setSi, setGoon, setDong }: PropType) {
+  const ciOption = ["대구광역시", "2", "3", "4", "5"];
+  const guOption = ["1", "2", "3", "4", "5"];
+  const dongOption = ["1", "2", "3", "4", "5"];
 
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const temp = e.target as HTMLSelectElement;
-    setSelected(temp);
-  };
   return (
     <div css={container}>
       <div className="addrHeader">Address</div>
-      <div className="selectAddr"></div>
+      <div className="selectAddr">
+        <DropDown data={ciOption} content={"시/도"} setValue={setSi} />
+        <DropDown data={guOption} content={"시/군/구"} setValue={setGoon} />
+        <DropDown data={dongOption} content={"동"} setValue={setDong} />
+      </div>
+      <TextField size="small" placeholder="자세한 주소를 입력해 주세요" />
     </div>
   );
 }

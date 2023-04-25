@@ -8,9 +8,10 @@ import AdminHome from "./routes/admin/AdminHome";
 import AdminReport from "./routes/admin/AdminReport";
 import AdminLog from "./routes/admin/AdminLog";
 import AdminOperation from "./routes/admin/AdminOperation";
-import UseMapComponent from "./components/map/UseMapComponent";
+import UserMap from "./routes/user/UserMap";
 import Terms from "./routes/auth/Terms";
 import SignUp from "./routes/auth/SignUp";
+import AdminMap from "./routes/admin/AdminMap";
 
 const globalStyle = css`
   body {
@@ -24,9 +25,7 @@ function App() {
   return (
     <>
       <Global styles={globalStyle} />
-
       <NavBar />
-
       <Router>
         <Routes>
           <Route path="/" element={<UserHome />} />
@@ -35,7 +34,8 @@ function App() {
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />
           <Route path="/admin/operation" element={<AdminOperation />} />
-          <Route path="/useshare/usemap" element={<UseMapComponent />} />
+          <Route path="/admin/map" element={<AdminMap />} />
+          <Route path="/user/map" element={<UserMap />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>

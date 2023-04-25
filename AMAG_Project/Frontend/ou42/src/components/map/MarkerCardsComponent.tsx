@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import markerImg from "./마크업.png";
-import { useEffect } from 'react';
-import ShareButton from "./ShareButton";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import markerImg from "../../assets/marker.png";
+import MapButtonComponent from "./MapButtonComponent";
 
 interface CustomOverlayContentProps {
   markerInfo: any;
 }
 
-const MarkerShareInfoStyle = css`
+export const MarkerShareInfoStyle = css`
   width: 100%;
   border-bottom: 1px solid black;
 
@@ -48,14 +49,17 @@ const MarkerShareInfoStyle = css`
   }
 `;
 
-const MarkerShareInfoComponent = ({
-  markerInfo,
-}: CustomOverlayContentProps) => {
-
+const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
   const shareSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     // PUT 요청해야함 그리고 status = 2로 바꿔야함
-    markerInfo.status = 2
-  }
+    markerInfo.status = 2;
+  };
+
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    console.log(pathname)
+  }, [pathname])
 
   return (
     <div css={MarkerShareInfoStyle}>
@@ -99,8 +103,8 @@ const MarkerShareInfoComponent = ({
               marginTop: "-10px",
             }}
           >
-            {markerInfo && (
-              <ShareButton
+            {!pathname.includes("admin") && markerInfo && (
+              <MapButtonComponent
                 status={markerInfo.status}
                 text={
                   markerInfo.status === 0
@@ -118,4 +122,4 @@ const MarkerShareInfoComponent = ({
   );
 };
 
-export default MarkerShareInfoComponent;
+export default MarkerCardsComponent;

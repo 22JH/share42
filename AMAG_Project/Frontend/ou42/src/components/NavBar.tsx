@@ -7,8 +7,7 @@ const container = css`
 
 export default function NavBar() {
   const pathName = window.location.pathname;
-
-  if (!pathName.includes("admin") || !pathName.includes("usemap")) return null;
+  if (!pathName.includes("admin") || !pathName.includes("map")) return null;
 
   return (
     <>

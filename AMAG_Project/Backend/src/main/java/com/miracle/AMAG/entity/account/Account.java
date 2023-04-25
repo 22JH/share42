@@ -1,7 +1,10 @@
 package com.miracle.AMAG.entity.account;
 
+import com.miracle.AMAG.util.common.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,7 +55,7 @@ public class Account {
     @Column(length = 10)
     private String dong;
 
-    @Column(length = 30)
+    @Column(length = 100)
     private String address;
 
     @Column(length = 100)
@@ -60,9 +63,20 @@ public class Account {
 
     private LocalDateTime regDt;
 
-    @Column(length = 10)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private Role role;
 
     @Column(name="WALLET_HASH",length = 100)
     private String walletHash;
+
+    public UsernamePasswordAuthenticationToken toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(userId, password);
+    }
+
+    public static Account copy(Account account) {
+        Account a = new Account();
+        BeanUtils.copyProperties(account, a);
+        return a;
+    }
 }

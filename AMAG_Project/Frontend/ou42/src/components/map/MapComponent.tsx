@@ -9,24 +9,16 @@ import {
   CustomOverlayMap,
 } from "react-kakao-maps-sdk";
 import { useEffect, useState } from "react";
-import { GetMarkers } from "./api/ApiMap";
-import { useQuery } from "react-query";
-import markerImg from "./마크업.png";
-import BranchShareInfoComponent from "./MarkerDetailShareInfoComponent";
-import { mapStyle } from "./UseMapComponentStyle";
+import markerImg from "../../assets/marker.png";
+import MarkerInfoComponent from "./MarkerInfoComponent";
+import { mapStyle } from "./style/UserMapStyle";
 
 interface positionProps {
   lat: number;
   lng: number;
 }
 
-const useMarkers = () => {
-  const { isLoading, error, data } = useQuery("markers", GetMarkers);
-  return { isLoading, error, markers: data };
-};
-
-const UseMapComponent: React.FC = () => {
-  const { markers } = useMarkers();
+const MapComponent: React.FC = () => {
   const [markersData, setMarkersData] = useState<null | any[]>(null);
   const [position, setPosition] = useState<positionProps>({
     lat: 36.107177733518384,
@@ -82,10 +74,16 @@ const UseMapComponent: React.FC = () => {
 
   // 마커 주소 가져오기
   useEffect(() => {
-    if (markers) {
-      setMarkersData(markers);
-    }
-  }, [markers]);
+    (async () => {
+      const response = await fetch("http://localhost:3001/markers");
+      const data = await response.json();
+      setMarkersData(data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    console.log(markersData)
+  }, [markersData])
 
   return (
     <>
@@ -138,44 +136,39 @@ const UseMapComponent: React.FC = () => {
               }}
               clickable={true}
             />
-            {!isOpen[marker.id] ? (
-              <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
-                // 커스텀 오버레이가 표시될 위치입니다
-                position={{
-                  lat: marker.lat,
-                  lng: marker.lng,
+            <CustomOverlayMap
+              position={{
+                lat: marker.lat,
+                lng: marker.lng,
+              }}
+            >
+              <div
+                className="label"
+                style={{
+                  color: "#fff",
+                  position: "relative",
+                  backgroundColor: "#0CDEE8",
+                  padding: "8px 13px",
+                  top: "40px",
+                  fontSize: "13px",
+                  fontWeight: 900,
+                  borderRadius: "50px",
+                  userSelect: "none",
+                  zIndex: 2,
+                  cursor: "pointer",
                 }}
               >
-                {/* 커스텀 오버레이에 표시할 내용입니다 */}
-                <div
-                  className="label"
-                  style={{
-                    color: "#fff",
-                    position: "relative",
-                    backgroundColor: "#0CDEE8",
-                    padding: "8px 13px",
-                    top: "40px",
-                    fontSize: "13px",
-                    fontWeight: 900,
-                    borderRadius: "50px",
-                    userSelect: "none",
-                    zIndex: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  <span className="center">{marker.content}</span>
-                </div>
-              </CustomOverlayMap>
-            ) : null}
+                <span className="center">{marker.content}</span>
+              </div>
+            </CustomOverlayMap>
             {isOpen[marker.id] ? (
-              // 미해결 : 이거 오버레이 켤 때, 항상 화면 가운데에서 존재하게 하고 싶은데, 해결 못함
               <CustomOverlayMap
                 position={{
                   lat: position.lat - 0.00022,
                   lng: position.lng,
                 }}
               >
-                <BranchShareInfoComponent
+                <MarkerInfoComponent
                   id={marker.id}
                   setIsOpen={setIsOpen}
                   address={marker.address}
@@ -190,4 +183,4 @@ const UseMapComponent: React.FC = () => {
   );
 };
 
-export default UseMapComponent;
+export default MapComponent;

@@ -3,7 +3,7 @@ type ButtonProps = {
   text: string;
 };
 
-const ShareButton = ({ status, text }: ButtonProps) => {
+const MapButtonComponent = ({ status, text }: ButtonProps) => {
   let bgColor = "";
   switch (status) {
     case 0:
@@ -37,4 +37,4 @@ const ShareButton = ({ status, text }: ButtonProps) => {
   );
 };
 
-export default ShareButton;
+export default MapButtonComponent;

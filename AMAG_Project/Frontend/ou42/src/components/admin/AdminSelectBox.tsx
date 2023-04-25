@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import Btn from "./../UI/Btn";
 
 const container = (pathName: string) => css`
   width: 90%;
@@ -33,6 +35,7 @@ const container = (pathName: string) => css`
 function AdminSelectBox() {
   const [area, setArea] = useState<string>("");
   const [branch, setBranch] = useState<string>("");
+  const location = useLocation();
   const pathName = location.pathname;
 
   const options = [
@@ -89,6 +92,13 @@ function AdminSelectBox() {
               </option>
             ))}
           </select>
+          <Btn
+            width={100}
+            height={20}
+            color={"#0CDEE8"}
+            content={"열기"}
+            border={"1px solid #0CDEE8"}
+          />
         </>
       ) : null}
     </div>

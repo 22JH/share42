@@ -21,16 +21,11 @@ const globalStyle = css`
 `;
 
 function App() {
-  const pathName = window.location.pathname;
-
   return (
     <>
       <Global styles={globalStyle} />
-      {!pathName.includes("admin") ? (
-        !pathName.includes("usemap") ? (
-          <NavBar />
-        ) : null
-      ) : null}
+
+      <NavBar />
 
       <Router>
         <Routes>

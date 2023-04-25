@@ -12,6 +12,8 @@ interface PropType {
   marginLeft?: CSSInterpolation;
   marginTop?: CSSInterpolation;
   onClick?: any;
+  borderR?: CSSInterpolation;
+  border?: CSSInterpolation;
 }
 
 export default function Btn({
@@ -24,8 +26,11 @@ export default function Btn({
   marginLeft = 0,
   marginTop = 0,
   onClick = () => null,
+  borderR = 5,
+  border = "1px solid black",
 }: PropType) {
   const btnStyle = css`
+    text-align: center;
     width: ${width}%;
     height: ${height}%;
     background-color: ${color};
@@ -34,11 +39,12 @@ export default function Btn({
     margin-left: ${marginBottom}px;
     margin-top: ${marginBottom}px;
     position: relative;
-    border-radius: 5px;
+    border-radius: ${borderR}px;
+    border: ${border};
   `;
   return (
-    <button css={btnStyle} onClick={onClick}>
+    <div css={btnStyle} onClick={onClick}>
       {content}
-    </button>
+    </div>
   );
 }

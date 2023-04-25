@@ -7,6 +7,10 @@ server:
       enabled: true
       force: true
 
+logging:
+  level:
+    com.miracle.AMAG: debug
+
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
@@ -21,7 +25,6 @@ spring:
 
   logging:
     level:
-      com.miracle.AMAG: debug
       org.hibernate:
         type.descriptor.sql: trace
         SQL: debug
@@ -65,3 +68,10 @@ klaytn:
 
 kakao:
   restApiKey: 0fac24e59c08f0d24e738ea0377dc42a
+
+naver:
+  naver-cloud-sms:
+    accessKey: xF55CRsMXSI3cRFneFPx
+    secretKey: XJzENl8AETtcxiufSDv7wwtWtHoOWsVa3wGL0uQk
+    serviceId: ncp:sms:kr:260663064935:share42
+    senderPhone: 01092887883

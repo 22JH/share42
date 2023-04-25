@@ -19,10 +19,18 @@ const container = css`
 export default function Name({ setName }: PropType) {
   return (
     <div css={container}>
-      <div className="nameHeader">이름</div>
-      <TextField size="small" css={{ marginBottom: "15px" }} />
-      <div className="nameHeader">닉네임</div>
-      <TextField size="small" css={{ marginBottom: "15px" }} />
+      <div className="nameHeader">Name</div>
+      <TextField
+        size="small"
+        css={{ marginBottom: "15px" }}
+        placeholder="이름을 입력해주세요"
+      />
+      <div className="nameHeader">Nickname</div>
+      <TextField
+        size="small"
+        css={{ marginBottom: "15px" }}
+        placeholder="별명을 입력해주세요"
+      />
     </div>
   );
 }

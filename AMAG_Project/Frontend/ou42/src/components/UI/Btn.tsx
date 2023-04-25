@@ -36,8 +36,8 @@ export default function Btn({
     background-color: ${color};
     margin-right: ${marginRight}px;
     margin-bottom: ${marginBottom}px;
-    margin-left: ${marginBottom}px;
-    margin-top: ${marginBottom}px;
+    margin-left: ${marginLeft}px;
+    margin-top: ${marginTop}px;
     position: relative;
     border-radius: ${borderR}px;
     border: ${border};

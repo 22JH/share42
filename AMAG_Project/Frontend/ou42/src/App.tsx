@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { css, Global } from "@emotion/react";
 import UserHome from "./routes/userHome/UserHome";
 import NavBar from "./components/NavBar";
-import Login from "./routes/auth/logIn/Login";
-import { css, Global } from "@emotion/react";
+import Login from "./routes/auth/Login";
 import AdminHome from "./routes/admin/AdminHome";
 import AdminReport from "./routes/admin/AdminReport";
 import AdminLog from "./routes/admin/AdminLog";
 import UseMapComponent from "./components/map/UseMapComponent";
+import Terms from "./routes/auth/Terms";
+import SignUp from "./routes/auth/SignUp";
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -45,6 +47,8 @@ function App() {
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />
           <Route path="/useshare/usemap" element={<UseMapComponent />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </Router>
     </>

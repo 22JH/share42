@@ -19,7 +19,7 @@ const titleStyle = css`
 
 function AdminNav() {
   const navigate = useNavigate();
-  const pageName = location.pathname;
+  const pageName = window.location.pathname;
 
   return (
     <div css={titleStyle}>

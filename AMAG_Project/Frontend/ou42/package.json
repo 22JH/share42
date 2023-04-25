@@ -52,24 +52,17 @@
       "react-app",
       "react-app/jest"
     ],
-    "eslintConfig": {
-      "extends": [
-        "react-app"
-      ],
-      "rules": {
-        "no-unused-vars": "warn"
-      },
-      "overrides": [
-        {
-          "files": [
-            "**/*.ts?(x)"
-          ],
-          "rules": {
-            "max-len": "warn"
-          }
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts?(x)"
+        ],
+        "rules": {
+          "max-len": "warn",
+          "no-unused-vars": "warn"
         }
-      ]
-    }
+      }
+    ]
   },
   "browserslist": {
     "production": [

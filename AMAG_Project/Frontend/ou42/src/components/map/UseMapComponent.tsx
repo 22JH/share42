@@ -12,12 +12,12 @@ import { useEffect, useState } from "react";
 import { GetMarkers } from "./api/ApiMap";
 import { useQuery } from "react-query";
 import markerImg from "./마크업.png";
-import BranchShareInfoComponent from './MarkerDetailShareInfoComponent'
+import BranchShareInfoComponent from "./MarkerDetailShareInfoComponent";
 import { mapStyle } from "./UseMapComponentStyle";
 
 interface positionProps {
-  lat: number,
-  lng: number 
+  lat: number;
+  lng: number;
 }
 
 const useMarkers = () => {
@@ -30,7 +30,7 @@ const UseMapComponent: React.FC = () => {
   const [markersData, setMarkersData] = useState<null | any[]>(null);
   const [position, setPosition] = useState<positionProps>({
     lat: 36.107177733518384,
-    lng: 128.4193003234078
+    lng: 128.4193003234078,
   });
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
 
@@ -103,10 +103,12 @@ const UseMapComponent: React.FC = () => {
           height: "100vh",
         }}
         level={3} // 지도의 확대 레벨
-        onDragEnd={(map) => setPosition({
-          lat: map.getCenter().getLat(),
-          lng: map.getCenter().getLng(),
-        })}
+        onDragEnd={(map) =>
+          setPosition({
+            lat: map.getCenter().getLat(),
+            lng: map.getCenter().getLng(),
+          })
+        }
       >
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
@@ -134,44 +136,53 @@ const UseMapComponent: React.FC = () => {
               onClick={() => {
                 setIsOpen((prevState) => ({ ...prevState, [marker.id]: true }));
               }}
-              clickable={true} 
+              clickable={true}
             />
-            {!isOpen[marker.id] ? <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
-              // 커스텀 오버레이가 표시될 위치입니다
-              position={{
-                lat: marker.lat,
-                lng: marker.lng,
-              }}
-            >
-              {/* 커스텀 오버레이에 표시할 내용입니다 */}
-              <div
-                className="label"
-                style={{
-                  color: "#fff",
-                  position: "relative",
-                  backgroundColor: "#0CDEE8",
-                  padding: "8px 13px",
-                  top: '40px',
-                  fontSize: '13px',
-                  fontWeight: 900,
-                  borderRadius: '50px',
-                  userSelect: 'none',
-                  zIndex: 4,
-                  cursor: 'pointer'
+            {!isOpen[marker.id] ? (
+              <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+                // 커스텀 오버레이가 표시될 위치입니다
+                position={{
+                  lat: marker.lat,
+                  lng: marker.lng,
                 }}
               >
-                <span className="center">{marker.content}</span>
-              </div>
-            </CustomOverlayMap> : null}
+                {/* 커스텀 오버레이에 표시할 내용입니다 */}
+                <div
+                  className="label"
+                  style={{
+                    color: "#fff",
+                    position: "relative",
+                    backgroundColor: "#0CDEE8",
+                    padding: "8px 13px",
+                    top: "40px",
+                    fontSize: "13px",
+                    fontWeight: 900,
+                    borderRadius: "50px",
+                    userSelect: "none",
+                    zIndex: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  <span className="center">{marker.content}</span>
+                </div>
+              </CustomOverlayMap>
+            ) : null}
             {isOpen[marker.id] ? (
-            // 미해결 : 이거 오버레이 켤 때, 항상 화면 가운데에서 존재하게 하고 싶은데, 해결 못함
-            <CustomOverlayMap position={{
-              lat: position.lat-0.00022,
-              lng: position.lng,
-            }}>
-              <BranchShareInfoComponent id={marker.id} setIsOpen={setIsOpen} address={marker.address} name={marker.content}/>
-            </CustomOverlayMap>
-          ) : null}
+              // 미해결 : 이거 오버레이 켤 때, 항상 화면 가운데에서 존재하게 하고 싶은데, 해결 못함
+              <CustomOverlayMap
+                position={{
+                  lat: position.lat - 0.00022,
+                  lng: position.lng,
+                }}
+              >
+                <BranchShareInfoComponent
+                  id={marker.id}
+                  setIsOpen={setIsOpen}
+                  address={marker.address}
+                  name={marker.content}
+                />
+              </CustomOverlayMap>
+            ) : null}
           </div>
         ))}
       </Map>

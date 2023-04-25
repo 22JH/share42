@@ -11,8 +11,6 @@ import AdminOperation from "./routes/admin/AdminOperation";
 import UseMapComponent from "./components/map/UseMapComponent";
 import Terms from "./routes/auth/Terms";
 import SignUp from "./routes/auth/SignUp";
-import { useState } from "react";
-import { useEffect } from "react";
 
 const globalStyle = css`
   body {
@@ -23,27 +21,17 @@ const globalStyle = css`
 `;
 
 function App() {
-  const [notNav, setNotNav] = useState(true);
   const pathName = window.location.pathname;
-
-  useEffect(() => {
-    if (
-      pathName === "/useshare/usemap" ||
-      pathName === "/admin/usemap" ||
-      pathName === "/share-registration"
-    ) {
-      setNotNav(false);
-    } else {
-      setNotNav(true);
-    }
-  }, [pathName]);
 
   return (
     <>
       <Global styles={globalStyle} />
-      {!pathName.includes("admin") ? <NavBar /> : null}
-      {!pathName.includes("useshare") ? <NavBar /> : null}
-      {notNav ? <NavBar /> : null}
+      {!pathName.includes("admin") ? (
+        !pathName.includes("usemap") ? (
+          <NavBar />
+        ) : null
+      ) : null}
+
       <Router>
         <Routes>
           <Route path="/" element={<UserHome />} />

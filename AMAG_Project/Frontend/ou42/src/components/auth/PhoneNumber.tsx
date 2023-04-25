@@ -25,17 +25,27 @@ const container = css`
     flex: 1;
   }
 `;
-
 export default function PhoneNumber({ setPhoneNumber }: PropType) {
+  const handlePhoneNumber = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
+    setPhoneNumber(() => e.target.value);
+  };
+
   return (
     <div css={container}>
-      <div className="phHeader">전화번호</div>
+      <div className="phHeader">Phone</div>
       <div className="phoneSection">
         <TextField size="small" />
-        <Btn width={25} height={100} color={"white"} content={"인증"} />
+        <Btn
+          width={25}
+          height={100}
+          backGroundColor={"white"}
+          content={"인증"}
+        />
       </div>
       {/* 인증번호 입력 창 */}
-      <TextField size="small" />
+      <TextField size="small" onBlur={handlePhoneNumber} />
     </div>
   );
 }

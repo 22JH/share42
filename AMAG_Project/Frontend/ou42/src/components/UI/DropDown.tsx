@@ -25,7 +25,7 @@ export default function DropDown({
   marginLeft = 0,
   marginTop = 0,
   data,
-  content = "컨텐트",
+  content = "",
   setValue,
 }: PropType) {
   const [current, setCurrent] = React.useState("");

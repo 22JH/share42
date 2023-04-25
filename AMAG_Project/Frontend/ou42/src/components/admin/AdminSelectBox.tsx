@@ -7,7 +7,7 @@ import Btn from "./../UI/Btn";
 const container = (pathName: string) => css`
   width: 90%;
   margin: 0 5% 0 5%;
-
+  height: 90vh;
   p {
     font-weight: 900;
     margin: 5% 0 3% 0;
@@ -60,6 +60,11 @@ function AdminSelectBox() {
     }
   };
 
+  // 열기 버튼 함튼
+  const open = () => {
+    console.log("열기");
+  };
+
   return (
     <div css={container(pathName)}>
       <p>지역선택</p>
@@ -94,10 +99,14 @@ function AdminSelectBox() {
           </select>
           <Btn
             width={100}
-            height={20}
-            color={"#0CDEE8"}
+            height={4.5}
+            color={"white"}
+            backGroundColor={"#0CDEE8"}
             content={"열기"}
             border={"1px solid #0CDEE8"}
+            marginTop={30}
+            fontWeight={900}
+            onClick={open}
           />
         </>
       ) : null}

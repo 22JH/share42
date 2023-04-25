@@ -119,7 +119,12 @@ export default function Login() {
               size="small"
             />
           </div>
-          <Btn width={"90"} height={"15"} color={"white"} content={"a"} />
+          <Btn
+            width={"90"}
+            height={"15"}
+            backGroundColor={"white"}
+            content={"a"}
+          />
         </div>
       </div>
       <div className="singupBtn" onClick={() => navigate("/terms")}>

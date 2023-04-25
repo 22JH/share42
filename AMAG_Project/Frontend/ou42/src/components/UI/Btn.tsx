@@ -5,21 +5,24 @@ import { CSSInterpolation } from "@emotion/serialize";
 interface PropType {
   width: CSSInterpolation;
   height: CSSInterpolation;
-  color: CSSInterpolation;
+  backGroundColor?: CSSInterpolation;
+  color?: CSSInterpolation;
   content: string;
   marginRight?: CSSInterpolation;
   marginBottom?: CSSInterpolation;
   marginLeft?: CSSInterpolation;
   marginTop?: CSSInterpolation;
-  onClick?: any;
+  onClick?: () => void;
   borderR?: CSSInterpolation;
   border?: CSSInterpolation;
+  fontWeight?: CSSInterpolation;
 }
 
 export default function Btn({
   width,
   height,
-  color,
+  backGroundColor = "white",
+  color = "black",
   content,
   marginRight = 0,
   marginBottom = 0,
@@ -28,12 +31,15 @@ export default function Btn({
   onClick = () => null,
   borderR = 5,
   border = "1px solid black",
+  fontWeight = 0,
 }: PropType) {
   const btnStyle = css`
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: ${width}%;
     height: ${height}%;
-    background-color: ${color};
+    background-color: ${backGroundColor};
     margin-right: ${marginRight}px;
     margin-bottom: ${marginBottom}px;
     margin-left: ${marginLeft}px;
@@ -41,6 +47,8 @@ export default function Btn({
     position: relative;
     border-radius: ${borderR}px;
     border: ${border};
+    font-weight: ${fontWeight};
+    color: ${color};
   `;
   return (
     <div css={btnStyle} onClick={onClick}>

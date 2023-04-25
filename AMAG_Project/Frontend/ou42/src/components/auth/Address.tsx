@@ -23,42 +23,19 @@ const container = css`
 `;
 
 export default function Address({ setAddr }: PropType) {
-  const [selected, setSelected] = useState<number>(0);
+  const [selected, setSelected] = useState<HTMLSelectElement | number>(0);
   const ciOption = [1, 2, 3, 4, 5];
   const guOption = [1, 2, 3, 4, 5];
   const dongOption = [1, 2, 3, 4, 5];
 
   const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const temp = e.target as HTMLSelectElement;
-    console.log(temp.value);
-    // setSelected(e.target as HTMLSelectElement);
+    setSelected(temp);
   };
   return (
     <div css={container}>
       <div className="addrHeader">Address</div>
-      <div className="selectAddr">
-        <select onChange={handleSelect} value={selected}>
-          {ciOption.map((ele, idx) => (
-            <option value={ele} key={idx} className="selectOption">
-              {ele}
-            </option>
-          ))}
-        </select>
-        <select onChange={handleSelect} value={selected}>
-          {ciOption.map((ele, idx) => (
-            <option value={ele} key={idx} className="selectOption">
-              {ele}
-            </option>
-          ))}
-        </select>
-        <select onChange={handleSelect} value={selected}>
-          {ciOption.map((ele, idx) => (
-            <option value={ele} key={idx} className="selectOption">
-              {ele}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="selectAddr"></div>
     </div>
   );
 }

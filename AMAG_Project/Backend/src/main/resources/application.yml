@@ -21,6 +21,7 @@ spring:
 
   logging:
     level:
+      com.miracle.AMAG: debug
       org.hibernate:
         type.descriptor.sql: trace
         SQL: debug

@@ -1,132 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+
 import testObject from "../../assets/testObject.jpg";
 
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
-
 import { Suspense, useEffect, useRef, useState } from "react";
-
 import {
   useInfiniteQuery,
   useQueryClient,
   useQueryErrorResetBoundary,
 } from "react-query";
-
 import axios from "axios";
+
 import Loading from "../../components/Loading";
 import ErrorBoundary from "../../components/ErrorBoundary";
-
-const content = css`
-  .sort-bar {
-    display: flex;
-    flex-direction: row-reverse;
-  }
-
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .item {
-    flex: 1 1 35%;
-    height: 30vh;
-    position: relative;
-
-    .img-icon {
-      position: absolute;
-      right: 5%;
-      bottom: 17%;
-    }
-
-    &:nth-of-type(2n + 1) {
-      margin: 6% 2% 8% 4%;
-    }
-
-    &:nth-of-type(2n) {
-      margin: 6% 4% 8% 2%;
-    }
-
-    .img {
-      width: 100%;
-      height: 85%;
-      margin-bottom: 3%;
-      border-radius: 25px;
-    }
-
-    & p {
-      margin: 0 0 0 2%;
-      color: #a3a3a3;
-    }
-
-    & p:nth-of-type(1) {
-      font-size: 1rem;
-      font-weight: 600;
-      color: black;
-      margin-bottom: 2%;
-    }
-
-    & p:nth-of-type(2) {
-      font-weight: 500;
-      font-size: 0.7rem;
-      color: black;
-      margin-bottom: 2%;
-    }
-
-    & p:nth-of-type(3) {
-      font-size: 0.625rem;
-    }
-
-    .icon {
-      text-align: end;
-      display: flex;
-      justify-content: end;
-
-      .eye {
-        fill: black;
-        display: flex;
-        align-items: center;
-        & > span {
-          font-size: 0.75rem;
-        }
-
-        margin-right: 5%;
-      }
-
-      .heart {
-        fill: black;
-        display: flex;
-        align-items: center;
-        & > span {
-          font-size: 0.75rem;
-        }
-      }
-    }
-
-    .redHeart {
-      fill: #ff571a;
-      animation-name: change;
-      animation-duration: 0.4s;
-
-      @keyframes change {
-        0% {
-          fill: #ff571a;
-          transform: scale(0);
-        }
-
-        60% {
-          fill: #ff571a;
-          transform: scale(1.3);
-          border-radius: 50%;
-          filter: drop-shadow(1px 1px 4px #ff571a);
-        }
-
-        100% {
-          fill: #ff571a;
-          transform: scale(1);
-        }
-      }
-    }
-  }
-`;
+import DropDown from "../../components/UI/DropDown";
+import * as userHomeStyle from "../../components/user/UserHomeStyle";
+import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
 
 // intersaction 옵션
 const intersectionOptions = {
@@ -148,6 +38,7 @@ const getListFnc = ({ pageParam = 1 }) => {
 // API_URL
 const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 
+// 데이터 fetch 컴포넌트
 function UserHomeList() {
   const [isLike, setIslike] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement | any>({});
@@ -238,44 +129,7 @@ function UserHomeList() {
   );
 }
 
-const errorMsgStyle = css`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-
-  & p {
-    display: inline-block;
-    width: 60%;
-    text-align: center;
-  }
-
-  p:nth-of-type(1) {
-    margin: 30% 0 0 0;
-    font-weight: 900;
-    font-size: 1.2rem;
-  }
-  p:nth-of-type(2) {
-    margin: 0 0 0 0;
-    font-size: 0.8rem;
-  }
-  p:nth-of-type(3) {
-    margin: 0 0 5% 0;
-    font-size: 0.8rem;
-  }
-
-  & > button {
-    border: none;
-    display: inline-block;
-    width: 60%;
-    height: 3vh;
-    font-size: 0.7rem;
-    font-weight: 900;
-    background-color: #0cdee8;
-    color: white;
-  }
-`;
-
+// 에러 메세지 컴포넌트
 const ErrorMsg = () => {
   const { reset } = useQueryErrorResetBoundary();
 
@@ -288,8 +142,9 @@ const ErrorMsg = () => {
     reset();
     refetch();
   };
+
   return (
-    <div css={errorMsgStyle}>
+    <div css={userHomeStyle.errorMsgStyle}>
       <p>잠시 후 다시 시도해주세요</p>
       <p>요청을 처리하는데</p>
       <p>실패했습니다.</p>
@@ -298,11 +153,23 @@ const ErrorMsg = () => {
   );
 };
 
+// 상위 컴포넌트
 function UserHome() {
+  const [value, setValue] = useState<string>("");
+  const 임시 = ["1", "2", "3"];
+
   return (
     <>
-      <div css={content} id="scrollArea">
-        <div className="sort-bar">안녕</div>
+      <div css={userHomeStyle.content(value)} id="scrollArea">
+        {/* 드롭다운 */}
+        <div className="sort-bar">
+          <DropDown data={임시} setValue={setValue} content={"최신순"} />
+        </div>
+        {/* 스피드 다이얼 */}
+        <div className="speed-dial">
+          <UserHomeSpeedDial />
+        </div>
+        {/* 컨텐츠 */}
         <div className="container">
           <ErrorBoundary fallback={ErrorMsg}>
             <Suspense fallback={<Loading />}>

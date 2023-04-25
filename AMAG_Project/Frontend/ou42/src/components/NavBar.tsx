@@ -8,7 +8,7 @@ const homeNavStyle = css`
   height: 35vh;
   background-color: #fef2f4;
   position: relative;
-  margin-bottom: 15%;
+  margin-bottom: 7%;
 
   .top {
     display: flex;

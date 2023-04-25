@@ -19,6 +19,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-kakao-maps": "^0.0.13",
+    "react-kakao-maps-sdk": "^1.1.8",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
@@ -82,6 +84,7 @@
     ]
   },
   "devDependencies": {
-    "@types/kakao-js-sdk": "^1.39.1"
+    "@types/kakao-js-sdk": "^1.39.1",
+    "json-server": "^0.17.3"
   }
 }

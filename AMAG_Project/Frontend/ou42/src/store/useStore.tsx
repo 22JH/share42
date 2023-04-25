@@ -5,4 +5,5 @@ import { devtools } from "zustand/middleware";
 const init: any = {};
 
 const useStore = create(devtools(init));
+
 export default useStore;

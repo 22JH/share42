@@ -1,5 +1,7 @@
 package com.miracle.AMAG.util.common;
 
+import java.util.regex.Pattern;
+
 public class AccountUtils {
     public static String ANONYMOUS_USER = "anonymousUser";
 
@@ -20,9 +22,9 @@ public class AccountUtils {
             throw new RuntimeException("아이디는 8~20자로 설정해야 합니다");
         }
 
-//        if (Pattern.matches(pattern, id) == false) {
-//            throw new RuntimeException("아이디는 영문 소문자, 숫자, 언더스코어(_)만 가능합니다");
-//        }
+        if (Pattern.matches(pattern, id) == false) {
+            throw new RuntimeException("아이디는 영문 소문자, 숫자, 언더스코어(_)만 가능합니다");
+        }
     }
 
     public static void checkAccountPwdFormat(String pwd) {
@@ -36,8 +38,8 @@ public class AccountUtils {
             throw new RuntimeException("비밀번호는 8~20자로 설정해야 합니다");
         }
 
-//        if (Pattern.matches(pattern, pwd) == false) {
-//            throw new RuntimeException("비밀번호 형식이 올바르지 않습니다");
-//        }
+        if (Pattern.matches(pattern, pwd) == false) {
+            throw new RuntimeException("비밀번호 형식이 올바르지 않습니다");
+        }
     }
 }

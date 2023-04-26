@@ -1,5 +1,6 @@
 package com.miracle.AMAG.entity.account;
 
+;
 import com.miracle.AMAG.util.common.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
     uniqueConstraints = {
         @UniqueConstraint(
                 name="ACCOUNT_UN",
-                columnNames = {"PHONE_NUMBER", "WALLET_HASH"}
+                columnNames = {"USER_ID", "PHONE_NUMBER", "WALLET_HASH"}
         )
     }
 )
@@ -29,7 +30,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 20)
+    @Column(name="USER_ID", length = 20)
     private String userId;
 
     @Column(length = 100)
@@ -74,9 +75,9 @@ public class Account {
         return new UsernamePasswordAuthenticationToken(userId, password);
     }
 
-    public static Account copy(Account account) {
-        Account a = new Account();
-        BeanUtils.copyProperties(account, a);
-        return a;
+    public static Account copy(Account sourceAccount) {
+        Account targetAccount = new Account();
+        BeanUtils.copyProperties(sourceAccount, targetAccount);
+        return targetAccount;
     }
 }

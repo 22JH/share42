@@ -1,14 +1,17 @@
 package com.miracle.AMAG.service.account;
 
-import com.miracle.AMAG.dto.requestDTO.AccountRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.account.AccountRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.common.SmsAuth;
 import com.miracle.AMAG.repository.account.AccountRepository;
+import com.miracle.AMAG.repository.common.SmsAuthRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.common.AccountUtils;
 import com.miracle.AMAG.util.common.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,12 +24,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class JoinService {
     private final AccountRepository accountRepository;
+    private final SmsAuthRepository smsAuthRepository;
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private KlaytnService klaytnService;
 
     public void join(AccountRequestDTO dto) {
-        Account account = Account.copy(dto);
+        Account account = new Account();
+        BeanUtils.copyProperties(dto, account);
         String userId = account.getUserId();
         String password = account.getPassword();
         String phoneNumber = account.getPhoneNumber();
@@ -51,12 +56,13 @@ public class JoinService {
 
         //블록체인 데이터 들어가야하는 부분
         account.setWalletHash(klaytnService.getCarHash().get("address").toString());
+        // 테스트용
+//        account.setWalletHash("1234");
 
-
-//        SmsAuth smsAuth = smsAuthRepository.checkSmsAuth(phoneNo);
-//        if (smsAuth == null || smsAuth.isStatus() == false) {
-//            throw new RuntimeException("SMS 인증을 완료하지 않았습니다");
-//        }
+        SmsAuth smsAuth = smsAuthRepository.checkSmsAuth(phoneNumber);
+        if (smsAuth == null || smsAuth.isStatus() == false) {
+            throw new RuntimeException("SMS 인증을 완료하지 않았습니다");
+        }
 
         accountRepository.save(account);
     }

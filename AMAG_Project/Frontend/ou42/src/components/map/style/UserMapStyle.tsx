@@ -147,3 +147,17 @@ export const OverlayAddressStyle = css`
   color: white;
   font-size: 1.2rem;
 `;
+
+export const OverlayShareStyle = css`
+  width: 80vw;
+  height: 20vh;
+  background: white;
+  z-index: 11 !important;
+  border-radius: 20px;
+  box-shadow: 1px 1px 3px #ffabab;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: auto !important;
+`;

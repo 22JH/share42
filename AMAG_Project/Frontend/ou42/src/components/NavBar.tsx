@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import { SlBell } from "react-icons/sl";
 import { BsSearch } from "react-icons/bs";
+import { useStore } from "./map/store/useStore";
 
 const homeNavStyle = css`
   width: 100vw;
@@ -82,14 +83,27 @@ const homeNavStyle = css`
 
 export default function NavBar() {
   const pathName = window.location.pathname;
+  const { shareData } = useStore.getState();
 
-  if (pathName.includes("admin") || pathName.includes("map")) return null;
+  if (
+    pathName.includes("admin") ||
+    pathName.includes("map") ||
+    pathName.includes("share-reg")
+  )
+    return null;
+
+  if (pathName === "/user/share-reg") {
+    const handleSubmit = () => {
+      // 버튼 누르면 서버로 전송하고 홈화면으로 가면됨
+      // navigate('/')
+    };
+  }
+
   if (pathName === "/home") {
     // 검색 함수
     const searchItem = () => {
       console.log("검색");
     };
-
     return (
       <div css={homeNavStyle}>
         {/* 최상위 */}

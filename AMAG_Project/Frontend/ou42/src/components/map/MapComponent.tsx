@@ -1,21 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 
-import {
-  Map,
-  ZoomControl,
-  MapTypeControl,
-  MapMarker,
-  CustomOverlayMap,
-} from "react-kakao-maps-sdk";
+import { Map, ZoomControl, MapTypeControl } from "react-kakao-maps-sdk";
 import { useEffect, useState } from "react";
-import markerImg from "../../assets/marker.png";
-import MarkerInfoComponent from "./MarkerInfoComponent";
 import { mapStyle } from "./style/UserMapStyle";
+import EventMarkerComponent from "./EventMarkerComponent";
 
-interface positionProps {
+export interface positionProps {
   lat: number;
   lng: number;
+}
+
+export interface markerProps {
+  id: number;
+  content: string;
+  address: string;
+  lat: number;
+  lng: number;
+  cabinetCnt: number;
+  cabinetUse: number;
 }
 
 const MapComponent: React.FC = () => {
@@ -24,7 +26,6 @@ const MapComponent: React.FC = () => {
     lat: 36.107177733518384,
     lng: 128.4193003234078,
   });
-  const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
 
   // 현재 위치 파악하기(geolocation)
   // const [currentPosition, setCurrentPosition] = useState<{
@@ -81,10 +82,6 @@ const MapComponent: React.FC = () => {
     })();
   }, []);
 
-  useEffect(() => {
-    console.log(markersData)
-  }, [markersData])
-
   return (
     <>
       <Map // 지도를 표시할 Container
@@ -111,72 +108,11 @@ const MapComponent: React.FC = () => {
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         {markersData?.map((marker) => (
-          <div key={marker.id}>
-            <MapMarker
-              key={marker.id}
-              position={{
-                lat: marker.lat,
-                lng: marker.lng,
-              }}
-              image={{
-                src: markerImg,
-                size: {
-                  width: 100,
-                  height: 100,
-                },
-                options: {
-                  offset: {
-                    x: 50,
-                    y: 50,
-                  },
-                },
-              }}
-              onClick={() => {
-                setIsOpen((prevState) => ({ ...prevState, [marker.id]: true }));
-              }}
-              clickable={true}
-            />
-            <CustomOverlayMap
-              position={{
-                lat: marker.lat,
-                lng: marker.lng,
-              }}
-            >
-              <div
-                className="label"
-                style={{
-                  color: "#fff",
-                  position: "relative",
-                  backgroundColor: "#0CDEE8",
-                  padding: "8px 13px",
-                  top: "40px",
-                  fontSize: "13px",
-                  fontWeight: 900,
-                  borderRadius: "50px",
-                  userSelect: "none",
-                  zIndex: 2,
-                  cursor: "pointer",
-                }}
-              >
-                <span className="center">{marker.content}</span>
-              </div>
-            </CustomOverlayMap>
-            {isOpen[marker.id] ? (
-              <CustomOverlayMap
-                position={{
-                  lat: position.lat - 0.00022,
-                  lng: position.lng,
-                }}
-              >
-                <MarkerInfoComponent
-                  id={marker.id}
-                  setIsOpen={setIsOpen}
-                  address={marker.address}
-                  name={marker.content}
-                />
-              </CustomOverlayMap>
-            ) : null}
-          </div>
+          <EventMarkerComponent
+            key={`EventMarkerComponent-${marker.lat}-${marker.lng}`}
+            marker={marker}
+            position={position}
+          />
         ))}
       </Map>
     </>

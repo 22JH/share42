@@ -1,6 +1,6 @@
 package com.miracle.AMAG.controller.account;
 
-import com.miracle.AMAG.dto.requestDTO.AccountRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.account.AccountRequestDTO;
 import com.miracle.AMAG.entity.common.SmsAuth;
 import com.miracle.AMAG.service.account.JoinService;
 import com.miracle.AMAG.service.common.AddressService;

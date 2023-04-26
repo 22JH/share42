@@ -1,5 +1,6 @@
 package com.miracle.AMAG.entity.account;
 
+;
 import com.miracle.AMAG.util.common.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -74,9 +75,9 @@ public class Account {
         return new UsernamePasswordAuthenticationToken(userId, password);
     }
 
-    public static Account copy(Account account) {
-        Account a = new Account();
-        BeanUtils.copyProperties(account, a);
-        return a;
+    public static Account copy(Account sourceAccount) {
+        Account targetAccount = new Account();
+        BeanUtils.copyProperties(sourceAccount, targetAccount);
+        return targetAccount;
     }
 }

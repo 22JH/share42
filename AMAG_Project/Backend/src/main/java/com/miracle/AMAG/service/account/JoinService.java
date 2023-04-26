@@ -1,6 +1,6 @@
 package com.miracle.AMAG.service.account;
 
-import com.miracle.AMAG.dto.requestDTO.AccountRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.account.AccountRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.common.SmsAuth;
 import com.miracle.AMAG.repository.account.AccountRepository;
@@ -11,6 +11,7 @@ import com.miracle.AMAG.util.common.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,8 @@ public class JoinService {
     private KlaytnService klaytnService;
 
     public void join(AccountRequestDTO dto) {
-        Account account = Account.copy(dto);
+        Account account = new Account();
+        BeanUtils.copyProperties(dto, account);
         String userId = account.getUserId();
         String password = account.getPassword();
         String phoneNumber = account.getPhoneNumber();

@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState } from "react";
+import { GoCheck } from "react-icons/go";
 import TextField from "@mui/material/TextField";
 
 interface PropType {
@@ -10,7 +12,7 @@ interface PropType {
 const container = css`
   display: flex;
   height: auto;
-  width: 75%;
+  width: 70%;
   flex-direction: column;
   .nameHeader {
     margin-bottom: 5px;
@@ -18,34 +20,62 @@ const container = css`
 `;
 
 export default function Name({ setName, setNickName }: PropType) {
+  // 0은 초기상태, 1은 통과, 2는 다시
+  const [validId, setValidId] = useState<number>(0);
+  const [validNick, setValidNick] = useState<number>(0);
+
+  const reg = /^[가-힣]{1,4}$/;
+  const nickReg = /^[a-zA-Z0-9가-힣]{1,20}$/;
   const nameHandler = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
-    setName(e?.target?.value);
+    if (reg.test(e?.target?.value)) {
+      setName(e?.target?.value);
+      setValidId(() => 1);
+    } else {
+      setValidId(() => 2);
+    }
   };
 
-  const NickNameHandler = (
+  const nickNameHandler = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
-    setNickName(e?.target?.value);
+    if (nickReg.test(e?.target?.value)) {
+      setNickName(e?.target?.value);
+      setValidNick(() => 1);
+    } else {
+      setValidNick(() => 2);
+    }
   };
 
   return (
     <div css={container}>
-      <div className="nameHeader">Name</div>
+      <div css={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="nameHeader">Name</div>
+        {validId == 1 ? <GoCheck color="#ffabab" /> : null}
+      </div>
       <TextField
         size="small"
-        css={{ marginBottom: "15px" }}
+        css={{ marginBottom: "10px" }}
         placeholder="이름을 입력해주세요"
         onBlur={nameHandler}
       />
-      <div className="nameHeader">Nickname</div>
+      <div css={{ marginBottom: "10px" }}>
+        {validId == 2 ? "이름을 네글자 미만 한글로 입력해 주세요" : null}
+      </div>
+      <div css={{ display: "flex", justifyContent: "space-between" }}>
+        <div className="nameHeader">Nickname</div>
+        {validNick == 1 ? <GoCheck color="#ffabab" /> : null}
+      </div>
       <TextField
         size="small"
         css={{ marginBottom: "15px" }}
         placeholder="별명을 입력해주세요"
-        onBlur={NickNameHandler}
+        onBlur={nickNameHandler}
       />
+      <div css={{ marginBottom: "10px" }}>
+        {validNick == 2 ? "별명은 20글자 미만으로 입력해 주세요" : null}
+      </div>
     </div>
   );
 }

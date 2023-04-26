@@ -37,8 +37,8 @@ export default function Btn({
     display: flex;
     justify-content: center;
     align-items: center;
-    width: ${width}%;
-    height: ${height}%;
+    width: ${width};
+    height: ${height};
     background-color: ${backGroundColor};
     margin-right: ${marginRight}px;
     margin-bottom: ${marginBottom}px;

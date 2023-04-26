@@ -34,9 +34,9 @@ const container = css`
   }
 `;
 //임시데이터
-const ciOption = ["대구광역시", "2", "3", "4", "5"];
-const guOption = ["1", "2", "3", "4", "5"];
-const dongOption = ["1", "2", "3", "4", "5"];
+const siData = ["대구광역시", "2", "3", "4", "5"];
+const guData = ["1", "2", "3", "4", "5"];
+const dongData = ["1", "2", "3", "4", "5"];
 ///
 
 const prePro = (data: Array<Object>) => {
@@ -56,67 +56,58 @@ export default function Address({
   si,
   goon,
 }: PropType) {
-  const [siData, setSiData] = useState<string[]>([]);
-  const [guData, setGuData] = useState<string[]>([]);
-  const [dongData, setDongData] = useState<string[]>([]);
-  const GET_SI_URL = `http://192.168.100.176:8080/api/common/address/sido`;
-  const GET_GU_URL = `http://192.168.100.176:8080/api/common/address/sigungu/${si}`;
-  const GET_DONG_URL = `http://192.168.100.176:8080/api/common/address/dong/${si}/${goon}`;
+  // const [siData, setSiData] = useState<string[]>([]);
+  // const [guData, setGuData] = useState<string[]>([]);
+  // const [dongData, setDongData] = useState<string[]>([]);
+  // const GET_SI_URL = `http://192.168.100.176:8080/api/common/address/sido`;
+  // const GET_GU_URL = `http://192.168.100.176:8080/api/common/address/sigungu/${si}`;
+  // const GET_DONG_URL = `http://192.168.100.176:8080/api/common/address/dong/${si}/${goon}`;
 
-  // axios header 옵션
-  // const ObjString: any = localStorage.getItem("login-token");
-  // const option = {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${JSON.parse(ObjString).value}`,
-  //   },
-  // };
+  // interface QueryReturnType {
+  //   data?: any;
+  //   refetch: () => void;
+  // }
+  // const getSiData = useApi("get", GET_SI_URL);
+  // const getGuData = useApi("get", GET_GU_URL);
+  // const getDongData = useApi("get", GET_DONG_URL);
 
-  interface QueryReturnType {
-    data?: any;
-    refetch: () => void;
-  }
-  const getSiData = useApi("get", GET_SI_URL);
-  const getGuData = useApi("get", GET_GU_URL);
-  const getDongData = useApi("get", GET_DONG_URL);
+  // const getSi: QueryReturnType = useQuery("getSiData", getSiData, {
+  //   cacheTime: 500 * 1000,
+  //   staleTime: 500 * 1000,
+  //   select: (res) => prePro(res?.data?.message),
+  // });
 
-  const getSi: QueryReturnType = useQuery("getSiData", getSiData, {
-    cacheTime: 500 * 1000,
-    staleTime: 500 * 1000,
-    select: (res) => prePro(res?.data?.message),
-  });
+  // const getGu: QueryReturnType = useQuery("getGuData", getGuData, {
+  //   cacheTime: 500 * 1000,
+  //   staleTime: 500 * 1000,
+  //   select: (res) => prePro(res?.data?.message),
+  // });
 
-  const getGu: QueryReturnType = useQuery("getGuData", getGuData, {
-    cacheTime: 500 * 1000,
-    staleTime: 500 * 1000,
-    select: (res) => prePro(res?.data?.message),
-  });
+  // const getDong: QueryReturnType = useQuery("getDongData", getDongData, {
+  //   cacheTime: 500 * 1000,
+  //   staleTime: 500 * 1000,
+  //   select: (res) => prePro(res?.data?.message),
+  // });
 
-  const getDong: QueryReturnType = useQuery("getDongData", getDongData, {
-    cacheTime: 500 * 1000,
-    staleTime: 500 * 1000,
-    select: (res) => prePro(res?.data?.message),
-  });
+  // useEffect(() => {
+  //   setSiData(() => getSi?.data);
+  // }, [getSi.data]);
 
-  useEffect(() => {
-    setSiData(() => getSi?.data);
-  }, [getSi.data]);
+  // useEffect(() => {
+  //   getGu.refetch();
+  // }, [si]);
 
-  useEffect(() => {
-    getGu.refetch();
-  }, [si]);
+  // useEffect(() => {
+  //   setGuData(() => getGu.data);
+  // }, [getGu]);
 
-  useEffect(() => {
-    setGuData(() => getGu.data);
-  }, [getGu]);
+  // useEffect(() => {
+  //   getDong.refetch();
+  // }, [goon]);
 
-  useEffect(() => {
-    getDong.refetch();
-  }, [goon]);
-
-  useEffect(() => {
-    setDongData(() => getDong.data);
-  }, [getDong]);
+  // useEffect(() => {
+  //   setDongData(() => getDong.data);
+  // }, [getDong]);
 
   const addrHandler = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>

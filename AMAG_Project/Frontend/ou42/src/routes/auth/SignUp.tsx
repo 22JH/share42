@@ -9,6 +9,11 @@ import Birth from "../../components/auth/Birth";
 import Address from "../../components/auth/Address";
 import Btn from "../../components/UI/Btn";
 import logo from "../../assets/mainLogo.png";
+import { useQuery } from "react-query";
+import { useApi } from "../../hooks/useApi";
+import Alert from "../../components/UI/Alert";
+
+const URL = `http://127.0.0.1:8080/`;
 
 const logoSection = css`
   position: relative;
@@ -22,7 +27,6 @@ const logoSection = css`
 `;
 
 const container = css`
-  /* margin-top: 100px; */
   height: auto;
   width: 100%;
   display: flex;
@@ -57,34 +61,42 @@ export default function SignUp() {
   const [dong, setDong] = useState<string>("");
   const [addrDetail, setAddrDetail] = useState<string>("");
 
-  // const URL = `https://carborn.site/api/user/community/list/${page}/10/0`;
-  // axios header 옵션
-  // const ObjString: any = localStorage.getItem("login-token");
-  // const option = {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${JSON.parse(ObjString).value}`,
-  //   },
-  // };
-
-  // const postSignUp = useApi("get", URL);
-
+  const options = {
+    data: {
+      userId: id,
+      password: pd,
+      name: name,
+      nickname: nickName,
+      phoneNumber: phoneNumber,
+      birth: birth,
+      sido: si,
+      sigungu: goon,
+      dong: dong,
+      address: addrDetail,
+    },
+  };
+  const submitSignUp = useApi("post", URL, options);
   // 회원가입 버튼 클릭시
   const submit = () => {
-    console.log(
-      id,
-      pd,
-      name,
-      nickName,
-      phoneNumber,
-      birth,
-      si,
-      goon,
-      dong,
+    if (
+      id &&
+      pd &&
+      name &&
+      nickName &&
+      phoneNumber &&
+      birth &&
+      si &&
+      goon &&
+      dong &&
       addrDetail
-    );
+    ) {
+      submitSignUp();
+    } else {
+      Alert("error", "틀렸음");
+    }
   };
 
+  // const submitSignUp = useApi("post");
   return (
     <>
       <div css={logoSection}>
@@ -95,7 +107,10 @@ export default function SignUp() {
         <IdCheck setId={setId} />
         <PasswordCheck setPd={setPd} />
         <Name setName={setName} setNickName={setNickName} />
-        <PhoneNumber setPhoneNumber={setPhoneNumber} />
+        <PhoneNumber
+          setPhoneNumber={setPhoneNumber}
+          phoneNumber={phoneNumber}
+        />
         <Birth setBirth={setBirth} />
         <Address
           si={si}

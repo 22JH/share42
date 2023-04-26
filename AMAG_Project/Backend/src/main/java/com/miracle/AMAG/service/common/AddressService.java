@@ -1,18 +1,24 @@
 package com.miracle.AMAG.service.common;
 
 
+import com.miracle.AMAG.mapping.common.DongMapping;
+import com.miracle.AMAG.mapping.common.SidoMapping;
+import com.miracle.AMAG.mapping.common.SigunguMapping;
+import com.miracle.AMAG.repository.common.AddressRepository;
 import com.miracle.AMAG.util.common.HTTPUtils;
 import com.miracle.AMAG.util.common.URLUtils;
 import com.miracle.AMAG.util.network.Get;
 import com.miracle.AMAG.util.network.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,6 +26,9 @@ public class AddressService {
 
     @Value("${kakao.restApiKey}")
     private String APP_KEY;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     public Map<String, Object> getGeoAddress(String address) {
         try {
@@ -106,4 +115,15 @@ public class AddressService {
         return new JSONObject(content);
     }
 
+    public List<SidoMapping> getSido(){
+        return addressRepository.findDistinctBy();
+    }
+
+    public List<SigunguMapping> getSigungu(String sido){
+        return addressRepository.findDistinctBySido(sido);
+    }
+
+    public List<DongMapping> getDong(String sido, String sigungu){
+        return addressRepository.findDistinctBySidoAndSigungu(sido, sigungu);
+    }
 }

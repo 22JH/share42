@@ -66,8 +66,9 @@ public class LoginService {
     }
 
     public boolean logout(RequestEntity<?> httpMessage) {
-        String accountId = SecurityUtil.getCurrentUserId();
-        AccountUtils.checkJWTAccount(accountId);
+        String userId = SecurityUtil.getCurrentUserId();
+        log.debug("로그아웃 할 아이디: {}", userId);
+        AccountUtils.checkJWTAccount(userId);
 
         String accessToken = httpMessage.getHeaders().get("Authorization").get(0).substring(7);
         Long expiration = tokenProvider.getExpiration(accessToken);

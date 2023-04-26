@@ -55,7 +55,7 @@ public class LoginService {
 
 
         // 로그인 로그 기록
-        insertLoginLog(account, request);
+        insertLoginLog(findAccount, request);
 
         Map<String, Object> loginInfo = new HashMap<>();
         loginInfo.put("role", findAccount.getRole());

@@ -10,7 +10,7 @@ interface PropType {
 const container = css`
   display: flex;
   height: 15vh;
-  width: 75%;
+  width: 70%;
   flex-direction: column;
   .phHeader {
     margin-bottom: 5px;
@@ -25,6 +25,7 @@ const container = css`
     flex: 1;
   }
 `;
+
 export default function PhoneNumber({ setPhoneNumber }: PropType) {
   const handlePhoneNumber = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
@@ -38,10 +39,11 @@ export default function PhoneNumber({ setPhoneNumber }: PropType) {
       <div className="phoneSection">
         <TextField size="small" />
         <Btn
-          width={25}
-          height={100}
+          width={"60px"}
+          height={"auto"}
           backGroundColor={"white"}
           content={"인증"}
+          marginLeft={10}
         />
       </div>
       {/* 인증번호 입력 창 */}

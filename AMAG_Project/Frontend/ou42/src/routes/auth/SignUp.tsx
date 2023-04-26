@@ -8,21 +8,33 @@ import PhoneNumber from "../../components/auth/PhoneNumber";
 import Birth from "../../components/auth/Birth";
 import Address from "../../components/auth/Address";
 import Btn from "../../components/UI/Btn";
+import logo from "../../assets/mainLogo.png";
+
+const logoSection = css`
+  position: relative;
+  width: 80%;
+  margin-left: 10vw;
+  .logoStyle {
+    width: auto;
+    height: 10vh;
+  }
+  margin-bottom: 10px;
+`;
 
 const container = css`
-  margin-top: 100px;
+  /* margin-top: 100px; */
   height: auto;
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
 
-  .header {
-    font-size: 3.2rem;
-    font-weight: bold;
+  .line {
+    width: 80%;
+    height: 1px;
+    background-color: #42c2ff;
     margin-bottom: 20px;
   }
-
   .btnSection {
     display: flex;
     justify-content: center;
@@ -40,22 +52,63 @@ export default function SignUp() {
   const [nickName, setNickName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [birth, setBirth] = useState<string>("");
-  const [si, setSi] = useState<string>("");
-  const [goon, setGoon] = useState<string>("");
+  const [si, setSi] = useState<string>("서울특별시");
+  const [goon, setGoon] = useState<string>("강남구");
   const [dong, setDong] = useState<string>("");
+  const [addrDetail, setAddrDetail] = useState<string>("");
+
+  // const URL = `https://carborn.site/api/user/community/list/${page}/10/0`;
+  // axios header 옵션
+  // const ObjString: any = localStorage.getItem("login-token");
+  // const option = {
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     Authorization: `Bearer ${JSON.parse(ObjString).value}`,
+  //   },
+  // };
+
+  // const postSignUp = useApi("get", URL);
+
+  // 회원가입 버튼 클릭시
+  const submit = () => {
+    console.log(
+      id,
+      pd,
+      name,
+      nickName,
+      phoneNumber,
+      birth,
+      si,
+      goon,
+      dong,
+      addrDetail
+    );
+  };
 
   return (
-    <div css={container}>
-      <div className="header">공유 사이</div>
-      <IdCheck setId={setId} />
-      <PasswordCheck setPd={setPd} />
-      <Name setName={setName} setNickName={setNickName} />
-      <PhoneNumber setPhoneNumber={setPhoneNumber} />
-      <Birth setBirth={setBirth} />
-      <Address setSi={setSi} setGoon={setGoon} setDong={setDong} />
-      <div className="btnSection">
-        <Btn width={20} height={100} content={"회원가입"} />
+    <>
+      <div css={logoSection}>
+        <img src={logo} alt="logo" className="logoStyle" />
       </div>
-    </div>
+      <div css={container}>
+        <hr className="line" />
+        <IdCheck setId={setId} />
+        <PasswordCheck setPd={setPd} />
+        <Name setName={setName} setNickName={setNickName} />
+        <PhoneNumber setPhoneNumber={setPhoneNumber} />
+        <Birth setBirth={setBirth} />
+        <Address
+          si={si}
+          goon={goon}
+          setSi={setSi}
+          setGoon={setGoon}
+          setDong={setDong}
+          setAddrDetail={setAddrDetail}
+        />
+        <div className="btnSection">
+          <Btn width={20} height={100} content={"회원가입"} onClick={submit} />
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,10 +1,10 @@
 import * as React from "react";
 import InputLabel from "@mui/material/InputLabel";
-
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { CSSInterpolation } from "@emotion/serialize";
+
 interface PropType {
   width?: CSSInterpolation;
   height?: CSSInterpolation;
@@ -29,12 +29,13 @@ export default function DropDown({
   setValue,
 }: PropType) {
   const [current, setCurrent] = React.useState("");
-
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setValue(() => event.target.value);
     setCurrent(() => event.target.value);
+    setValue(() => event.target.value);
   };
-
+  React.useEffect(() => {
+    setCurrent(() => "");
+  }, [data]);
   return (
     <div>
       <FormControl
@@ -50,10 +51,14 @@ export default function DropDown({
         size="small"
       >
         <InputLabel>{content}</InputLabel>
-        <Select value={current} onChange={handleChange} label={content}>
+        <Select
+          value={data.includes(current) ? current : ""}
+          onChange={handleChange}
+          label={content}
+        >
           {data?.map((ele: string, idx: number) => (
             <MenuItem value={ele} key={idx}>
-              {ele}
+              {ele ? ele : null}
             </MenuItem>
           ))}
         </Select>

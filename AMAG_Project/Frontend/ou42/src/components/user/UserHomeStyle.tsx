@@ -13,7 +13,7 @@ export const content = (value: string) => css`
     }
     label {
       color: black;
-      display: ${value !== "" ? "none" : "block"};
+      visibility: ${value !== "" ? "hidden" : "visible"};
     }
     .MuiSelect-select {
       color: #000000;

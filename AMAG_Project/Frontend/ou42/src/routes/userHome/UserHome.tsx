@@ -154,9 +154,10 @@ const ErrorMsg = () => {
 };
 
 // 상위 컴포넌트
+const 임시 = ["1", "2", "3"];
+
 function UserHome() {
   const [value, setValue] = useState<string>("");
-  const 임시 = ["1", "2", "3"];
 
   return (
     <>

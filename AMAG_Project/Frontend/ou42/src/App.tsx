@@ -16,6 +16,7 @@ import UserBeforeMain from "./routes/userHome/UserBeforeMain";
 import AdminMap from "./routes/admin/AdminMap";
 import UserShareReg from "./routes/user/UserShareReg";
 import UserShareMap from "./routes/user/UserShareMap";
+import UserMyPage from "./routes/userHome/UserMyPage";
 
 const globalStyle = css`
   body {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/map" element={<AdminMap />} />
           <Route path="/user/share-reg" element={<UserShareReg />} />
+          <Route path="/user/mypage" element={<UserMyPage />} />
         </Routes>
       </Router>
     </>

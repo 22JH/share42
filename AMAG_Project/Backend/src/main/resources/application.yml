@@ -22,6 +22,7 @@ spring:
     redis:
       port: 6379
       host: k8d102.p.ssafy.io
+      password: ssafy123!@#
 
   logging:
     level:

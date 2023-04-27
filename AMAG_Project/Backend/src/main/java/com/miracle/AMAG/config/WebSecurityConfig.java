@@ -61,7 +61,7 @@ public class WebSecurityConfig {
 
                 .and()
                 .authorizeRequests()
-//                .requestMatchers("/api/insurance/**").hasAuthority("ROLE_ADMIN")
+//                .requestMatchers("/api/common/**").hasAuthority("ROLE_USER")
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 

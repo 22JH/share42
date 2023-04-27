@@ -10,7 +10,7 @@ const container = css`
   position: relative;
 
   #svg {
-    position: fixed;
+    position: absolute;
     top: 15%;
   }
 

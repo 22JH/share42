@@ -75,8 +75,6 @@ public class PaymentService {
             }
         }
         else if(paymentMethodRequestDTO.getType()==PayMethodUtils.ACCOUNT_NUMBER){
-            System.out.println(data);
-            System.out.println(data.getNumber());
             if(data == null){
                 data = new PaymentMethod();
                 data.setAccount(new Account());

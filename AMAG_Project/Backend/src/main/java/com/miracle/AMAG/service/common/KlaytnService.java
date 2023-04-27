@@ -30,7 +30,7 @@ public class KlaytnService {
     @Value("${klaytn.chainId}")
     public String chainId;
 
-    public Map<String, Object> getCarHash() {
+    public Map<String, Object> getAddress() {
         try {
             JSONObject data = requestNewAccount();
             if (data == null) {
@@ -71,16 +71,14 @@ public class KlaytnService {
         return new JSONObject(content);
     }
     @Transactional
-    public Map<String, Object> getUri(Object object) {
+    public String getUri(Object object) {
         try {
             JSONObject data = requestMetaData(object);
             if (data == null) {
                 throw new NullPointerException();
             }
-            Map<String, Object> map = new HashMap<>();
-            map.put("uri", data.get("uri"));
 
-            return map;
+            return data.get("uri").toString();
         } catch (IOException e) {
             System.out.println(e);
         }

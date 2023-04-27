@@ -13,3 +13,5 @@ declare global {
     kakao: any;
   }
 }
+
+declare module "bootpay-js";

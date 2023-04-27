@@ -40,9 +40,9 @@ const UserShareContent = ({
         rows={4}
         style={{
           width: "85%",
-          display: 'flex',
-          height: 'auto',
-          flexDirection: 'column'
+          display: "flex",
+          height: "auto",
+          flexDirection: "column",
         }}
         onBlur={handleShareArea}
         defaultValue={content}

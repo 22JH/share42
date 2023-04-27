@@ -39,4 +39,10 @@ public class UserInfoController {
     public ResponseEntity<?> InsertPayMethod(@RequestBody PaymentMethodRequestDTO paymentMethodRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.insertPayMethod(paymentMethodRequestDTO));
     }
+
+    @DeleteMapping("/pay-method/account-number")
+    @Operation(description = "사용자 계좌 번호 삭제")
+    public ResponseEntity<?> DeleteAccountNumber() {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.deleteAccountNumber());
+    }
 }

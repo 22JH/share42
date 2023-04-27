@@ -4,7 +4,6 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.account.PaymentMethodRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.PaymentMethod;
-import com.miracle.AMAG.handler.GlobalControllerExceptionHandler;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.PaymentMethodRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
@@ -44,13 +43,13 @@ public class PaymentService {
 
     public String insertPayMethod(PaymentMethodRequestDTO paymentMethodRequestDTO){
         if(paymentMethodRequestDTO.getType()!=PayMethodUtils.BILLING_KEY || paymentMethodRequestDTO.getType()!=PayMethodUtils.ACCOUNT_NUMBER){
-            throw new IllegalArgumentException();
+            throw new RuntimeException();
         }
-        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getBillingKey().equals("")&& paymentMethodRequestDTO.getBillingKey().isEmpty()){
-            throw new IllegalArgumentException();
+        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getBillingKey().equals("")&& paymentMethodRequestDTO.getBillingKey() == null){
+            throw new RuntimeException();
         }
-        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.ACCOUNT_NUMBER && paymentMethodRequestDTO.getNumber().equals("")&& paymentMethodRequestDTO.getNumber().isEmpty()){
-            throw new IllegalArgumentException();
+        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.ACCOUNT_NUMBER && paymentMethodRequestDTO.getNumber().equals("")&& paymentMethodRequestDTO.getNumber()== null){
+            throw new RuntimeException();
         }
 
         String userId = SecurityUtil.getCurrentUserId();
@@ -67,7 +66,7 @@ public class PaymentService {
 
                paymentMethodRepository.save(data);
             }
-            else if(data.getBillingKey().equals("")&& data.getBillingKey().isEmpty()){
+            else if(data.getBillingKey() == null){
                 data.setBillingKey(paymentMethodRequestDTO.getBillingKey());
                 paymentMethodRepository.save(data);
             }
@@ -86,7 +85,7 @@ public class PaymentService {
 
                 paymentMethodRepository.save(data);
             }
-            else if(data.getNumber().equals("") || data.getNumber().isEmpty()){
+            else if(data.getNumber() == null){
                 data.setNumber(paymentMethodRequestDTO.getNumber());
                 paymentMethodRepository.save(data);
             }
@@ -95,8 +94,25 @@ public class PaymentService {
             }
         }
         else{
-            throw new IllegalArgumentException();
+            throw new RuntimeException();
         }
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String deleteAccountNumber(){
+        String userId = SecurityUtil.getCurrentUserId();
+
+        //로그인된 아이디로 테이블 id column 가져오기
+        int id = accountRepository.findByUserId(userId).getId();
+        PaymentMethod data = paymentMethodRepository.findByAccount_Id(id);
+
+        if(data == null || data.getNumber() == null){
+            throw new RuntimeException();
+        }
+        else{
+            paymentMethodRepository.deleteNumber(data.getId());
+        }
+
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 }

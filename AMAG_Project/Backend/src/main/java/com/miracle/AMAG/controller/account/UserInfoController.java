@@ -1,7 +1,10 @@
 package com.miracle.AMAG.controller.account;
 
+import com.miracle.AMAG.dto.requestDTO.account.PaymentMethodRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.account.PaymentMethod;
 import com.miracle.AMAG.service.common.PaymentService;
+import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,8 +30,13 @@ public class UserInfoController {
     @Parameters({
             @Parameter(name = "type", description = "조회 타입(0: BillingKey, 1: 계좌번호)")
     })
-    public ResponseEntity<?> getAccountNumber(@PathVariable("type") int type) {
+    public ResponseEntity<?> getPayMethod(@PathVariable("type") int type) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getPayMethod(type));
     }
 
+    @PostMapping("/pay-method")
+    @Operation(description = "사용자 계좌 관련 정보 추가")
+    public ResponseEntity<?> InsertPayMethod(@RequestBody PaymentMethodRequestDTO paymentMethodRequestDTO) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.insertPayMethod(paymentMethodRequestDTO));
+    }
 }

@@ -3,13 +3,27 @@ import java.net.URLEncoder
 pipeline {
     agent any
 
+    tools {
+        jdk 'JDK 17'
+    }
+
     stages {
-        stage('Remove Existing Project') {
+        stage('Remove') {
             steps {
-                echo 'Removing Existing Project'
-                sh 'rm -rf S08P31D102'
+                catchError {
+                    echo 'Removing Existing Project Files'
+                    sh 'rm -rf S08P31D102'
+
+                    echo 'Removing Existing Project Containers'
+                    sh 'docker rm -f spring-server'
+
+                    echo 'Removing Existing Project Images'
+                    sh 'docker rmi miracle3070/share42-spring'
+                    sh 'docker rmi registry.hub.docker.com/miracle3070/share42-spring'
+                }
             }
         }
+
         stage('Checkout') {
             steps {
                 echo 'Checking out the Git repository using git clone...'
@@ -22,6 +36,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build') {
             steps {
                 echo 'Building the Spring Boot project using Gradle...'
@@ -31,6 +46,7 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
@@ -41,6 +57,7 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Deploy') {
             steps {
                 echo 'Deploying Docker container...'

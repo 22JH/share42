@@ -1,30 +1,38 @@
 /** @jsxImportSource @emotion/react */
 
-import { useNavigate } from "react-router-dom";
-import { markerProps } from "./MapComponent";
-import { useStore } from "./store/useStore";
-import { OverlayShareStyle } from "./style/UserMapStyle";
-
-export interface MarkerShareInfoComponentProps {
-  marker: markerProps;
-  handleMarkerInfo: (id: number) => void;
-}
+import { useBranchChoiceStore } from "./store/useBranchChoiceStore";
+import { MarkerShareInfoComponentProps } from "./type/MapType";
 
 const MarkerShareInfoComponent = ({
   marker,
   handleMarkerInfo,
+  setIsOpenMap
 }: MarkerShareInfoComponentProps) => {
-  const { branchChoice, setBranchChoice } = useStore();
-  const { isOpenMap, setIsOpenMap } = useStore();
+  const { setBranchChoice } = useBranchChoiceStore();
 
   const handleChoiceName = (name: string) => {
     setBranchChoice(name);
-    setIsOpenMap(false)
+    setIsOpenMap && setIsOpenMap(false)
   };
 
   return (
     <>
-      <div css={OverlayShareStyle} onClick={() => handleMarkerInfo(marker.id)}>
+      <div
+        style={{
+          width: "80vw",
+          height: "20vh",
+          background: "white",
+          zIndex: "11 !important",
+          borderRadius: "20px",
+          boxShadow: "1px 1px 3px #ffabab",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "auto !important",
+        }}
+        onClick={() => handleMarkerInfo(marker.id)}
+      >
         <div
           style={{
             fontSize: "1.6rem",

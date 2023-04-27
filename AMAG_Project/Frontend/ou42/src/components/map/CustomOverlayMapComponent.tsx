@@ -1,18 +1,9 @@
 /** @jsxImportSource @emotion/react */
 
 import { CustomOverlayMap } from "react-kakao-maps-sdk";
-import { markerProps, positionProps } from "./MapComponent";
 import MarkerInfoComponent from "./MarkerInfoComponent";
 import MarkerShareInfoComponent from "./MarkerShareInfoComponent";
-
-export interface EventMarkerComponentProps {
-  marker: markerProps;
-  position: positionProps;
-  pathname: string;
-  isOpen: Record<string, boolean>;
-  handleMarkerInfo: (id: number) => void;
-  isVisible: Record<string, boolean>;
-}
+import { CustomOverlayMapComponentProps } from "./type/MapType";
 
 const CustomOverlayMapComponent = ({
   marker,
@@ -21,11 +12,12 @@ const CustomOverlayMapComponent = ({
   isOpen,
   isVisible,
   handleMarkerInfo,
-}: EventMarkerComponentProps) => {
+  setIsOpenMap,
+}: CustomOverlayMapComponentProps) => {
   
   return (
     <>
-      {(pathname.includes("user/map") || pathname.includes("admin/map")) &&
+      {(pathname?.includes("user/map") || pathname?.includes("admin/map")) &&
       isOpen[marker.id] ? (
         <CustomOverlayMap
           position={{
@@ -41,7 +33,7 @@ const CustomOverlayMapComponent = ({
           />
         </CustomOverlayMap>
       ) : null}
-      {pathname.includes("share-reg") && isVisible[marker.id] ? (
+      {pathname?.includes("share-reg") && isVisible[marker.id] ? (
         <CustomOverlayMap
           position={{
             lat: position.lat - 0.002,
@@ -51,6 +43,7 @@ const CustomOverlayMapComponent = ({
           <MarkerShareInfoComponent
             marker={marker}
             handleMarkerInfo={handleMarkerInfo}
+            setIsOpenMap={setIsOpenMap}
           />
         </CustomOverlayMap>
       ) : null}

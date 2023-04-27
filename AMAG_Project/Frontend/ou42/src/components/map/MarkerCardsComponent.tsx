@@ -1,53 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import markerImg from "../../assets/marker.png";
 import MapButtonComponent from "./MapButtonComponent";
-
-interface CustomOverlayContentProps {
-  markerInfo: any;
-}
-
-export const MarkerShareInfoStyle = css`
-  width: 100%;
-  border-bottom: 1px solid black;
-
-  & img {
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
-  }
-
-  & p {
-    margin: 0;
-  }
-
-  & p:nth-of-type(1) {
-    color: #000000;
-    opacity: 0.5;
-    font-size: 0.7rem;
-  }
-
-  & p:nth-of-type(2) {
-    font-weight: 700;
-  }
-
-  & p:nth-of-type(3) {
-    font-weight: 900;
-    font-size: 1.2rem;
-  }
-
-  & button {
-    width: 100px;
-    height: 40px;
-    font-size: 1.1rem;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    background-color: #0cdee8;
-  }
-`;
+import { CustomOverlayContentProps } from "./type/MapType";
 
 const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
   const shareSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -56,13 +12,18 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
   };
 
   const { pathname } = useLocation();
-  
+
   useEffect(() => {
-    console.log(pathname)
-  }, [pathname])
+    console.log(pathname);
+  }, [pathname]);
 
   return (
-    <div css={MarkerShareInfoStyle}>
+    <div
+      style={{
+        width: "100%",
+        borderBottom: "1px solid black",
+      }}
+    >
       <div
         style={{
           height: "150px",
@@ -79,7 +40,15 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             alignItems: "center",
           }}
         >
-          <img src={markerImg} alt="상품이미지" />
+          <img
+            style={{
+              width: "100px",
+              height: "100px",
+              border: "1px solid black",
+            }}
+            src={markerImg}
+            alt="상품이미지"
+          />
         </div>
         <div
           style={{
@@ -90,10 +59,34 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
           }}
         >
           <div style={{ marginTop: "30px" }}>
-            <p>{markerInfo.userid}</p>
-            <p>{markerInfo.title}</p>
+            <p
+              style={{
+                margin: "0",
+                color: "#000000",
+                opacity: "0.5",
+                fontSize: "0.7rem",
+              }}
+            >
+              {markerInfo.userid}
+            </p>
+            <p
+              style={{
+                margin: "0",
+                fontWeight: "700",
+              }}
+            >
+              {markerInfo.title}
+            </p>
             <br />
-            <p>{markerInfo.price.toLocaleString()}원</p>
+            <p
+              style={{
+                margin: "0",
+                fontWeight: "900",
+                fontSize: "1.2rem",
+              }}
+            >
+              {markerInfo.price.toLocaleString()}원
+            </p>
           </div>
           <div
             style={{

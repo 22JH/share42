@@ -1,7 +1,4 @@
-type ButtonProps = {
-  status: number;
-  text: string;
-};
+import { ButtonProps } from "./type/MapType";
 
 const MapButtonComponent = ({ status, text }: ButtonProps) => {
   let bgColor = "";

@@ -18,6 +18,7 @@ import UserMyPage from "./routes/userHome/UserMyPage";
 import UserPay from "./routes/user/UserPay";
 import UserChat from "./routes/user/UserChat";
 import HomeNavBar from "./components/NavBar/HomeNavBar";
+import UserReport from "./routes/user/UserReport";
 
 const globalStyle = css`
   body {
@@ -52,6 +53,7 @@ function App() {
           <Route path="/user/mypage" element={<UserMyPage />} />
           <Route path="/user/payment" element={<UserPay />} />
           <Route path="/user/chat" element={<UserChat />} />
+          <Route path="/user/report" element={<UserReport />} />
         </Routes>
       </Router>
     </>

@@ -1,12 +1,5 @@
 import TextField from "@mui/material/TextField";
-
-export interface UserShareInputProps {
-  value: string | number;
-  handleShareInput: (
-    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
-  ) => void;
-  text: string;
-}
+import { UserShareInputProps } from "./type/UserShareType";
 
 const UserShareInput = ({
   value,

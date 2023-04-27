@@ -1,54 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 
 import { useEffect, useMemo, useState } from "react";
-import UserShareCategory from "../../components/users/UserShareCategory";
-import UserShareContent from "../../components/users/UserShareContent";
-import UserShareImg from "../../components/users/UserShareImg";
-import UserShareInput from "../../components/users/UserShareInput";
-import { useNavigate } from "react-router-dom";
-import UserShareChoiceName from "../../components/users/UserShareChoiceName";
-import { useStore } from "../../components/map/store/useStore";
-import UserShareMap from "./UserShareMap";
-
-export const CategorySelectStyle = css`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  select {
-    width: 85%;
-    height: 5vh;
-    border-radius: 5px;
-    border: #a5a5a5 1px solid;
-    outline: 0 none;
-    background: none;
-    &:focus {
-      border: #a5a5a5 1px solid;
-    }
-    color: #000000;
-  }
-
-  & option {
-    color: #a5a5a5; /* 바꿀 색상 */
-  }
-`;
-
-export const UserShareContentStyle = css`
-  display: flex;
-  height: auto;
-  width: 75%;
-  flex-direction: column;
-
-  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: 3px solid #d14d72;
-  }
-
-  & label.Mui-focused {
-    color: #d14d72;
-  }
-`;
+import UserShareCategory from "../../components/share/UserShareCategory";
+import UserShareContent from "../../components/share/UserShareContent";
+import UserShareImg from "../../components/share/UserShareImg";
+import UserShareInput from "../../components/share/UserShareInput";
+import UserShareChoiceName from "../../components/share/UserShareChoiceName";
+import { useBranchChoiceStore } from 
+"../../components/map/store/useBranchChoiceStore";
+import { useShareDataStore } from 
+"../../components/map/store/useShareDataStore";
+import UserShareMap from "../../components/share/UserShareMap";
 
 const UserShareReg = () => {
   ///////// 제일 중요한 키포인트는 NavBar이다. 일단 누군가 완성을 해야 진행이 된다고 생각한다.
@@ -56,15 +18,16 @@ const UserShareReg = () => {
   //// 일단 preview에 담겨있는 File을 어떻게 formData에 담아야할지 정해야함.
 
   // 아예 상태관리를 통해서 화면 구분 짓기
-  const { isOpenMap, setIsOpenMap } = useStore();
-  const { preview, setPreview } = useStore();
-  const { title, setTitle } = useStore();
-  const { price, setPrice } = useStore();
-  const { category, setCategory } = useStore();
-  const { content, setContent } = useStore();
-  const { branchChoice, setBranchChoice } = useStore();
-  const { shareData, setShareData } = useStore();
-  
+  const [isOpenMap, setIsOpenMap] = useState<null | boolean>(null);
+  const [preview, setPreview] = useState<null | File>(null);
+  const [title, setTitle] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+
+  const { branchChoice } = useBranchChoiceStore.getState();
+  const { shareData, setShareData } = useShareDataStore();
+
   const formData = useMemo(() => new FormData(), []);
 
   // 클릭과 동시에 담아 볼 생각도 해봄 => 요거는 물어봐야할듯
@@ -78,7 +41,16 @@ const UserShareReg = () => {
     formData.set("content", content);
     formData.set("branchChoice", branchChoice);
     setShareData(formData);
-  }, [preview, title, price, category, content, branchChoice, setShareData, formData]);
+  }, [
+    preview,
+    title,
+    price,
+    category,
+    content,
+    branchChoice,
+    setShareData,
+    formData,
+  ]);
 
   const options = [
     { value: "기본", category: "카테고리를 선택해주세요" },
@@ -133,17 +105,17 @@ const UserShareReg = () => {
     for (let key of formData.keys()) {
       console.log(key, ":", formData.get(key));
     }
-  }, [shareData])
+  }, [shareData]);
 
   return (
     <div
       style={{
-        overflow:'hidden'
+        overflow: "hidden",
       }}
     >
       {isOpenMap ? (
         <div>
-          <UserShareMap />
+          <UserShareMap setIsOpenMap={setIsOpenMap} />
         </div>
       ) : (
         <div>

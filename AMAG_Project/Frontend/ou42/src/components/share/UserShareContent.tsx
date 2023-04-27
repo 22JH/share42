@@ -1,15 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 
 import TextField from "@mui/material/TextField";
-import { UserShareContentStyle } from "../../routes/user/UserShareReg";
-
-export interface UserShareContentProps {
-  content: string;
-  handleShareArea: (
-    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
-  ) => void;
-}
+import { UserShareContentStyle } from "./style/UserShareStyle";
+import { UserShareContentProps } from "./type/UserShareType";
 
 const UserShareContent = ({
   content,
@@ -47,6 +40,9 @@ const UserShareContent = ({
         rows={4}
         style={{
           width: "85%",
+          display: "flex",
+          height: "auto",
+          flexDirection: "column",
         }}
         onBlur={handleShareArea}
         defaultValue={content}

@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    // 추가: 트리거 설정
+    triggers {
+        gitlab(triggerOnPush: true, triggerOnMergeRequest: false, branchFilterType: 'NameBasedFilter', includeBranchesSpec: 'main')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out the Git repository...'
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building the Spring Boot project using Gradle...'
+                sh './gradlew clean build -x test'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                    def dockerImage = docker.build("your-docker-repo/your-image-name:latest")
+                }
+            }
+        }
+        stage('Docker Deploy') {
+            steps {
+                echo 'Deploying Docker container...'
+                script {
+                    def dockerImage = docker.image("your-docker-repo/your-image-name:latest")
+                    docker.withRegistry('https://registry.hub.docker.com', 'your-credentials') {
+                        dockerImage.push()
+                    }
+                    dockerImage.run('-p 8088:8088 --name your-container-name')
+                }
+            }
+        }
+    }
+}

@@ -9,8 +9,12 @@ import lombok.Setter;
 @Entity
 @Table(name = "LOCKER",uniqueConstraints = {
         @UniqueConstraint(
-                name="LOCKER_UN",
-                columnNames = {"NFC", "ARDUINO_SERIAL"}
+                name="LOCKER_NFC_UN",
+                columnNames = {"NFC"}
+        ),
+        @UniqueConstraint(
+                name="LOCKER_ARDUINO_SERIAL_UN",
+                columnNames = {"ARDUINO_SERIAL"}
         )
 })
 @Getter

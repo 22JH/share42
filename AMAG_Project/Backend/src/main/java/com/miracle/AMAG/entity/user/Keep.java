@@ -13,8 +13,12 @@ import java.time.LocalDateTime;
 @Table(name = "KEEP",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name="KEEP_UN",
-                        columnNames = {"CONTRACT_HASH", "METADATA_URI"}
+                        name="KEEP_CONTRACT_HASH_UN",
+                        columnNames = {"CONTRACT_HASH"}
+                ),
+                @UniqueConstraint(
+                        name="KEEP_METADATA_URI_UN",
+                        columnNames = {"METADATA_URI"}
                 )
         })
 @Getter

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { MdMap } from "react-icons/md";
 import {
@@ -10,23 +11,23 @@ import {
 } from "./style/UserMapStyle";
 import MarkerCardsComponent from "./MarkerCardsComponent";
 import { useLocation } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 interface MarkerDetailShareInfoComponentProps {
   id: number;
-  setIsOpen: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  handleMarkerInfo: (id: number) => void;
   address: string;
   name: string;
 }
 
 const MarkerInfoComponent = ({
   id,
-  setIsOpen,
+  handleMarkerInfo,
   address,
   name,
 }: MarkerDetailShareInfoComponentProps) => {
   const { pathname } = useLocation();
-  const [ markerInfo, setMarkerInfo ] = useState([]);
+  const [markerInfo, setMarkerInfo] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,12 +39,12 @@ const MarkerInfoComponent = ({
   }, []);
 
   const handleLogNavigate = () => {
-    navigate('/admin/log')
-  }
+    navigate("/admin/log");
+  };
 
   const handleOperationNavigate = () => {
-    navigate('/admin/operation')
-  }
+    navigate("/admin/operation");
+  };
 
   return (
     <div css={OverlayStyle}>
@@ -58,9 +59,7 @@ const MarkerInfoComponent = ({
           fontSize: "24px",
           cursor: "pointer",
         }}
-        onClick={() =>
-          setIsOpen((prevState) => ({ ...prevState, [id]: false }))
-        }
+        onClick={() => handleMarkerInfo(id)}
       >
         x
       </button>
@@ -72,70 +71,76 @@ const MarkerInfoComponent = ({
         ))}
       </div>
       {/* 지점 주소 */}
-      {pathname.includes("admin") ? <div css={OverlayAddressStyle}>
-        <MdMap
-          style={{
-            width: "40px",
-            height: "40px",
-            marginRight: "10px",
-            marginLeft: "10px",
-          }}
-        />
-        <div
-          style={{
-            width: "calc(100% - 160px)",
-            whiteSpace: "normal",
-          }}
-        >
-          {address}
-        </div>
-        <div
-          style={{
-            width: "98px",
-            whiteSpace: "normal",
-          }}
-        >
-          <button
+      {pathname.includes("admin") ? (
+        <div css={OverlayAddressStyle}>
+          <MdMap
             style={{
-              width: '90px',
-              height: '35px',
-              backgroundColor:"red",
-              borderRadius:"5px",
-              color: 'white'
+              width: "40px",
+              height: "40px",
+              marginRight: "10px",
+              marginLeft: "10px",
             }}
-            onClick={handleLogNavigate}
-          >로그조회</button>
-          <button
+          />
+          <div
             style={{
-              width: '90px',
-              height: '35px',
-              backgroundColor:"black",
-              borderRadius:"5px",
-              color: 'white'
+              width: "calc(100% - 160px)",
+              whiteSpace: "normal",
             }}
-            onClick={handleOperationNavigate}
-          >기기조작</button>
+          >
+            {address}
+          </div>
+          <div
+            style={{
+              width: "98px",
+              whiteSpace: "normal",
+            }}
+          >
+            <button
+              style={{
+                width: "90px",
+                height: "35px",
+                backgroundColor: "red",
+                borderRadius: "5px",
+                color: "white",
+              }}
+              onClick={handleLogNavigate}
+            >
+              로그조회
+            </button>
+            <button
+              style={{
+                width: "90px",
+                height: "35px",
+                backgroundColor: "black",
+                borderRadius: "5px",
+                color: "white",
+              }}
+              onClick={handleOperationNavigate}
+            >
+              기기조작
+            </button>
+          </div>
         </div>
-      </div>
-      : 
-      <div css={OverlayAddressStyle}>
-        <MdMap
-          style={{
-            width: "40px",
-            height: "40px",
-            marginRight: "10px",
-            marginLeft: "10px",
-          }}
-        />
-        <div
-          style={{
-            width: "calc(100% - 60px)",
-            whiteSpace: "normal",
-          }}
-        >
-          {address}
+      ) : (
+        <div css={OverlayAddressStyle}>
+          <MdMap
+            style={{
+              width: "40px",
+              height: "40px",
+              marginRight: "10px",
+              marginLeft: "10px",
+            }}
+          />
+          <div
+            style={{
+              width: "calc(100% - 60px)",
+              whiteSpace: "normal",
+            }}
+          >
+            {address}
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   );
 };

@@ -85,10 +85,13 @@ export default function NavBar() {
   const pathName = window.location.pathname;
   const { shareData } = useStore.getState();
 
+  // 네브바 없는 페이지
   if (
     pathName.includes("admin") ||
     pathName.includes("map") ||
-    pathName.includes("share-reg")
+    pathName.includes("share-reg") ||
+    pathName === "/" ||
+    pathName === "/start"
   )
     return null;
 
@@ -99,6 +102,7 @@ export default function NavBar() {
     };
   }
 
+  // 홈 화면 네브바
   if (pathName === "/home") {
     // 검색 함수
     const searchItem = () => {

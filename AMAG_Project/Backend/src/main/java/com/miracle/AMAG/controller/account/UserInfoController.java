@@ -22,10 +22,13 @@ public class UserInfoController {
     @Autowired
     private PaymentService paymentService;
 
-    @GetMapping("/account-number")
-    @Operation(description = "사용자 계좌번호 조회")
-    public ResponseEntity<?> getAccountNumber() {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getAccountNumber());
+    @GetMapping("/pay-method/{type}")
+    @Operation(description = "사용자 계좌 관련 정보 조회")
+    @Parameters({
+            @Parameter(name = "type", description = "조회 타입(0: BillingKey, 1: 계좌번호)")
+    })
+    public ResponseEntity<?> getAccountNumber(@PathVariable("type") int type) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getPayMethod(type));
     }
 
 }

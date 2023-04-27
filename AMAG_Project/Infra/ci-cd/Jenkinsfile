@@ -1,17 +1,32 @@
+import java.net.URLEncoder
+
 pipeline {
     agent any
 
     stages {
+        stage('Remove Existing Project') {
+            steps {
+                echo 'Removing Existing Project'
+                sh 'rm -rf S08P31D102'
+            }
+        }
         stage('Checkout') {
             steps {
-                echo 'Checking out the Git repository...'
-                checkout scm
+                echo 'Checking out the Git repository using git clone...'
+                withCredentials([usernamePassword(credentialsId: 'GitLab_Account', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    script {
+                        // URL 인코딩을 위해 비밀번호를 인코딩합니다.
+                        String encodedPassword = URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                        sh "git clone https://${GIT_USERNAME}:${encodedPassword}@lab.ssafy.com/s08-final/S08P31D102.git"
+                    }
+                }
             }
         }
         stage('Build') {
             steps {
                 echo 'Building the Spring Boot project using Gradle...'
-                dir('AMAG_Project/Backend') {
+                dir('S08P31D102/AMAG_Project/Backend') {
+                    sh 'chmod 755 ./gradlew'
                     sh './gradlew clean build -x test'
                 }
             }
@@ -19,9 +34,9 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                dir('AMAG_Project/Backend') {
+                dir('S08P31D102/AMAG_Project/Backend') {
                     script {
-                        def dockerImage = docker.build("your-docker-repo/your-image-name:latest")
+                        def dockerImage = docker.build("miracle3070/share42-spring:latest")
                     }
                 }
             }
@@ -30,11 +45,11 @@ pipeline {
             steps {
                 echo 'Deploying Docker container...'
                 script {
-                    def dockerImage = docker.image("your-docker-repo/your-image-name:latest")
-                    docker.withRegistry('https://registry.hub.docker.com', 'your-credentials') {
+                    def dockerImage = docker.image("miracle3070/share42-spring:latest")
+                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub_Account') {
                         dockerImage.push()
                     }
-                    dockerImage.run('-p 8088:8088 --name your-container-name')
+                    dockerImage.run('-p 8088:8088 --name spring-server')
                 }
             }
         }

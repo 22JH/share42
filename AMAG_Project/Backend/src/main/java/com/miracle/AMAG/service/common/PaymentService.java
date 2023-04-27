@@ -115,4 +115,26 @@ public class PaymentService {
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
+
+    public String getPayMethodDataCheck(int type){
+        String userId = SecurityUtil.getCurrentUserId();
+
+        //로그인된 아이디로 테이블 id column 가져오기
+        int id = accountRepository.findByUserId(userId).getId();
+        PaymentMethod data = paymentMethodRepository.findByAccount_Id(id);
+
+        if(type == PayMethodUtils.BILLING_KEY && data.getBillingKey() == null){
+            return PayMethodUtils.CHECK_FAIL;
+        }
+        else if(type == PayMethodUtils.ACCOUNT_NUMBER && data.getNumber() == null){
+            return PayMethodUtils.CHECK_FAIL;
+        }
+        else if(type == PayMethodUtils.ACCOUNT_DATA && (data.getNumber() == null || data.getBillingKey() == null)){
+            return PayMethodUtils.CHECK_FAIL;
+        }
+        else {
+            return PayMethodUtils.CHECK_OK;
+        }
+
+    }
 }

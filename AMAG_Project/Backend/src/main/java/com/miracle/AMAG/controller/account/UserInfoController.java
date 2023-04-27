@@ -45,4 +45,13 @@ public class UserInfoController {
     public ResponseEntity<?> DeleteAccountNumber() {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.deleteAccountNumber());
     }
+
+    @GetMapping("/pay-method/check/{type}")
+    @Operation(description = "사용자 계좌 관련 정보 등록 여부 체크")
+    @Parameters({
+            @Parameter(name = "type", description = "조회 타입(0: BillingKey 등록 여부, 1: 계좌 번호 등록 여부, 2: 계좌 관련 모든 데이터 여부)")
+    })
+    public ResponseEntity<?> getPayMethodDataCheck(@PathVariable("type") int type) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getPayMethodDataCheck(type));
+    }
 }

@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import HomeNavBar from "./NavBar/HomeNavBar";
-import { useStore } from "./map/store/useStore";
+import { useShareDataStore } from "./map/store/useShareDataStore";
 
 export default function NavBar() {
   const pathName = window.location.pathname;
-  const { shareData } = useStore.getState();
+  // const { shareData } = useShareDataStore.getState();
 
   if (
     pathName.includes("admin") ||

@@ -1,12 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import { CategorySelectStyle } from "../../routes/user/UserShareReg";
-
-export interface UserShareCategoryProps {
-  options: { value: string; category: string }[];
-  handleSelectCategory: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  selectValue: string
-}
+import { CategorySelectStyle } from "./style/UserShareStyle";
+import { UserShareCategoryProps } from "./type/UserShareType";
 
 const UserShareCategory = ({
   options,
@@ -14,7 +9,15 @@ const UserShareCategory = ({
   selectValue
 }: UserShareCategoryProps) => {
   return (
-    <div css={CategorySelectStyle}>
+    <div 
+    style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}
+    css={CategorySelectStyle}>
       <select value={selectValue} onChange={handleSelectCategory}>
         {options.map((option, index) => (
           <option key={option.value} value={option.value}>

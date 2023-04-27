@@ -1,11 +1,11 @@
-import MapComponent from '../../components/map/MapComponent';
+import MapComponent from "../../components/map/MapComponent";
 
 const UserMap = () => {
   return (
     <>
       <MapComponent />
     </>
-  )
-}
+  );
+};
 
-export default UserMap
+export default UserMap;

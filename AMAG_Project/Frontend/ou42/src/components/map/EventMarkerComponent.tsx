@@ -7,17 +7,12 @@ import {
 import { useLocation } from "react-router-dom";
 import markerImg from "../../assets/marker.png";
 import CustomOverlayMapComponent from "./CustomOverlayMapComponent";
-import { markerProps, positionProps } from "./MapComponent";
-
-export interface EventMarkerComponentProps {
-  key: string;
-  marker: markerProps;
-  position: positionProps;
-}
+import { EventMarkerComponentProps } from "./type/MapType";
 
 const EventMarkerComponent = ({
   marker,
   position,
+  setIsOpenMap
 }: EventMarkerComponentProps) => {
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
@@ -40,9 +35,8 @@ const EventMarkerComponent = ({
   };
 
   return (
-    <div key={marker.id}>
+    <div>
       <MapMarker
-        key={marker.id}
         position={{
           lat: marker.lat,
           lng: marker.lng,
@@ -70,6 +64,7 @@ const EventMarkerComponent = ({
         isOpen={isOpen}
         isVisible={isVisible}
         handleMarkerInfo={handleMarkerInfo}
+        setIsOpenMap={setIsOpenMap}
       />
     </div>
   );

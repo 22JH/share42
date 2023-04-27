@@ -4,6 +4,7 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import Btn from "../../components/UI/Btn";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import logo from "../../assets/logo.png";
 
 const container = css`
   height: 100vh;
@@ -12,7 +13,10 @@ const container = css`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
+  .logo {
+    width: auto;
+    height: 240px;
+  }
   .header {
     font-size: 3.2rem;
     font-weight: bold;
@@ -46,6 +50,7 @@ const container = css`
   }
 
   .btnSection {
+    display: flex;
     width: 70%;
     height: 5%;
   }
@@ -92,7 +97,9 @@ export default function Temrs() {
   };
   return (
     <div css={container}>
-      <div className="header">공유사이</div>
+      <div className="logo">
+        <img src={logo} alt="logo" height="250" width="250" />
+      </div>
       <div className="section">
         <div className="termsSection" onClick={handleAgreeBtnAll}>
           <div className="checkIcon">
@@ -169,16 +176,16 @@ export default function Temrs() {
       </div>
       <div className="btnSection">
         <Btn
-          width={45}
-          height={100}
+          width={"45%"}
+          height={"100%"}
           backGroundColor={"white"}
           content={"취소"}
           marginRight={20}
           onClick={() => navigate("/")}
         />
         <Btn
-          width={45}
-          height={100}
+          width={"45%"}
+          height={"100%"}
           backGroundColor={"white"}
           content={"확인"}
           onClick={checkAvailable}

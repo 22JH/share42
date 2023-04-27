@@ -2,25 +2,11 @@
 
 import { Map, ZoomControl, MapTypeControl } from "react-kakao-maps-sdk";
 import { useEffect, useState } from "react";
-import { mapStyle } from "./style/UserMapStyle";
+import { mapStyle } from "./style/MapStyle";
 import EventMarkerComponent from "./EventMarkerComponent";
+import { MapComponentProps, positionProps } from "./type/MapType";
 
-export interface positionProps {
-  lat: number;
-  lng: number;
-}
-
-export interface markerProps {
-  id: number;
-  content: string;
-  address: string;
-  lat: number;
-  lng: number;
-  cabinetCnt: number;
-  cabinetUse: number;
-}
-
-const MapComponent: React.FC = () => {
+const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
   const [markersData, setMarkersData] = useState<null | any[]>(null);
   const [position, setPosition] = useState<positionProps>({
     lat: 36.107177733518384,
@@ -109,9 +95,10 @@ const MapComponent: React.FC = () => {
         <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         {markersData?.map((marker) => (
           <EventMarkerComponent
-            key={`EventMarkerComponent-${marker.lat}-${marker.lng}`}
+            key={marker.id}
             marker={marker}
             position={position}
+            setIsOpenMap={setIsOpenMap}
           />
         ))}
       </Map>

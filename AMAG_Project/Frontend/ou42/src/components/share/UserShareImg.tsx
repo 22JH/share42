@@ -1,10 +1,5 @@
 import cameraDefault from "../../assets/cameraDefault.png";
-
-export interface UserShareImgProps {
-  preview: File | null;
-  handleFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemoveImage: (e: React.MouseEvent<HTMLDivElement>) => void;
-}
+import { UserShareImgProps } from "./type/UserShareType";
 
 const UserShareImg = ({
   preview,

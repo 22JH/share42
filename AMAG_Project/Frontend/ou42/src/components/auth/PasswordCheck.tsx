@@ -48,6 +48,7 @@ export default function PasswordCheck({ setPd }: PropType) {
       setPd(() => pdCheck1);
     } else {
       setValidPd(() => 2);
+      setPd(() => "");
     }
   }, [pdCheck2, pdCheck1]);
 

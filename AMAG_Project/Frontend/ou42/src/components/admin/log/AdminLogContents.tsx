@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { contentStyle } from "../report/AdminReportContent";
 
 import testObject from "../../../assets/testObject.jpg";

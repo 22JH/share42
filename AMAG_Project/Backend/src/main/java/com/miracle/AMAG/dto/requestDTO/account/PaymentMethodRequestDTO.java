@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PaymentMethodRequestDTO {
     @Column(length = 100)
-    private String billingKey;
+    private String receiptId;
 
     @Column(length = 20)
     private String number;

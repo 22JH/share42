@@ -9,9 +9,16 @@ import com.miracle.AMAG.repository.account.PaymentMethodRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.PayMethodUtils;
 import jakarta.transaction.Transactional;
+import kr.co.bootpay.Bootpay;
+import kr.co.bootpay.model.request.SubscribePayload;
+import kr.co.bootpay.model.request.User;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Slf4j
 @Transactional
@@ -23,6 +30,12 @@ public class PaymentService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Value("${bootPay.applicationID}")
+    private String applicationID;
+
+    @Value("${BootPay.privateKey}")
+    public String privateKey;
 
     public String getPayMethod(int type){
         //현재 로그인된 아이디 가져오기
@@ -45,7 +58,7 @@ public class PaymentService {
         if(paymentMethodRequestDTO.getType()!=PayMethodUtils.BILLING_KEY || paymentMethodRequestDTO.getType()!=PayMethodUtils.ACCOUNT_NUMBER){
             throw new RuntimeException();
         }
-        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getBillingKey().equals("")&& paymentMethodRequestDTO.getBillingKey() == null){
+        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getReceiptId().equals("")&& paymentMethodRequestDTO.getReceiptId() == null){
             throw new RuntimeException();
         }
         else if(paymentMethodRequestDTO.getType() == PayMethodUtils.ACCOUNT_NUMBER && paymentMethodRequestDTO.getNumber().equals("")&& paymentMethodRequestDTO.getNumber()== null){
@@ -62,12 +75,12 @@ public class PaymentService {
                data = new PaymentMethod();
                data.setAccount(new Account());
                data.getAccount().setId(id);
-               data.setBillingKey(paymentMethodRequestDTO.getBillingKey());
+               data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
 
                paymentMethodRepository.save(data);
             }
             else if(data.getBillingKey() == null){
-                data.setBillingKey(paymentMethodRequestDTO.getBillingKey());
+                data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
                 paymentMethodRepository.save(data);
             }
             else{
@@ -135,4 +148,61 @@ public class PaymentService {
         }
 
     }
+
+    public String getBillingKey(String receiptId){
+        Bootpay bootpay = new Bootpay(applicationID, privateKey);
+        try {
+            bootpay.getAccessToken();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        String billingKey = "";
+        try {
+            HashMap res = bootpay.lookupBillingKey(receiptId);
+            JSONObject json =  new JSONObject(res);
+            billingKey = json.get("billing_key").toString();
+            if(res.get("error_code") == null) { //success
+                System.out.println("getReceipt success: " + res);
+            } else {
+                System.out.println("getReceipt false: " + res);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return billingKey;
+    }
+
+    public String autoPayment(String billingKey, int price, String phoneNumber, String userName){
+        Bootpay bootpay = new Bootpay(applicationID, privateKey);
+        try {
+            bootpay.getAccessToken();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        SubscribePayload payload = new SubscribePayload();
+        payload.billingKey = billingKey;
+        payload.orderName = "공유사이";
+        payload.price = price;
+        payload.user = new User();
+        payload.user.phone = phoneNumber;
+        payload.user.username = userName;
+        payload.orderId = "" + (System.currentTimeMillis() / 1000);
+
+        String receiptId = "";
+        try {
+            HashMap res = bootpay.requestSubscribe(payload);
+            JSONObject json =  new JSONObject(res);
+            receiptId = json.get("receipt_id").toString();
+            if(res.get("error_code") == null) { //success
+                System.out.println("requestSubscribe success: " + res);
+            } else {
+                System.out.println("requestSubscribe false: " + res);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return receiptId;
+    }
+
 }

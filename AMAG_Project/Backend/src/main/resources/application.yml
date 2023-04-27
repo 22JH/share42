@@ -76,3 +76,7 @@ naver:
     secretKey: XJzENl8AETtcxiufSDv7wwtWtHoOWsVa3wGL0uQk
     serviceId: ncp:sms:kr:260663064935:share42
     senderPhone: 01092887883
+
+bootPay:
+  applicationID:
+  privateKey:

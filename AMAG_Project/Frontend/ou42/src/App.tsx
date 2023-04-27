@@ -17,6 +17,8 @@ import AdminMap from "./routes/admin/AdminMap";
 import UserShareReg from "./routes/user/UserShareReg";
 import UserShareMap from "./routes/user/UserShareMap";
 import UserMyPage from "./routes/userHome/UserMyPage";
+import UserPay from "./routes/user/UserPay";
+import UserChat from "./routes/user/UserChat";
 
 const globalStyle = css`
   body {
@@ -47,6 +49,8 @@ function App() {
           <Route path="/admin/map" element={<AdminMap />} />
           <Route path="/user/share-reg" element={<UserShareReg />} />
           <Route path="/user/mypage" element={<UserMyPage />} />
+          <Route path="/user/payment" element={<UserPay />} />
+          <Route path="/user/chat" element={<UserChat />} />
         </Routes>
       </Router>
     </>

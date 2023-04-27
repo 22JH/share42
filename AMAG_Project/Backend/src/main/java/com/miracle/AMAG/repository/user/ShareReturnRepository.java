@@ -1,9 +1,9 @@
 package com.miracle.AMAG.repository.user;
 
-import com.miracle.AMAG.entity.user.Return;
+import com.miracle.AMAG.entity.user.ShareReturn;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReturnRepository extends JpaRepository<Return, Integer> {
+public interface ShareReturnRepository extends JpaRepository<ShareReturn, Integer> {
 }

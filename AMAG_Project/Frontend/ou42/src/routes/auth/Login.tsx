@@ -120,10 +120,10 @@ export default function Login() {
             />
           </div>
           <Btn
-            width={"90"}
-            height={"15"}
+            width={"90%"}
+            height={"15%"}
             backGroundColor={"white"}
-            content={"a"}
+            content={"로그인"}
           />
         </div>
       </div>

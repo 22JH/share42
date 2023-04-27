@@ -13,8 +13,12 @@ import java.time.LocalDateTime;
 @Table(name = "BORROW",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name="BORROW_UN",
-                        columnNames = {"CONTRACT_HASH", "METADATA_URI"}
+                        name="BORROW_CONTRACT_HASH_UN",
+                        columnNames = {"CONTRACT_HASH"}
+                ),
+                @UniqueConstraint(
+                        name="BORROW_METADATA_URI_UN",
+                        columnNames = {"METADATA_URI"}
                 )
         })
 @Getter

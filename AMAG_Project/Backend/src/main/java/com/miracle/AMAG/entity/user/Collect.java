@@ -12,10 +12,14 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "COLLECT",
         uniqueConstraints = {
-        @UniqueConstraint(
-                name="COLLECT_UN",
-                columnNames = {"CONTRACT_HASH", "METADATA_URI"}
-        )
+                @UniqueConstraint(
+                        name="COLLECT_CONTRACT_HASH_UN",
+                        columnNames = {"CONTRACT_HASH"}
+                ),
+                @UniqueConstraint(
+                        name="COLLECT_METADATA_URI_UN",
+                        columnNames = {"METADATA_URI"}
+                )
 })
 @Getter
 @Setter

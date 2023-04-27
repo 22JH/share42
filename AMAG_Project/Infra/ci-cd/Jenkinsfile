@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    // 추가: 트리거 설정
-    triggers {
-        gitlab(triggerOnPush: true, triggerOnMergeRequest: false, branchFilterType: 'NameBasedFilter', includeBranchesSpec: 'main')
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -16,14 +11,18 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the Spring Boot project using Gradle...'
-                sh './gradlew clean build -x test'
+                dir('AMAG_Project/Backend') {
+                    sh './gradlew clean build -x test'
+                }
             }
         }
         stage('Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                script {
-                    def dockerImage = docker.build("your-docker-repo/your-image-name:latest")
+                dir('AMAG_Project/Backend') {
+                    script {
+                        def dockerImage = docker.build("your-docker-repo/your-image-name:latest")
+                    }
                 }
             }
         }

@@ -1,24 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 
 import { useState, useEffect } from "react";
 import { MdMap } from "react-icons/md";
-import {
-  OverlayAddressStyle,
-  OverlayListStyle,
-  OverlayNameStyle,
-  OverlayStyle,
-} from "./style/UserMapStyle";
+import { OverlayListStyle } from "./style/MapStyle";
 import MarkerCardsComponent from "./MarkerCardsComponent";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
-interface MarkerDetailShareInfoComponentProps {
-  id: number;
-  handleMarkerInfo: (id: number) => void;
-  address: string;
-  name: string;
-}
+import { useLocation, useNavigate } from "react-router-dom";
+import { MarkerDetailShareInfoComponentProps } from "./type/MapType";
 
 const MarkerInfoComponent = ({
   id,
@@ -47,7 +34,15 @@ const MarkerInfoComponent = ({
   };
 
   return (
-    <div css={OverlayStyle}>
+    <div
+      style={{
+        width: "100vw",
+        height: "94.3vh",
+        background: "white",
+        zIndex: "11 !important",
+        cursor: "auto !important",
+      }}
+    >
       <button
         style={{
           position: "absolute",
@@ -63,16 +58,51 @@ const MarkerInfoComponent = ({
       >
         x
       </button>
-      <div css={OverlayNameStyle}>{name}</div>
+      <div
+        style={{
+          width: "100%",
+          height: "5rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#4f63d2",
+          color: "white",
+          fontSize: "1.5rem",
+          fontWeight: "900",
+        }}
+      >
+        {name}
+      </div>
       {/* 지점 타인 공유리스트 */}
-      <div css={OverlayListStyle}>
+      <div
+        css={OverlayListStyle}
+        style={{
+          width: "100%",
+          height: "calc(94.3vh - 10rem)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          overflow: "scroll",
+        }}
+      >
         {markerInfo.map((ele: any) => (
           <MarkerCardsComponent key={ele.id} markerInfo={ele} />
         ))}
       </div>
       {/* 지점 주소 */}
       {pathname.includes("admin") ? (
-        <div css={OverlayAddressStyle}>
+          <div
+            style={{
+              width: "100%",
+              height: "5rem",
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              backgroundColor: "#4f63d2",
+              color: "white",
+              fontSize: "1.2rem",
+            }}
+          >
           <MdMap
             style={{
               width: "40px",
@@ -122,7 +152,17 @@ const MarkerInfoComponent = ({
           </div>
         </div>
       ) : (
-        <div css={OverlayAddressStyle}>
+        <div 
+          style={{
+          width: "100%",
+          height: "5rem",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          backgroundColor: "#4f63d2",
+          color: "white",
+          fontSize: "1.2rem",
+        }}>
           <MdMap
             style={{
               width: "40px",

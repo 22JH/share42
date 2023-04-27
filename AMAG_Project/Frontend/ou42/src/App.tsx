@@ -15,7 +15,6 @@ import UserWelcome from "./routes/userHome/UserWelcome";
 import UserBeforeMain from "./routes/userHome/UserBeforeMain";
 import AdminMap from "./routes/admin/AdminMap";
 import UserShareReg from "./routes/user/UserShareReg";
-import UserShareMap from "./routes/user/UserShareMap";
 import UserPay from "./routes/user/UserPay";
 import UserChat from "./routes/user/UserChat";
 

@@ -1,13 +1,10 @@
-import { useStore } from "../map/store/useStore";
-
-export interface UserShareChoiceNameProps {
-  handleShareMapNavigate: () => void;
-}
+import { useBranchChoiceStore } from "../map/store/useBranchChoiceStore";
+import { UserShareChoiceNameProps } from "./type/UserShareType";
 
 const UserShareChoiceName = ({
   handleShareMapNavigate,
 }: UserShareChoiceNameProps) => {
-  const { branchChoice } = useStore.getState();
+  const { branchChoice } = useBranchChoiceStore.getState();
 
   return (
     <>
@@ -77,7 +74,7 @@ const UserShareChoiceName = ({
             color: branchChoice ? "#000000" : "#ADADAD",
           }}
         >
-          { branchChoice ? branchChoice : '지점 미선택' }
+          {branchChoice ? branchChoice : "지점 미선택"}
         </span>
       </div>
     </>

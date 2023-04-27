@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@Tag(name = "Address", description = "주소 조회 API")
+@Tag(name = "Terms", description = "약관 조회 관련 API")
 @RequestMapping("/api/common")
 @RequiredArgsConstructor
 @RestController

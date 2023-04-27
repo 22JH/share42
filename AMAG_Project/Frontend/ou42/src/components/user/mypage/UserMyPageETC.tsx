@@ -12,7 +12,7 @@ function UserMyPageETC() {
   ];
   return (
     <div css={contentStyle(20)}>
-      <p>기타</p>
+      <p className="main">기타</p>
       {contents.map((content, index) => {
         const { title, Icon } = content;
         return (

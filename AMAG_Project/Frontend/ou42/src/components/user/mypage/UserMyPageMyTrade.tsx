@@ -12,7 +12,7 @@ function UserMyPageMyTrade() {
   ];
   return (
     <div css={contentStyle(27)}>
-      <p>나의 거래</p>
+      <p className="main">나의 거래</p>
 
       {contents.map((content, index) => {
         const { title, Icon } = content;

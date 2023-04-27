@@ -2,7 +2,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { css, Global } from "@emotion/react";
 import UserHome from "./routes/userHome/UserHome";
-import NavBar from "./components/NavBar";
 import Login from "./routes/auth/Login";
 import AdminHome from "./routes/admin/AdminHome";
 import AdminReport from "./routes/admin/AdminReport";
@@ -15,10 +14,10 @@ import UserWelcome from "./routes/userHome/UserWelcome";
 import UserBeforeMain from "./routes/userHome/UserBeforeMain";
 import AdminMap from "./routes/admin/AdminMap";
 import UserShareReg from "./routes/user/UserShareReg";
-import UserShareMap from "./routes/user/UserShareMap";
 import UserMyPage from "./routes/userHome/UserMyPage";
 import UserPay from "./routes/user/UserPay";
 import UserChat from "./routes/user/UserChat";
+import HomeNavBar from "./components/NavBar/HomeNavBar";
 
 const globalStyle = css`
   body {
@@ -32,12 +31,14 @@ function App() {
   return (
     <>
       <Global styles={globalStyle} />
-      <NavBar />
       <Router>
         <Routes>
+          <Route element={<HomeNavBar />}>
+            <Route path="/home" element={<UserHome />} />
+          </Route>
+
           <Route path="/" element={<UserWelcome />} />
           <Route path="/start" element={<UserBeforeMain />} />
-          <Route path="/home" element={<UserHome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />

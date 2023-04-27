@@ -41,7 +41,7 @@ export const contentStyle = (HEIGHT: number) => css`
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
   margin: 0 0 0 4%;
   height: ${`${HEIGHT}%`};
-  p:nth-child(1) {
+  .main {
     font-weight: 900;
     font-size: 1.1875rem;
     margin-top: 7%;

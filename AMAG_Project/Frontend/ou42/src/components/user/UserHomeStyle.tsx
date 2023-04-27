@@ -25,7 +25,7 @@ export const content = (value: string) => css`
       position: fixed;
       width: auto;
       height: auto;
-      bottom: 1%;
+      bottom: 7%;
       right: 1%;
       z-index: 99;
     }

@@ -31,7 +31,6 @@ function App() {
   return (
     <>
       <Global styles={globalStyle} />
-      <NavBar />
       <Router>
         <Routes>
           <Route path="/" element={<UserWelcome />} />

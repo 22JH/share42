@@ -34,7 +34,7 @@ public class PaymentService {
     @Value("${bootPay.applicationID}")
     private String applicationID;
 
-    @Value("${BootPay.privateKey}")
+    @Value("${bootPay.privateKey}")
     public String privateKey;
 
     public String getPayMethod(int type){

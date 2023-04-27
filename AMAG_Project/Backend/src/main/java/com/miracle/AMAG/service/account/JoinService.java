@@ -55,7 +55,7 @@ public class JoinService {
         account.setRole(Role.ROLE_USER);
 
         //블록체인 데이터 들어가야하는 부분
-        account.setWalletHash(klaytnService.getCarHash().get("address").toString());
+        account.setWalletHash(klaytnService.getAddress().get("address").toString());
         // 테스트용
 //        account.setWalletHash("1234");
 

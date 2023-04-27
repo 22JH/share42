@@ -11,7 +11,7 @@ const container = css`
   position: relative;
 
   .logo {
-    position: fixed;
+    position: absolute;
     top: 15%;
   }
 

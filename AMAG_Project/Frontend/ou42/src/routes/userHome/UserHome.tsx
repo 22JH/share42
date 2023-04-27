@@ -17,6 +17,7 @@ import ErrorBoundary from "../../components/ErrorBoundary";
 import DropDown from "../../components/UI/DropDown";
 import * as userHomeStyle from "../../components/user/UserHomeStyle";
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
+import BottomMenuBar from "../../components/BottomMenuBar";
 
 // intersaction 옵션
 const intersectionOptions = {
@@ -154,9 +155,10 @@ const ErrorMsg = () => {
 };
 
 // 상위 컴포넌트
+const 임시 = ["1", "2", "3"];
+
 function UserHome() {
   const [value, setValue] = useState<string>("");
-  const 임시 = ["1", "2", "3"];
 
   return (
     <>
@@ -177,6 +179,7 @@ function UserHome() {
             </Suspense>
           </ErrorBoundary>
         </div>
+        <BottomMenuBar />
       </div>
     </>
   );

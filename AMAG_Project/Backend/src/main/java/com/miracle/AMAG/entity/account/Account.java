@@ -14,9 +14,17 @@ import java.time.LocalDateTime;
 @Table(name = "ACCOUNT",
     uniqueConstraints = {
         @UniqueConstraint(
-                name="ACCOUNT_UN",
-                columnNames = {"USER_ID", "PHONE_NUMBER", "WALLET_HASH"}
-        )
+                name="ACCOUNT_USER_ID_UN",
+                columnNames = {"USER_ID"}
+        ),
+        @UniqueConstraint(
+                name="ACCOUNT_PHONE_NUMBER_UN",
+                columnNames = {"PHONE_NUMBER"}
+        ),
+        @UniqueConstraint(
+                name="ACCOUNT_WALLET_HASH_UN",
+                columnNames = {"WALLET_HASH"}
+        ),
     }
 )
 @Getter

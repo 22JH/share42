@@ -13,7 +13,7 @@ export const content = (value: string) => css`
     }
     label {
       color: black;
-      display: ${value !== "" ? "none" : "block"};
+      visibility: ${value !== "" ? "hidden" : "visible"};
     }
     .MuiSelect-select {
       color: #000000;
@@ -25,7 +25,7 @@ export const content = (value: string) => css`
       position: fixed;
       width: auto;
       height: auto;
-      bottom: 1%;
+      bottom: 7%;
       right: 1%;
       z-index: 99;
     }
@@ -155,27 +155,30 @@ export const errorMsgStyle = css`
   }
 
   p:nth-of-type(1) {
-    margin: 30% 0 0 0;
+    margin: 30% 0 3% 0;
     font-weight: 900;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
   p:nth-of-type(2) {
     margin: 0 0 0 0;
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
   p:nth-of-type(3) {
     margin: 0 0 5% 0;
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   & > button {
     border: none;
     display: inline-block;
     width: 60%;
-    height: 3vh;
+    height: 4vh;
     font-size: 0.7rem;
     font-weight: 900;
-    background-color: #0cdee8;
+    background-color: #ffabab;
     color: white;
+    font-weight: 900;
+    border-radius: 10px;
+    font-size: 0.9rem;
   }
 `;

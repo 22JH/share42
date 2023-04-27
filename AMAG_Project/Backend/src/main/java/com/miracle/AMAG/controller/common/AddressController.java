@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/common")
 @RequiredArgsConstructor
 @RestController
-public class CommonController {
+public class AddressController {
     @Autowired
     private AddressService addressService;
 

@@ -10,17 +10,21 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "RETURN",
+@Table(name = "SHARE_RETURN",
         uniqueConstraints = {
-        @UniqueConstraint(
-                name="RETURN_UN",
-                columnNames = {"CONTRACT_HASH", "METADATA_URI"}
-        )
+                @UniqueConstraint(
+                        name="SHARE_RETURN_CONTRACT_HASH_UN",
+                        columnNames = {"CONTRACT_HASH"}
+                ),
+                @UniqueConstraint(
+                        name="SHARE_RETURN_METADATA_URI_UN",
+                        columnNames = {"METADATA_URI"}
+                )
 })
 @Getter
 @Setter
 @NoArgsConstructor
-public class Return {
+public class ShareReturn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -49,14 +53,4 @@ public class Return {
 
     @Column(name="METADATA_URI",length = 100)
     private String metadataUri;
-
-    private int price;
-
-    private LocalDateTime payDt;
-
-    private LocalDateTime remmittanceDt;
-
-    private boolean payStatus;
-
-    private boolean remmittanceStatus;
 }

@@ -29,8 +29,9 @@ export default function Birth({ setBirth }: PropType) {
     if (reg.test(e?.target?.value)) {
       setBirth(() => e.target.value);
       setValidBirth(() => 1);
-    } else {
+    } else if (e?.target?.value) {
       setValidBirth(() => 2);
+      setBirth(() => "");
     }
   };
   return (

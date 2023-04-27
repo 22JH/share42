@@ -8,7 +8,7 @@ import PhoneNumber from "../../components/auth/PhoneNumber";
 import Birth from "../../components/auth/Birth";
 import Address from "../../components/auth/Address";
 import Btn from "../../components/UI/Btn";
-import logo from "../../assets/mainLogo.png";
+import logo from "../../assets/logo.png";
 import { useQuery } from "react-query";
 import { useApi } from "../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
@@ -19,11 +19,11 @@ const logoSection = css`
   position: relative;
   width: 80%;
   margin-left: 10vw;
+  height: 170px;
   .logoStyle {
     width: auto;
-    height: 10vh;
+    height: 200px;
   }
-  margin-bottom: 10px;
 `;
 
 const container = css`
@@ -36,7 +36,7 @@ const container = css`
   .line {
     width: 80%;
     height: 1px;
-    background-color: #42c2ff;
+    background-color: #d14d72;
     margin-bottom: 20px;
   }
   .btnSection {

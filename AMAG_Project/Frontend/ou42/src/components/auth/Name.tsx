@@ -32,8 +32,9 @@ export default function Name({ setName, setNickName }: PropType) {
     if (reg.test(e?.target?.value)) {
       setName(e?.target?.value);
       setValidId(() => 1);
-    } else {
+    } else if (e?.target?.value) {
       setValidId(() => 2);
+      setName("");
     }
   };
 
@@ -43,8 +44,9 @@ export default function Name({ setName, setNickName }: PropType) {
     if (nickReg.test(e?.target?.value)) {
       setNickName(e?.target?.value);
       setValidNick(() => 1);
-    } else {
+    } else if (e?.target?.value) {
       setValidNick(() => 2);
+      setNickName("");
     }
   };
 

@@ -16,6 +16,7 @@ interface PropType {
   borderR?: CSSInterpolation;
   border?: CSSInterpolation;
   fontWeight?: CSSInterpolation;
+  boxShadow?: CSSInterpolation;
 }
 
 export default function Btn({
@@ -32,6 +33,7 @@ export default function Btn({
   borderR = 5,
   border = "1px solid black",
   fontWeight = 0,
+  boxShadow = "",
 }: PropType) {
   const btnStyle = css`
     display: flex;
@@ -49,6 +51,7 @@ export default function Btn({
     border: ${border};
     font-weight: ${fontWeight};
     color: ${color};
+    box-shadow: ${boxShadow};
   `;
   return (
     <div css={btnStyle} onClick={onClick}>

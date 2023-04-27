@@ -36,7 +36,7 @@ export default function IdCheck({ setId }: PropType) {
     if (reg.test(e?.target?.value)) {
       setId(e?.target?.value);
     } else {
-      console.log("");
+      setId(() => "");
     }
   };
 

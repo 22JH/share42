@@ -82,5 +82,8 @@ public interface CommunityRepository extends JpaRepository<Community, Integer> {
             """,
     nativeQuery = true)
     Page<Object[]> getCommunityList(@Param("status") boolean status, @Param("search") String search,
-                                    @Param("category") String category, @Param("sort") int sort, Pageable pageable);
+                                    @Param("category") String category, @Param("sort") int sort,
+                                    Pageable pageable);
+
+    Community findById(@Param("id") int id);
 }

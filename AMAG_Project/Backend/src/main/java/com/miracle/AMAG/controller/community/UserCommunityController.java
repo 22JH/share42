@@ -62,4 +62,16 @@ public class UserCommunityController {
     public ResponseEntity<?> insertCommunity(@RequestBody CommunityRequestDTO communityRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.insertCommunity(communityRequestDTO));
     }
+
+    @PatchMapping("/posts/{posts_id}")
+    @Operation(description = "커뮤니티 글 수정")
+    @Parameters({
+            @Parameter(name = "posts_id", description = "글 번호"),
+            @Parameter(name = "category", description = "카테고리"),
+            @Parameter(name = "title", description = "제목"),
+            @Parameter(name = "content", description = "내용")
+    })
+    public ResponseEntity<?> updateCommunity(@PathVariable("posts_id") int postsId, @RequestBody CommunityRequestDTO communityRequestDTO) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.updateCommunity(postsId,communityRequestDTO));
+    }
 }

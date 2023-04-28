@@ -96,4 +96,18 @@ public class CommunityService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String updateCommunity(int postId, CommunityRequestDTO communityRequestDTO){
+        Community community = communityRepository.findById(postId);
+        if(community.isStatus()){
+            throw new RuntimeException();
+        }
+        /*community.setCategory(communityRequestDTO.getCategory());
+        community.setTitle(communityRequestDTO.getTitle());
+        community.setContent(communityRequestDTO.getContent());*/
+        BeanUtils.copyProperties(communityRequestDTO,community);
+        community.setUptDt(LocalDateTime.now());
+        communityRepository.save(community);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 }

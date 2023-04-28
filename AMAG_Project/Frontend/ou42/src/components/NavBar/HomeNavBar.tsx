@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+
 import { SlBell } from "react-icons/sl";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";

@@ -43,26 +43,26 @@ export default function IdCheck({ setId, id }: PropType) {
     enabled: false,
     suspense: false,
   });
+
   const idHandler = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
-    if (reg.test(e?.target?.value)) {
-      setValidId(e?.target?.value);
+    setValidId(() => e?.target?.value);
+  };
+  useEffect(() => {
+    if (reg.test(validId)) {
       refetch().then((res) => {
         if (res.data == true) {
           setCheckPass(1);
-          setId(validId);
+          setId(() => validId);
         } else {
           setCheckPass(2);
         }
       });
     } else {
-      setValidId(e?.target?.value);
       setCheckPass(0);
     }
-  };
-
-  // <GoCheck color="#ffabab" />
+  }, [validId]);
   return (
     <div css={container}>
       <div css={{ display: "flex", justifyContent: "space-between" }}>

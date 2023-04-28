@@ -25,7 +25,7 @@ export default function DropDown({
   marginLeft = 0,
   marginTop = 0,
   data,
-  content = "",
+  content = "", //라벨
   setValue,
 }: PropType) {
   const [current, setCurrent] = React.useState("");
@@ -41,11 +41,11 @@ export default function DropDown({
       <FormControl
         sx={{
           minWidth: 50,
-          width: width as number,
-          marginRight: marginRight as number,
-          marginLeft: marginLeft as number,
-          marginBottom: marginBottom as number,
-          marginTop: marginTop as number,
+          width: width as string,
+          marginRight: marginRight as string,
+          marginLeft: marginLeft as string,
+          marginBottom: marginBottom as string,
+          marginTop: marginTop as string,
           color: "black",
         }}
         size="small"

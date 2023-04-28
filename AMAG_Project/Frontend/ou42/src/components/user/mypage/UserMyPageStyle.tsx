@@ -6,7 +6,7 @@ export const profileStyle = css`
   display: flex;
   justify-content: space-between;
   width: 92%;
-  height: 12%;
+  height: 9%;
   padding: 0 4% 0 4%;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 
@@ -24,7 +24,7 @@ export const profileStyle = css`
 
     p {
       font-weight: 900;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
     }
   }
 
@@ -32,7 +32,7 @@ export const profileStyle = css`
     border: 0;
     background: none;
     font-weight: 900;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
 `;
 
@@ -43,15 +43,15 @@ export const contentStyle = (HEIGHT: number) => css`
   height: ${`${HEIGHT}%`};
   .main {
     font-weight: 900;
-    font-size: 1.1875rem;
-    margin-top: 7%;
-    margin-bottom: 3%;
+    font-size: 1.1rem;
+    margin-top: 5%;
+    margin-bottom: 1%;
   }
   .content {
     display: flex;
     align-items: center;
     p {
-      font-size: 0.8;
+      font-size: 1rem;
     }
     .icon {
       margin: 0 5% 0 0;

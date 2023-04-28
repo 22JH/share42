@@ -78,5 +78,5 @@ naver:
     senderPhone: 01092887883
 
 bootPay:
-  applicationID:
-  privateKey:
+  applicationID: 6449e6343049c8001c9e0720
+  privateKey: oTLPbzaYINZa9dXzS9C1gjwKLXclvtke16O5XC0gsdQ=

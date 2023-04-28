@@ -2,13 +2,7 @@
 import { css } from "@emotion/react";
 import TextField from "@mui/material/TextField";
 import { UserReportContentStyle } from "../share/style/UserShareStyle";
-
-export interface UserReportAreaProps {
-  content: string;
-  handleShareArea: (
-    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
-  ) => void;
-}
+import { UserReportAreaProps } from "./type/UserReportType";
 
 const UserReportArea = ({ content, handleShareArea} : UserReportAreaProps) => {
   return (

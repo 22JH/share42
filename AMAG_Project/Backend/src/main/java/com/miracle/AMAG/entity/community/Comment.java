@@ -34,4 +34,6 @@ public class Comment {
 
     private LocalDateTime uptDt;
 
+    private boolean status;
+
 }

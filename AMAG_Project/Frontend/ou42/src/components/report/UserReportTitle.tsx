@@ -1,10 +1,5 @@
 import TextField from "@mui/material/TextField";
-
-export interface UserReportTitleProps {
-  value: string;
-  handleShareInput: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
-  text: string;
-}
+import { UserReportTitleProps } from "./type/UserReportType";
 
 const UserReportTitle = ({
   value,

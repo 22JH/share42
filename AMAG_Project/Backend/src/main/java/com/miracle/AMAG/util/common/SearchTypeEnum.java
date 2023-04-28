@@ -1,7 +1,7 @@
 package com.miracle.AMAG.util.common;
 
 public enum SearchTypeEnum {
-    VALUE1(0,"all"),
+    VALUE1(0,"모든 카테고리"),
     VALUE2(1,"소식공유"),
     VALUE3(2,"필요해요"),
     VALUE4(3,"공유해요");

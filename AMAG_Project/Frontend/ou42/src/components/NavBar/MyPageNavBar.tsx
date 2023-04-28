@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { RiErrorWarningLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
+import navStore from "../../store/navStore";
 
 const nav = css`
   display: flex;
@@ -38,16 +39,17 @@ const nav = css`
 function MyPageNavBar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { pathTitle } = navStore();
 
   return (
     <>
       <div css={nav}>
         <div className="left-icon">
           <MdArrowBackIosNew size={25} onClick={() => navigate(-1)} />
-          <p>마이페이지</p>
+          <p>{pathTitle}</p>
         </div>
         {pathname !== "/user/mypage" ? (
-          <div>
+          <div onClick={() => navigate("/user/report")}>
             <RiErrorWarningLine size={30} style={{ marginTop: "4px" }} />
           </div>
         ) : null}

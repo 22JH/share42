@@ -22,6 +22,7 @@ import UserReport from "./routes/user/UserReport";
 import UserSharePost from "./routes/user/UserSharePost";
 import MyPageNavBar from "./components/NavBar/MyPageNavBar";
 import UserMyPageUsage from "./routes/userHome/UserMyPageUsage";
+import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 
 const globalStyle = css`
   body {
@@ -45,6 +46,7 @@ function App() {
           <Route element={<MyPageNavBar />}>
             <Route path="/user/mypage" element={<UserMyPage />} />
             <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
+            <Route path="/user/mypage/like" element={<UserMyPageShare />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

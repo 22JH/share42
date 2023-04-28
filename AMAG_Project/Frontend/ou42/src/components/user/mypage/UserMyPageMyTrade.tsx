@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const contents = [
   { title: "사용 내역", Icon: BsBox2Heart, url: "/user/mypage/usage" },
-  { title: "공유 이력", Icon: BsCalendarHeart, url: "" },
+  { title: "공유 이력", Icon: BsCalendarHeart, url: "/user/mypage/like" },
   { title: "관심 목록", Icon: BsHeart, url: "" },
   { title: "통계", Icon: AiOutlineBarChart, url: "" },
 ];

@@ -19,7 +19,7 @@ import UserPay from "./routes/user/UserPay";
 import UserChat from "./routes/user/UserChat";
 import HomeNavBar from "./components/NavBar/HomeNavBar";
 import UserReport from "./routes/user/UserReport";
-import UserSharePost from "./routes/user/UserSharePost";
+import UserSharePost from "./routes/user/UserShareDetail";
 
 const globalStyle = css`
   body {

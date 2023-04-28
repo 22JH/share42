@@ -11,7 +11,7 @@ function UserMyPageETC() {
     { title: "신고하기", Icon: RiErrorWarningLine },
   ];
   return (
-    <div css={contentStyle(20)}>
+    <div css={contentStyle(18)}>
       <p className="main">기타</p>
       {contents.map((content, index) => {
         const { title, Icon } = content;

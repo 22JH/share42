@@ -20,6 +20,8 @@ import UserChat from "./routes/user/UserChat";
 import HomeNavBar from "./components/NavBar/HomeNavBar";
 import UserReport from "./routes/user/UserReport";
 import UserSharePost from "./routes/user/UserSharePost";
+import MyPageNavBar from "./components/NavBar/MyPageNavBar";
+import UserMyPageUsage from "./routes/userHome/UserMyPageUsage";
 
 const globalStyle = css`
   body {
@@ -35,8 +37,14 @@ function App() {
       <Global styles={globalStyle} />
       <Router>
         <Routes>
+          {/* 유저 홈 */}
           <Route element={<HomeNavBar />}>
             <Route path="/home" element={<UserHome />} />
+          </Route>
+          {/* 유저 마이페이지 */}
+          <Route element={<MyPageNavBar />}>
+            <Route path="/user/mypage" element={<UserMyPage />} />
+            <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />
@@ -51,7 +59,6 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/map" element={<AdminMap />} />
           <Route path="/user/share-reg" element={<UserShareReg />} />
-          <Route path="/user/mypage" element={<UserMyPage />} />
           <Route path="/user/payment" element={<UserPay />} />
           <Route path="/user/chat" element={<UserChat />} />
           <Route path="/user/report" element={<UserReport />} />

@@ -35,11 +35,11 @@ const UserShareReg = () => {
     if (preview) {
       formData.append("preview", preview);
     }
-    formData.set("title", title);
-    formData.set("price", price);
-    formData.set("category", category);
-    formData.set("content", content);
-    formData.set("branchChoice", branchChoice);
+    formData.append("title", title);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("content", content);
+    formData.append("branchChoice", branchChoice);
     setShareData(formData);
   }, [
     preview,

@@ -18,6 +18,7 @@ import UserShareReg from "./routes/user/UserShareReg";
 import UserPay from "./routes/user/UserPay";
 import UserChat from "./routes/user/UserChat";
 import UserReport from "./routes/user/UserReport";
+import UserSharePost from "./routes/user/UserSharePost";
 
 const globalStyle = css`
   body {
@@ -50,6 +51,7 @@ function App() {
           <Route path="/user/payment" element={<UserPay />} />
           <Route path="/user/chat" element={<UserChat />} />
           <Route path="/user/report" element={<UserReport />} />
+          <Route path="/user/share-post" element={<UserSharePost />} />
         </Routes>
       </Router>
     </>

@@ -2,15 +2,7 @@
 import { css } from "@emotion/react";
 
 import { ReportCategorySelectStyle } from "../share/style/UserShareStyle";
-
-export interface UserReportCategoryProps {
-  handleSelectCategory: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: {
-    value: string;
-    category: string;
-  }[];
-  category: string;
-}
+import { UserReportCategoryProps } from "./type/UserReportType";
 
 const UserReportCategory = ({
   handleSelectCategory,

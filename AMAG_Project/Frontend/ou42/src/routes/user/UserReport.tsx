@@ -2,20 +2,31 @@
 import { css } from "@emotion/react";
 import TextField from "@mui/material/TextField";
 
-
-import { useState } from "react";
-import clip from '../../assets/clip.svg';
+import { useMemo, useState } from "react";
 import UserReportArea from "../../components/report/UserReportArea";
 import UserReportCategory from "../../components/report/UserReportCategory";
 import UserReportDiv from "../../components/report/UserReportDiv";
+import UserReportFile from "../../components/report/UserReportFile";
 import UserReportTitle from "../../components/report/UserReportTitle";
+import { useEffect } from "react";
 
 const UserReport = () => {
   const [category, setCategory] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [preview, setPreview] = useState<null | File>(null);
-  const [fileName, setFileName] = useState<string>('');
+  const [file, setFile] = useState<null | File>(null);
+  const [fileName, setFileName] = useState<string>("");
+  const [reportData, setReportData] = useState<FormData | null>(null);
+
+  const formData = useMemo(() => new FormData(), []);
+
+  useEffect(() => {
+    file && formData.append("file", file);
+    category && formData.append("category", category);
+    title && formData.append("title", title);
+    content && formData.append("content", content);
+    setReportData(formData);
+  }, [file, category, title, content, formData]);
 
   const options = [
     { value: "카테고리를 선택해 주세요", category: "카테고리를 선택해 주세요" },
@@ -43,20 +54,32 @@ const UserReport = () => {
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null) {
-      setPreview(e.target.files[0]);
-      setFileName(e.target.files[0].name)
+      setFile(e.target.files[0]);
+      setFileName(e.target.files[0].name);
     }
   };
 
   const handleRemoveImage = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setPreview(null);
+    setFile(null);
+    setFileName("");
+  };
+
+  const handleReportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // post로 보내기 / multipart
+    e.preventDefault();
+
+    // formData 저장 확인
+    for (let key of formData.keys()) {
+      console.log(key, ":", formData.get(key));
+    }
   };
 
   return (
     <>
       <UserReportDiv />
       <form
+        onSubmit={handleReportSubmit}
         style={{
           width: "100vw",
           height: "80vh",
@@ -77,98 +100,35 @@ const UserReport = () => {
           handleShareInput={handleShareTitle}
         />
         <UserReportArea content={content} handleShareArea={handleShareArea} />
-        {/* <UserShareImg
-          preview={preview}
+        <UserReportFile
+          preview={file}
+          fileName={fileName}
           handleFileInputChange={handleFileInputChange}
           handleRemoveImage={handleRemoveImage}
-        /> */}
-        <div
+        />
+        <button
           style={{
-            marginTop: "2vh",
-            width: "100vw",
+            width: "92vw",
+            paddingLeft: "3vw",
+            paddingRight: "3vw",
+            height: "5vh",
+            textAlign: "center",
+            lineHeight: "5vh",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            color: "white",
+            fontSize: "1.1rem",
+            fontWeight: "900",
+            borderRadius: "5px",
+            marginTop: "5%",
+            marginLeft: "7.5%",
+            marginRight: "7.5%",
+            position: "relative",
           }}
+          type="submit"
         >
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            htmlFor="camera"
-          >
-            <div
-              style={{
-                width: "100vw",
-                height: "50px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "85vw",
-                  height: "6vh",
-                  border: "1px solid #adadad",
-                  borderRadius: "5px",
-                  lineHeight: "6vh",
-                  padding: "0 3vw",
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span style={{ color: "#000000" }}>+ {fileName}</span>
-              </div>
-            </div>
-          </label>
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            htmlFor="camera"
-          >
-            <div
-              style={{
-                width: "100vw",
-                height: "50px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: "85vw",
-                  height: "6vh",
-                  border: "1px solid #adadad",
-                  borderRadius: "5px",
-                  lineHeight: "6vh",
-                  padding: "0 3vw",
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span style={{ color: "#adadad" }}>+ 파일 첨부</span>
-                <img src={clip} alt='clip' />
-              </div>
-            </div>
-          </label>
-          <input
-            id="camera"
-            name="camera"
-            type="file"
-            accept="image/*;capture=camera"
-            style={{
-              display: "none",
-            }}
-            onChange={handleFileInputChange}
-          />
-        </div>
-        <div></div>
+          신고접수
+        </button>
       </form>
     </>
   );

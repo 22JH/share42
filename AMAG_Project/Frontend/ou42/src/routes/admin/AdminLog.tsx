@@ -1,6 +1,7 @@
 import AdminLogContents from "../../components/admin/log/AdminLogContents";
 import AdminSelectBox from "../../components/admin/AdminSelectBox";
 import AdminNav from "./../../components/admin/AdminNav";
+import BottomMenuBar from "../../components/BottomMenuBar";
 
 function AdminLog() {
   return (
@@ -11,6 +12,8 @@ function AdminLog() {
       <AdminSelectBox />
       {/* 컨텐츠 */}
       <AdminLogContents />
+      {/* 하단 네브바 */}
+      <BottomMenuBar />
     </>
   );
 }

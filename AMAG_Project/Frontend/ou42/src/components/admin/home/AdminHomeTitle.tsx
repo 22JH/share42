@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 
 const titleStyle = css`
   p:nth-of-type(1) {
-    color: #0cdee8;
+    color: #ff4f4f;
     font-weight: 900;
     font-size: 1.5625rem;
     margin: 15% 0 0 8%;

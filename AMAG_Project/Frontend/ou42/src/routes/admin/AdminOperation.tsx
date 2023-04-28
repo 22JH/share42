@@ -1,5 +1,6 @@
 import AdminNav from "../../components/admin/AdminNav";
 import AdminSelectBox from "../../components/admin/AdminSelectBox";
+import BottomMenuBar from "../../components/BottomMenuBar";
 
 function AdminOperation() {
   return (
@@ -8,6 +9,8 @@ function AdminOperation() {
       <AdminNav />
       {/* 선택 박스 */}
       <AdminSelectBox />
+      {/* 하단 네브바 */}
+      <BottomMenuBar />
     </>
   );
 }

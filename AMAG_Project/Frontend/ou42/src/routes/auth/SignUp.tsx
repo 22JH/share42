@@ -12,8 +12,9 @@ import logo from "../../assets/logo.png";
 import { useQuery } from "react-query";
 import { useApi } from "../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
+import { useNavigate } from "react-router-dom";
 
-const URL = `http://127.0.0.1:8080/`;
+const URL = `http://k8d102.p.ssafy.io:8088/api/join`;
 
 const logoSection = css`
   position: relative;
@@ -22,7 +23,7 @@ const logoSection = css`
   height: 170px;
   .logoStyle {
     width: auto;
-    height: 200px;
+    height: 220px;
   }
 `;
 
@@ -61,6 +62,8 @@ export default function SignUp() {
   const [dong, setDong] = useState<string>("");
   const [addrDetail, setAddrDetail] = useState<string>("");
 
+  const navigate = useNavigate();
+
   const options = {
     data: {
       userId: id,
@@ -78,6 +81,18 @@ export default function SignUp() {
   const submitSignUp = useApi("post", URL, options);
   // 회원가입 버튼 클릭시
   const submit = () => {
+    console.log(
+      id,
+      pd,
+      name,
+      nickName,
+      phoneNumber,
+      birth,
+      si,
+      goon,
+      dong,
+      addrDetail
+    );
     if (
       id &&
       pd &&
@@ -90,9 +105,13 @@ export default function SignUp() {
       dong &&
       addrDetail
     ) {
-      submitSignUp();
+      submitSignUp().then((res) =>
+        Alert("success", "모든 항목을 올바르게 채워 주세요", () =>
+          navigate("/home")
+        )
+      );
     } else {
-      Alert("error", "틀렸음");
+      Alert("error", "모든 항목을 올바르게 채워 주세요");
     }
   };
 
@@ -104,7 +123,7 @@ export default function SignUp() {
       </div>
       <div css={container}>
         <hr className="line" />
-        <IdCheck setId={setId} />
+        <IdCheck setId={setId} id={id} />
         <PasswordCheck setPd={setPd} />
         <Name setName={setName} setNickName={setNickName} />
         <PhoneNumber
@@ -121,7 +140,16 @@ export default function SignUp() {
           setAddrDetail={setAddrDetail}
         />
         <div className="btnSection">
-          <Btn width={20} height={100} content={"회원가입"} onClick={submit} />
+          <Btn
+            width={"100px"}
+            height={"40px"}
+            content={"회원가입"}
+            onClick={submit}
+            backGroundColor={"#ffabab"}
+            color={"white"}
+            border={"0"}
+            marginTop={10}
+          />
         </div>
       </div>
     </>

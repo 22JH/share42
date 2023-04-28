@@ -1,6 +1,11 @@
 import Swal from "sweetalert2";
+import { SweetAlertIcon } from "sweetalert2";
 
-export default function Alert(icon: string, title: string) {
+export default function Alert(
+  icon: SweetAlertIcon,
+  title: string,
+  didClose: any = null
+) {
   const Toast = Swal.mixin({
     toast: true,
     showConfirmButton: false,
@@ -8,5 +13,5 @@ export default function Alert(icon: string, title: string) {
     timerProgressBar: true,
   });
 
-  Toast.fire(icon, title);
+  Toast.fire({ icon, title, didClose });
 }

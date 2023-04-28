@@ -80,13 +80,12 @@ public class CommunityService {
     public String insertCommunity(CommunityRequestDTO communityRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(loginId).getId();
+        Account account = accountRepository.findByUserId(loginId);
 
         Community community = new Community();
         BeanUtils.copyProperties(communityRequestDTO, community);
         community.setHits(0);
-        community.setAccount(new Account());
-        community.getAccount().setId(id);
+        community.setAccount(account);
         community.setStatus(BoardUtils.BOARD_STATUS_FALSE);
         community.setRegDt(LocalDateTime.now());
         community.setUptDt(community.getRegDt());
@@ -99,10 +98,10 @@ public class CommunityService {
     public String updateCommunity(int postId, CommunityRequestDTO communityRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(loginId).getId();
+        Account account = accountRepository.findByUserId(loginId);
 
         Community community = communityRepository.findById(postId);
-        if (community.getAccount().getId() != id){
+        if (community.getAccount().getId() != account.getId()){
             throw new RuntimeException();
         }
         if (community.isStatus()) {
@@ -118,10 +117,10 @@ public class CommunityService {
     public String deleteCommunity(int postId) {
         String loginId = SecurityUtil.getCurrentUserId();
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(loginId).getId();
+        Account account = accountRepository.findByUserId(loginId);
         Community community = communityRepository.findById(postId);
 
-        if (community.getAccount().getId() != id){
+        if (community.getAccount().getId() != account.getId()){
             throw new RuntimeException();
         }
         if (community.isStatus()){

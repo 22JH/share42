@@ -12,7 +12,7 @@ function UserMyPage() {
   }, []);
 
   return (
-    <div style={{ width: "100vw", height: "90vh" }}>
+    <div style={{ width: "100vw", height: "85vh" }}>
       {/* 프로필 */}
       <UserMyPageProfile />
       {/* 나의 거래 */}

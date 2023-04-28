@@ -5,7 +5,7 @@ import logo from "../../assets/logo.png";
 
 const container = css`
   display: flex;
-  height: 100vh;
+  height: 90vh;
   flex-direction: column;
   align-items: center;
   position: relative;

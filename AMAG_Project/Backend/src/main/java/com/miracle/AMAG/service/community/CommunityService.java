@@ -102,10 +102,10 @@ public class CommunityService {
 
         Community community = communityRepository.findById(postId);
         if (community.getAccount().getId() != account.getId()){
-            throw new RuntimeException();
+            throw new RuntimeException("작성자가 아닙니다.");
         }
         if (community.isStatus()) {
-            throw new RuntimeException();
+            throw new RuntimeException("삭제된 글입니다.");
         }
         BeanUtils.copyProperties(communityRequestDTO, community);
         community.setUptDt(LocalDateTime.now());
@@ -121,7 +121,7 @@ public class CommunityService {
         Community community = communityRepository.findById(postId);
 
         if (community.getAccount().getId() != account.getId()){
-            throw new RuntimeException();
+            throw new RuntimeException("작성자가 아닙니다.");
         }
         if (community.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");

@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.community;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.community.CommentInsertRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.community.CommentUpdateRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.community.Comment;
 import com.miracle.AMAG.entity.community.Community;
@@ -47,6 +48,27 @@ public class CommentService {
         comment.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
         commentRepository.save(comment);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String updateComment(int id, CommentUpdateRequestDTO commentUpdateRequestDTO){
+        String loginId = SecurityUtil.getCurrentUserId();
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(loginId);
+
+        Comment comment = commentRepository.findById(id);
+        if (comment.getAccount().getId() != account.getId()){
+            throw new RuntimeException("작성자가 아닙니다.");
+        }
+        if (comment.isStatus()){
+            throw new RuntimeException("삭제된 글입니다.");
+        }
+
+        BeanUtils.copyProperties(commentUpdateRequestDTO, comment);
+        comment.setUptDt(LocalDateTime.now());
+        commentRepository.save(comment);
+
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

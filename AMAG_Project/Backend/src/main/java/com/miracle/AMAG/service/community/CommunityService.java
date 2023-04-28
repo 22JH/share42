@@ -1,15 +1,21 @@
 package com.miracle.AMAG.service.community;
 
+import com.miracle.AMAG.config.SecurityUtil;
+import com.miracle.AMAG.dto.requestDTO.community.CommunityRequestDTO;
 import com.miracle.AMAG.dto.responseDTO.community.CommunityListResponseDTO;
+import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.community.Community;
 import com.miracle.AMAG.mapping.community.CommentDetailListMapping;
 import com.miracle.AMAG.mapping.community.CommunityDetailDataMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.community.CommentRepository;
 import com.miracle.AMAG.repository.community.CommunityRepository;
+import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.SearchTypeEnum;
 import com.miracle.AMAG.util.common.SortUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +75,25 @@ public class CommunityService {
             dto.setCommentCount((Long) objects[9]);
             return dto;
         });
+    }
+
+    public String insertCommunity(CommunityRequestDTO communityRequestDTO){
+        String loginId = SecurityUtil.getCurrentUserId();
+        //로그인된 아이디로 테이블 id column 가져오기
+        int id = accountRepository.findByUserId(loginId).getId();
+
+        Community community = new Community();
+        BeanUtils.copyProperties(communityRequestDTO, community);
+        community.setHits(0);
+        community.setAccount(new Account());
+        community.getAccount().setId(id);
+        community.setStatus(false);
+        community.setRegDt(LocalDateTime.now());
+        community.setUptDt(community.getRegDt());
+
+        communityRepository.save(community);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
 }

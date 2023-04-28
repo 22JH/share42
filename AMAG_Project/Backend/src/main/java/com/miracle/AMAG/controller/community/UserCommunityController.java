@@ -1,5 +1,6 @@
 package com.miracle.AMAG.controller.community;
 
+import com.miracle.AMAG.dto.requestDTO.community.CommunityRequestDTO;
 import com.miracle.AMAG.service.community.CommunityService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.network.NormalResponse;
@@ -49,5 +50,16 @@ public class UserCommunityController {
                                               @RequestParam("search") String search) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.getListData(sort,category,search,pageRequest));
+    }
+
+    @PostMapping("/posts")
+    @Operation(description = "커뮤니티 글 등록")
+    @Parameters({
+            @Parameter(name = "category", description = "카테고리"),
+            @Parameter(name = "title", description = "제목"),
+            @Parameter(name = "content", description = "내용")
+    })
+    public ResponseEntity<?> insertCommunity(@RequestBody CommunityRequestDTO communityRequestDTO) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.insertCommunity(communityRequestDTO));
     }
 }

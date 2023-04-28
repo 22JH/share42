@@ -55,6 +55,7 @@ function App() {
           <Route path="/user/payment" element={<UserPay />} />
           <Route path="/user/chat" element={<UserChat />} />
           <Route path="/user/report" element={<UserReport />} />
+          <Route path="/user/nfc" element={<UserReport />} />
           <Route path="/user/share-post" element={<UserSharePost />} />
         </Routes>
       </Router>

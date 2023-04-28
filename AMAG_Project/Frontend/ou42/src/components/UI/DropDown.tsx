@@ -52,7 +52,7 @@ export default function DropDown({
       >
         <InputLabel>{content}</InputLabel>
         <Select
-          value={data.includes(current) ? current : ""}
+          value={data?.includes(current) ? current : ""}
           onChange={handleChange}
           label={content}
         >

@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import Btn from "../../components/UI/Btn";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Btn from "../../components/UI/Btn";
 import logo from "../../assets/logo.png";
+import { useQuery, useQueryErrorResetBoundary } from "react-query";
+import { useApi } from "./../../hooks/useApi";
+
+const URL = "http://k8d102.p.ssafy.io:8088/api/common/terms/join";
 
 const container = css`
   height: 100vh;
@@ -73,6 +77,13 @@ export default function Temrs() {
   const [agreeBtn3, setAgreeBtn3] = useState(false);
 
   const navigate = useNavigate();
+  const getTerms = useApi("get", URL);
+
+  const { data } = useQuery("getTerms", getTerms, {
+    staleTime: 500 * 1000,
+    select: (res) => res?.data?.message,
+    suspense: false,
+  });
 
   const checkAvailable = () => {
     if (agreeBtn1 && agreeBtn2) {
@@ -131,7 +142,7 @@ export default function Temrs() {
           <div className="temrs">{AGREE_1}</div>
         </div>
         <div className="termsDetail">
-          <p>{AGREE_DETAIL_1}</p>
+          <p>{data[0].content}</p>
         </div>
       </div>
       <div className="section">
@@ -151,7 +162,7 @@ export default function Temrs() {
           <div className="temrs">{AGREE_2}</div>
         </div>
         <div className="termsDetail">
-          <p>{AGREE_DETAIL_1}</p>
+          <p>{data[1].content}</p>
         </div>
       </div>
       <div className="section">

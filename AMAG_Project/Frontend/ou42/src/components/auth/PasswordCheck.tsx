@@ -24,6 +24,7 @@ const container = css`
 export default function PasswordCheck({ setPd }: PropType) {
   const [pdCheck1, setPdCheck1] = useState<string>("");
   const [pdCheck2, setPdCheck2] = useState<string>("");
+  // 0 : 초기상태, 1: 통과, 2: 유효성 검사는 통과, 비밀번호가 다름, 3: 유효성검사 실패
   const [validPd, setValidPd] = useState<number>(0);
 
   const reg =
@@ -41,13 +42,17 @@ export default function PasswordCheck({ setPd }: PropType) {
   };
 
   useEffect(() => {
+    console.log(pdCheck1, pdCheck2);
     if (!pdCheck1 && !pdCheck2) {
       setValidPd(() => 0);
     } else if (pdCheck1 === pdCheck2 && reg.test(pdCheck1)) {
       setValidPd(() => 1);
       setPd(() => pdCheck1);
-    } else {
+    } else if (pdCheck1 !== pdCheck2 && reg.test(pdCheck1)) {
       setValidPd(() => 2);
+      setPd(() => "");
+    } else {
+      setValidPd(() => 3);
       setPd(() => "");
     }
   }, [pdCheck2, pdCheck1]);
@@ -74,7 +79,12 @@ export default function PasswordCheck({ setPd }: PropType) {
         placeholder="비밀번호를 확인해 주세요"
         type="password"
       />
-      <div css={{}}>{validPd === 2 ? "비밀번호를 확인해 주세요" : ""}</div>
+      <div>
+        {validPd === 2 ? "비밀번호가 일치하지 않습니다." : null}
+        {validPd === 3
+          ? "비밀번호는 소문자, 숫자, 특수문자를 하나씩 포함해야 합니다"
+          : null}
+      </div>
     </div>
   );
 }

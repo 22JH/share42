@@ -1,3 +1,4 @@
+import BottomMenuBar from "../../components/BottomMenuBar";
 import UserMyPageETC from "../../components/user/mypage/UserMyPageETC";
 import UserMyPageMyTrade from "../../components/user/mypage/UserMyPageMyTrade";
 import UserMyPageProfile from "../../components/user/mypage/UserMyPageProfile";
@@ -11,6 +12,8 @@ function UserMyPage() {
       <UserMyPageMyTrade />
       {/* 기타 */}
       <UserMyPageETC />
+      {/* 하단 메뉴 */}
+      <BottomMenuBar />
     </div>
   );
 }

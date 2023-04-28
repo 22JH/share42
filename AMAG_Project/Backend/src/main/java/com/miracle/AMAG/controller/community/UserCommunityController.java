@@ -63,24 +63,24 @@ public class UserCommunityController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.insertCommunity(communityRequestDTO));
     }
 
-    @PatchMapping("/posts/{posts_id}")
+    @PatchMapping("/posts/{post_id}")
     @Operation(description = "커뮤니티 글 수정")
     @Parameters({
-            @Parameter(name = "posts_id", description = "글 번호"),
+            @Parameter(name = "post_id", description = "글 번호"),
             @Parameter(name = "category", description = "카테고리"),
             @Parameter(name = "title", description = "제목"),
             @Parameter(name = "content", description = "내용")
     })
-    public ResponseEntity<?> updateCommunity(@PathVariable("posts_id") int postsId, @RequestBody CommunityRequestDTO communityRequestDTO) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.updateCommunity(postsId,communityRequestDTO));
+    public ResponseEntity<?> updateCommunity(@PathVariable("post_id") int postId, @RequestBody CommunityRequestDTO communityRequestDTO) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.updateCommunity(postId,communityRequestDTO));
     }
 
-    @DeleteMapping("/posts/{posts_id}")
+    @DeleteMapping("/posts/{post_id}")
     @Operation(description = "커뮤니티 글 삭제")
     @Parameters({
-            @Parameter(name = "posts_id", description = "글 번호")
+            @Parameter(name = "post_id", description = "글 번호")
     })
-    public ResponseEntity<?> updateCommunity(@PathVariable("posts_id") int postsId) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.deleteCommunity(postsId));
+    public ResponseEntity<?> updateCommunity(@PathVariable("post_id") int postId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.deleteCommunity(postId));
     }
 }

@@ -30,16 +30,14 @@ public class KlaytnService {
     @Value("${klaytn.chainId}")
     public String chainId;
 
-    public Map<String, Object> getAddress() {
+    public String getAddress() {
         try {
             JSONObject data = requestNewAccount();
             if (data == null) {
                 throw new NullPointerException();
             }
-            Map<String, Object> map = new HashMap<>();
-            map.put("address", data.get("address"));
 
-            return map;
+            return data.get("address").toString();
         } catch (IOException e) {
             System.out.println(e);
         }

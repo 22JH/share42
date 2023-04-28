@@ -99,7 +99,7 @@ function AdminSelectBox() {
           </select>
           <Btn
             width={100}
-            height={4.5}
+            height={"4.5%"}
             color={"white"}
             backGroundColor={"#0CDEE8"}
             content={"열기"}

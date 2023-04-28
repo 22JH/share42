@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.community;
 
 import com.miracle.AMAG.mapping.community.CommentDetailListMapping;
 import com.miracle.AMAG.mapping.community.CommunityDetailDataMapping;
+import com.miracle.AMAG.mapping.community.CommunityListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.community.CommentRepository;
 import com.miracle.AMAG.repository.community.CommunityRepository;
@@ -42,6 +43,16 @@ public class CommunityService {
         result.put("communityDetail", cddm);
         result.put("commentCount", commentCount);
         result.put("commentDetailList", cdlm);
+
+        return result;
+    }
+
+    public Map<String,Object> getListData(int sort, int category, String search, Pageable pageable){
+        Map<String, Object> result = new HashMap<>();
+
+        //Page<CommunityListMapping> clm = communityRepository.findAllByStatus(false);
+
+        //int commentCount = commentRepository.countByCommunity_Id(id);
 
         return result;
     }

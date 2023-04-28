@@ -1,10 +1,10 @@
 package com.miracle.AMAG.util.common;
 
 public enum SearchTypeEnum {
-    VALUE1(0,"maker"),
-    VALUE2(1,"modelNm"),
-    VALUE3(2,"modelYear"),
-    VALUE4(3,"content");
+    VALUE1(0,"all"),
+    VALUE2(1,"소식공유"),
+    VALUE3(2,"필요해요"),
+    VALUE4(3,"공유해요");
 
     private final int intValue;
 

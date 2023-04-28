@@ -72,4 +72,23 @@ public class CommentService {
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
+
+    public String deleteComment(int id){
+        String loginId = SecurityUtil.getCurrentUserId();
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(loginId);
+
+        Comment comment = commentRepository.findById(id);
+        if (comment.getAccount().getId() != account.getId()){
+            throw new RuntimeException("작성자가 아닙니다.");
+        }
+        if (comment.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+        comment.setUptDt(LocalDateTime.now());
+        comment.setStatus(BoardUtils.BOARD_STATUS_TRUE);
+        commentRepository.save(comment);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 }

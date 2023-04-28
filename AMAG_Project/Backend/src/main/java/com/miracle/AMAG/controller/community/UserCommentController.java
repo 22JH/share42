@@ -37,11 +37,20 @@ public class UserCommentController {
     @PatchMapping("/comments/{comment_id}")
     @Operation(description = "댓글 수정")
     @Parameters({
-            @Parameter(name = "comment_id", description = "글 번호"),
+            @Parameter(name = "comment_id", description = "댓글 번호"),
             @Parameter(name = "content", description = "내용")
     })
     public ResponseEntity<?> updateComment(@PathVariable("comment_id") int commentId, @RequestBody CommentUpdateRequestDTO commentUpdateRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, commentService.updateComment(commentId,commentUpdateRequestDTO));
+    }
+
+    @DeleteMapping("/comments/{comment_id}")
+    @Operation(description = "댓글 삭제")
+    @Parameters({
+            @Parameter(name = "comment_id", description = "댓글 번호")
+    })
+    public ResponseEntity<?> deleteComment(@PathVariable("comment_id") int commentId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, commentService.deleteComment(commentId));
     }
 
 }

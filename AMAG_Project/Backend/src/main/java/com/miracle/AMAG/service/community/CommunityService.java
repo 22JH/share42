@@ -39,17 +39,17 @@ public class CommunityService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public Map<String,Object> getDetailData(int id, Pageable pageable){
+    public Map<String, Object> getDetailData(int id, Pageable pageable) {
 
         communityRepository.updateHitUP(id);
 
-        CommunityDetailDataMapping cddm = communityRepository.findByIdAndStatus(id, false);
+        CommunityDetailDataMapping cddm = communityRepository.findByIdAndStatus(id, BoardUtils.BOARD_STATUS_FALSE);
 
         int commentCount = commentRepository.countByCommunity_Id(id);
 
         Page<CommentDetailListMapping> cdlm = commentRepository.findAllByCommunity_Id(id, pageable);
 
-        Map<String,Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("communityDetail", cddm);
         result.put("commentCount", commentCount);
         result.put("commentDetailList", cdlm);
@@ -57,9 +57,9 @@ public class CommunityService {
         return result;
     }
 
-    public Page<CommunityListResponseDTO> getListData(int sort, int category, String search, Pageable pageable){
+    public Page<CommunityListResponseDTO> getListData(int sort, int category, String search, Pageable pageable) {
         SearchTypeEnum searchType = SearchTypeEnum.valueOf(category);
-        Page<Object[]> result = communityRepository.getCommunityList(false,search,
+        Page<Object[]> result = communityRepository.getCommunityList(BoardUtils.BOARD_STATUS_FALSE, search,
                 searchType.getStringValue(), sort, pageable);
         return result.map(objects -> {
             CommunityListResponseDTO dto = new CommunityListResponseDTO();
@@ -77,7 +77,7 @@ public class CommunityService {
         });
     }
 
-    public String insertCommunity(CommunityRequestDTO communityRequestDTO){
+    public String insertCommunity(CommunityRequestDTO communityRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
         //로그인된 아이디로 테이블 id column 가져오기
         int id = accountRepository.findByUserId(loginId).getId();
@@ -87,7 +87,7 @@ public class CommunityService {
         community.setHits(0);
         community.setAccount(new Account());
         community.getAccount().setId(id);
-        community.setStatus(false);
+        community.setStatus(BoardUtils.BOARD_STATUS_FALSE);
         community.setRegDt(LocalDateTime.now());
         community.setUptDt(community.getRegDt());
 
@@ -96,16 +96,39 @@ public class CommunityService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String updateCommunity(int postId, CommunityRequestDTO communityRequestDTO){
+    public String updateCommunity(int postId, CommunityRequestDTO communityRequestDTO) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        //로그인된 아이디로 테이블 id column 가져오기
+        int id = accountRepository.findByUserId(loginId).getId();
+
         Community community = communityRepository.findById(postId);
-        if(community.isStatus()){
+        if (community.getAccount().getId() != id){
             throw new RuntimeException();
         }
-        /*community.setCategory(communityRequestDTO.getCategory());
-        community.setTitle(communityRequestDTO.getTitle());
-        community.setContent(communityRequestDTO.getContent());*/
-        BeanUtils.copyProperties(communityRequestDTO,community);
+        if (community.isStatus()) {
+            throw new RuntimeException();
+        }
+        BeanUtils.copyProperties(communityRequestDTO, community);
         community.setUptDt(LocalDateTime.now());
+        communityRepository.save(community);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String deleteCommunity(int postId) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        //로그인된 아이디로 테이블 id column 가져오기
+        int id = accountRepository.findByUserId(loginId).getId();
+        Community community = communityRepository.findById(postId);
+
+        if (community.getAccount().getId() != id){
+            throw new RuntimeException();
+        }
+        if (community.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+        community.setUptDt(LocalDateTime.now());
+        community.setStatus(BoardUtils.BOARD_STATUS_TRUE);
         communityRepository.save(community);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;

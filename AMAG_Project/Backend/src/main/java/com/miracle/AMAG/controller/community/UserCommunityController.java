@@ -74,4 +74,13 @@ public class UserCommunityController {
     public ResponseEntity<?> updateCommunity(@PathVariable("posts_id") int postsId, @RequestBody CommunityRequestDTO communityRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.updateCommunity(postsId,communityRequestDTO));
     }
+
+    @DeleteMapping("/posts/{posts_id}")
+    @Operation(description = "커뮤니티 글 삭제")
+    @Parameters({
+            @Parameter(name = "posts_id", description = "글 번호")
+    })
+    public ResponseEntity<?> updateCommunity(@PathVariable("posts_id") int postsId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.deleteCommunity(postsId));
+    }
 }

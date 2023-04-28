@@ -25,8 +25,8 @@ public class BoardUtils {
     public static final String SORT_BY_ID = "id";
     public static final String SORT_BY_VIEWS = "views";
 
-    public static final boolean BOARD_DELETE_STATUS_FALSE = false;
-    public static final boolean BOARD_DELETE_STATUS_TRUE = true;
+    public static final boolean BOARD_STATUS_FALSE = false;
+    public static final boolean BOARD_STATUS_TRUE = true;
 
     public static final String BOARD_CRUD_SUCCESS = "SUCCESS";
 

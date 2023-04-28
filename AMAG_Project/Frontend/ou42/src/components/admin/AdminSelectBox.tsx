@@ -7,7 +7,7 @@ import Btn from "./../UI/Btn";
 const container = (pathName: string) => css`
   width: 90%;
   margin: 0 5% 0 5%;
-  height: 90vh;
+  height: auto;
   p {
     font-weight: 900;
     margin: 5% 0 3% 0;
@@ -99,11 +99,11 @@ function AdminSelectBox() {
           </select>
           <Btn
             width={100}
-            height={4.5}
+            height={"4.5vh"}
             color={"white"}
-            backGroundColor={"#0CDEE8"}
+            backGroundColor={"#ff4f4f"}
             content={"열기"}
-            border={"1px solid #0CDEE8"}
+            border={"1px solid #ff4f4f"}
             marginTop={30}
             fontWeight={900}
             onClick={open}

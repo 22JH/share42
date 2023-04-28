@@ -9,6 +9,7 @@ import UserReportDiv from "../../components/report/UserReportDiv";
 import UserReportFile from "../../components/report/UserReportFile";
 import UserReportTitle from "../../components/report/UserReportTitle";
 import { useEffect } from "react";
+import BottomMenuBar from "../../components/BottomMenuBar";
 
 const UserReport = () => {
   const [category, setCategory] = useState<string>("");
@@ -130,6 +131,7 @@ const UserReport = () => {
           신고접수
         </button>
       </form>
+      <BottomMenuBar />
     </>
   );
 };

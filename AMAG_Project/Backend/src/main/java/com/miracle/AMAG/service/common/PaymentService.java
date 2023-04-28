@@ -68,13 +68,12 @@ public class PaymentService {
         String userId = SecurityUtil.getCurrentUserId();
 
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(userId).getId();
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(id);
+        Account account = accountRepository.findByUserId(userId);
+        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
         if(paymentMethodRequestDTO.getType()==PayMethodUtils.BILLING_KEY){
             if(data == null){
                data = new PaymentMethod();
-               data.setAccount(new Account());
-               data.getAccount().setId(id);
+               data.setAccount(account);
                data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
 
                paymentMethodRepository.save(data);
@@ -90,8 +89,7 @@ public class PaymentService {
         else if(paymentMethodRequestDTO.getType()==PayMethodUtils.ACCOUNT_NUMBER){
             if(data == null){
                 data = new PaymentMethod();
-                data.setAccount(new Account());
-                data.getAccount().setId(id);
+                data.setAccount(account);
                 data.setNumber(paymentMethodRequestDTO.getNumber());
 
                 paymentMethodRepository.save(data);

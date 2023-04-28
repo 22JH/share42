@@ -7,19 +7,38 @@ pipeline {
         jdk 'JDK 17'
     }
 
+    environment {
+        REPOSITORY_NAME = 'S08P31D102'
+        REPOSITORY_ADDRESS = 'lab.ssafy.com/s08-final/S08P31D102.git'
+        DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
+        DOCKER_HUB_CREDENTIALS = 'DockerHub_Account'
+
+        SPRING_ROOT_PATH = 'S08P31D102/AMAG_Project/Backend'
+        SPRING_IMAGE_NAME = 'miracle3070/share42-spring:latest'
+        SPRING_CONTAINER_NAME = 'spring-server'
+
+        REACT_ROOT_PATH = 'S08P31D102/AMAG_Project/Frontend/ou42'
+        REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
+        REACT_CONTAINER_NAME = 'react-server'
+
+    }
+
     stages {
-        stage('Remove') {
+        stage('Remove Existing Environment') {
             steps {
                 catchError {
                     echo 'Removing Existing Project Files'
-                    sh 'rm -rf S08P31D102'
+                    sh "rm -rf ${env.REPOSITORY_NAME}"
 
                     echo 'Removing Existing Project Containers'
-                    sh 'docker rm -f spring-server'
+                    sh "docker rm -f ${env.SPRING_CONTAINER_NAME}"
+                    sh "docker rm -f ${env.REACT_CONTAINER_NAME}"
 
                     echo 'Removing Existing Project Images'
-                    sh 'docker rmi miracle3070/share42-spring'
-                    sh 'docker rmi registry.hub.docker.com/miracle3070/share42-spring'
+                    sh "docker rmi ${env.SPRING_IMAGE_NAME}"
+                    sh "docker rmi registry.hub.docker.com/${env.SPRING_IMAGE_NAME}"
+                    sh "docker rmi ${env.REACT_IMAGE_NAME}"
+                    sh "docker rmi registry.hub.docker.com/${env.REACT_IMAGE_NAME}"
                 }
             }
         }
@@ -31,42 +50,66 @@ pipeline {
                     script {
                         // URL 인코딩을 위해 비밀번호를 인코딩합니다.
                         String encodedPassword = URLEncoder.encode(GIT_PASSWORD, "UTF-8")
-                        sh "git clone https://${GIT_USERNAME}:${encodedPassword}@lab.ssafy.com/s08-final/S08P31D102.git"
+                        sh "git clone https://${GIT_USERNAME}:${encodedPassword}@${env.REPOSITORY_ADDRESS}"
                     }
                 }
             }
         }
 
-        stage('Build') {
+        stage('Build Gradle') {
             steps {
                 echo 'Building the Spring Boot project using Gradle...'
-                dir('S08P31D102/AMAG_Project/Backend') {
+                dir("${env.SPRING_ROOT_PATH}") {
                     sh 'chmod 755 ./gradlew'
                     sh './gradlew clean build -x test'
                 }
             }
         }
 
-        stage('Docker Build') {
+        stage('Docker Build Spring') {
             steps {
                 echo 'Building Docker image...'
-                dir('S08P31D102/AMAG_Project/Backend') {
+                dir("${env.SPRING_ROOT_PATH}") {
                     script {
-                        def dockerImage = docker.build("miracle3070/share42-spring:latest")
+                        def dockerImage = docker.build("${env.SPRING_IMAGE_NAME}")
                     }
                 }
             }
         }
 
-        stage('Docker Deploy') {
+        stage('Docker Deploy Spring') {
             steps {
                 echo 'Deploying Docker container...'
                 script {
-                    def dockerImage = docker.image("miracle3070/share42-spring:latest")
-                    docker.withRegistry('https://registry.hub.docker.com', 'DockerHub_Account') {
+                    def dockerImage = docker.image("${env.SPRING_IMAGE_NAME}")
+                    docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
-                    dockerImage.run('-p 8088:8088 --name spring-server')
+                    dockerImage.run("-p 8088:8088 --name ${SPRING_CONTAINER_NAME}")
+                }
+            }
+        }
+
+        stage('Docker Build React') {
+            steps {
+                dir(path: "${env.REACT_ROOT_PATH}") {
+                    script {
+                        docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
+                            def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Deploy React') {
+            steps {
+                script {
+                    def dockerImage = docker.image("${env.REACT_IMAGE_NAME}")
+                    docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
+                        dockerImage.push()
+                    }
+                    dockerImage.run("-p 80:80 --name ${env.REACT_CONTAINER_NAME}")
                 }
             }
         }

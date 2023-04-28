@@ -26,8 +26,8 @@ export default function Birth({ setBirth }: PropType) {
   const handleBirth = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
+    setBirth(() => e.target.value);
     if (reg.test(e?.target?.value)) {
-      setBirth(() => e.target.value);
       setValidBirth(() => 1);
     } else if (e?.target?.value) {
       setValidBirth(() => 2);

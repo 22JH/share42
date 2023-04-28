@@ -22,6 +22,7 @@ import UserReport from "./routes/user/UserReport";
 import UserSharePost from "./routes/user/UserSharePost";
 import MyPageNavBar from "./components/NavBar/MyPageNavBar";
 import UserMyPageUsage from "./routes/userHome/UserMyPageUsage";
+import UserNfc from "./routes/user/UserNfc";
 
 const globalStyle = css`
   body {
@@ -45,6 +46,7 @@ function App() {
           <Route element={<MyPageNavBar />}>
             <Route path="/user/mypage" element={<UserMyPage />} />
             <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
+            <Route path="/user/nfc" element={<UserNfc />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />
@@ -62,7 +64,6 @@ function App() {
           <Route path="/user/payment" element={<UserPay />} />
           <Route path="/user/chat" element={<UserChat />} />
           <Route path="/user/report" element={<UserReport />} />
-          <Route path="/user/nfc" element={<UserReport />} />
           <Route path="/user/share-post" element={<UserSharePost />} />
         </Routes>
       </Router>

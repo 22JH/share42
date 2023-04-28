@@ -9,7 +9,6 @@ import Birth from "../../components/auth/Birth";
 import Address from "../../components/auth/Address";
 import Btn from "../../components/UI/Btn";
 import logo from "../../assets/logo.png";
-import { useQuery } from "react-query";
 import { useApi } from "../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
@@ -82,16 +81,26 @@ export default function SignUp() {
   // 회원가입 버튼 클릭시
   const submit = () => {
     console.log(
+      "id",
       id,
+      "pd",
       pd,
+      "name",
       name,
+      "nickName",
       nickName,
+      "phoneNumber",
       phoneNumber,
+      "birth",
       birth,
+      "si",
       si,
+      "goon",
       goon,
+      "dong",
       dong,
-      addrDetail
+      "addrDetail",
+      dong
     );
     if (
       id &&

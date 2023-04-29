@@ -48,7 +48,7 @@ public class BoardUtils {
      * @return boolean
      */
     public static boolean checkImageFileExtension(String fileExtension) {
-        List<String> extensions = Arrays.asList("jpg", "jpeg", "png", "gif");
+        List<String> extensions = Arrays.asList("jpg", "jpeg", "png", "gif", "JPG", "JPEG", "PNG", "GIF");
         for (String extension: extensions) {
             if (fileExtension.toLowerCase().equals(extension)) {
                 return true;

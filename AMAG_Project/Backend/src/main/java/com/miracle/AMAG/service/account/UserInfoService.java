@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.account;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.account.PaymentMethodRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.account.UserInfoRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.PaymentMethod;
 import com.miracle.AMAG.mapping.account.UserInfoMapping;
@@ -16,6 +17,7 @@ import kr.co.bootpay.model.request.SubscribePayload;
 import kr.co.bootpay.model.request.User;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -220,5 +222,24 @@ public class UserInfoService {
         }
         return accountRepository.findByUserIdAndRole(userId, Role.ROLE_USER);
     }
+
+    public String updateUserInfo(UserInfoRequestDTO userInfoRequestDTO){
+        String userId = SecurityUtil.getCurrentUserId();
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
+        if (userInfoRequestDTO.getImgFile() != null) {
+            String fileName = BoardUtils.singleFileSave((userInfoRequestDTO).getImgFile());
+            userInfoRequestDTO.setImg(fileName);
+        }
+
+        accountRepository.updateByUserId(userId,userInfoRequestDTO.getNickname(),userInfoRequestDTO.getSido(),
+                userInfoRequestDTO.getSigungu(), userInfoRequestDTO.getDong(), userInfoRequestDTO.getAddress(),
+                userInfoRequestDTO.getImg());
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
 
 }

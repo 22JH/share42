@@ -35,6 +35,10 @@ public class CommentService {
     public String insertComment(CommentInsertRequestDTO commentInsertRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
         //로그인된 아이디로 테이블 id column 가져오기
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
         Account account = accountRepository.findByUserId(loginId);
 
         Comment comment = new Comment();
@@ -54,6 +58,10 @@ public class CommentService {
 
     public String updateComment(int id, CommentUpdateRequestDTO commentUpdateRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
 
@@ -75,6 +83,10 @@ public class CommentService {
 
     public String deleteComment(int id){
         String loginId = SecurityUtil.getCurrentUserId();
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
 

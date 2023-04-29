@@ -1,17 +1,4 @@
-
-export interface UserShareDetailCarouselProps {
-  slideRef: React.RefObject<HTMLDivElement>;
-  handleTouchStart: (e: React.TouchEvent) => void;
-  handleTouchMove: (e: React.TouchEvent) => void;
-  handleTouchEnd: () => void;
-  slides: {
-    id: number;
-    image: string;
-  }[];
-  slideWidth: number;
-  handleDotClick: (idx: number) => void;
-  currentSlide: number;
-}
+import { UserShareDetailCarouselProps } from "./type/UserShareDetailType";
 
 const UserShareDetailCarousel = ({
   slideRef,

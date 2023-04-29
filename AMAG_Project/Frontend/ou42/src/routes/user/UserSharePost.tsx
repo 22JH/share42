@@ -1,37 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { css, keyframes } from "@emotion/react";
 
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import driver1 from "../../assets/testObject.jpg";
 import driver2 from "../../assets/driver1.jpg";
 import driver3 from "../../assets/driver2.jpg";
 import driver4 from "../../assets/driver3.jpg";
 
-import UserShareDetailCarousel from "../../components/sharedetail/UserShareDetailCarousel";
-import UserShareDetailPostInfo from "../../components/sharedetail/UserShareDetailPostInfo";
-import UserShareDetailContent from "../../components/sharedetail/UserShareDetailContent";
-import { useNavigate } from "react-router-dom";
-
-export const pulse = keyframes`
-  30% {
-    transform: scale(1.5);
-  }
-  60% {
-    transform: scale(0.5);
-  }
-  100% {
-    transform: scale(1);
-  }
-`;
-
-export const FaHeartStyle = css`
-  transition: color 0.5s ease, transform 0.5s ease;
-
-  &.like {
-    color: red;
-    animation: ${pulse} 0.5s ease;
-  }
-`;
+import UserShareDetailCarousel 
+from "../../components/sharedetail/UserShareDetailCarousel";
+import UserShareDetailPostInfo 
+from "../../components/sharedetail/UserShareDetailPostInfo";
+import UserShareDetailContent 
+from "../../components/sharedetail/UserShareDetailContent";
+import UserShareDetailRequest 
+from "../../components/sharedetail/UserShareDetailRequest";
 
 const UserSharePost = () => {
   const slideWidth = 415;
@@ -159,101 +143,13 @@ const UserSharePost = () => {
           isLike={isLike}
         />
         <UserShareDetailContent />
-        <div
-          style={{
-            width: "85vw",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "2vh",
-            marginBottom: "2vh",
-            fontWeight: "900",
-          }}
-        >
-          {/* NFC버튼, 사용하기, 채팅하기, 가격, 동네 가져오기 */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            {/* toLocaleString() */}
-            <span>{`200원`}</span>
-            <span
-              style={{
-                color: "#adadad",
-                fontWeight: "500",
-              }}
-            >
-              구미 인동
-            </span>
-          </div>
-          <div>
-            {useRequest ? (
-              <button
-                style={{
-                  color: "#ffffff",
-                  backgroundColor: "#FFABAB",
-                  border: "none",
-                  borderRadius: "5px",
-                  boxShadow: "2px 2px 5px #00000051",
-                  padding: "1.4vh 4vw",
-                }}
-                onClick={handleUseRequest}
-              >
-                사용신청
-              </button>
-            ) : (
-              <>
-                <button
-                  style={{
-                    color: "#ffffff",
-                    backgroundColor: "#909090",
-                    border: "none",
-                    borderRadius: "5px",
-                    boxShadow: "2px 2px 5px #00000051",
-                    padding: "1.4vh 4vw",
-                  }}
-                  onClick={handleUseCancel}
-                >
-                  사용취소
-                </button>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '5vh',
-                    right: '8vw',
-                    width: '5rem',
-                    height: '5rem',
-                    borderRadius: '50%',
-                    textAlign: 'center',
-                    lineHeight: '5rem',
-                    backgroundColor: 'red',
-                    color: 'white',
-                    fontWeight: '900'
-                  }}
-                  onClick={handleNFC}
-                >
-                  NFC
-                </div>
-              </>
-            )}
-            <button
-              style={{
-                marginLeft: "3vw",
-                color: "#ffffff",
-                backgroundColor: "#FFABAB",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-              onClick={handleChating}
-            >
-              채팅하기
-            </button>
-          </div>
-        </div>
+        <UserShareDetailRequest
+          useRequest={useRequest}
+          handleUseRequest={handleUseRequest}
+          handleUseCancel={handleUseCancel}
+          handleNFC={handleNFC}
+          handleChating={handleChating}
+        />
       </div>
     </>
   );

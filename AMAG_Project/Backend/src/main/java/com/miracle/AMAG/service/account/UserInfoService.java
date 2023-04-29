@@ -1,13 +1,15 @@
-package com.miracle.AMAG.service.common;
+package com.miracle.AMAG.service.account;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.account.PaymentMethodRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.PaymentMethod;
+import com.miracle.AMAG.mapping.account.UserInfoMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.PaymentMethodRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.PayMethodUtils;
+import com.miracle.AMAG.util.common.Role;
 import jakarta.transaction.Transactional;
 import kr.co.bootpay.Bootpay;
 import kr.co.bootpay.model.request.SubscribePayload;
@@ -23,7 +25,7 @@ import java.util.HashMap;
 @Slf4j
 @Transactional
 @Service
-public class PaymentService {
+public class UserInfoService {
 
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
@@ -40,7 +42,9 @@ public class PaymentService {
     public String getPayMethod(int type){
         //현재 로그인된 아이디 가져오기
         String userId = SecurityUtil.getCurrentUserId();
-
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
         int id = accountRepository.findByUserId(userId).getId();
 
@@ -66,7 +70,9 @@ public class PaymentService {
         }
 
         String userId = SecurityUtil.getCurrentUserId();
-
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(userId);
         PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
@@ -110,10 +116,12 @@ public class PaymentService {
 
     public String deleteAccountNumber(){
         String userId = SecurityUtil.getCurrentUserId();
-
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(userId).getId();
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(id);
+        Account account = accountRepository.findByUserId(userId);
+        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
 
         if(data == null || data.getNumber() == null){
             throw new RuntimeException();
@@ -127,10 +135,12 @@ public class PaymentService {
 
     public String getPayMethodDataCheck(int type){
         String userId = SecurityUtil.getCurrentUserId();
-
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
-        int id = accountRepository.findByUserId(userId).getId();
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(id);
+        Account account = accountRepository.findByUserId(userId);
+        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
 
         if(type == PayMethodUtils.BILLING_KEY && data.getBillingKey() == null){
             return PayMethodUtils.CHECK_FAIL;
@@ -201,6 +211,14 @@ public class PaymentService {
             e.printStackTrace();
         }
         return receiptId;
+    }
+
+    public UserInfoMapping getUserInfo(){
+        String userId = SecurityUtil.getCurrentUserId();
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        return accountRepository.findByUserIdAndRole(userId, Role.ROLE_USER);
     }
 
 }

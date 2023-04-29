@@ -1,16 +1,21 @@
 package com.miracle.AMAG.controller.account;
 
 import com.miracle.AMAG.dto.requestDTO.account.PaymentMethodRequestDTO;
-import com.miracle.AMAG.entity.account.Account;
-import com.miracle.AMAG.entity.account.PaymentMethod;
+import com.miracle.AMAG.dto.requestDTO.community.CommunityRequestDTO;
 import com.miracle.AMAG.service.common.PaymentService;
-import com.miracle.AMAG.util.board.BoardUtils;
+import com.miracle.AMAG.util.network.CUDResponse;
+import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,30 +31,55 @@ public class UserInfoController {
     private PaymentService paymentService;
 
     @GetMapping("/pay-method/{type}")
-    @Operation(description = "사용자 계좌 관련 정보 조회")
+    @Operation(summary = "사용자 계좌 관련 정보 조회", description = "사용자 계좌 관련 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 계좌 관련 정보 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 계좌 관련 정보 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Parameters({
-            @Parameter(name = "type", description = "조회 타입(0: BillingKey, 1: 계좌번호)")
+            @Parameter(name = "type", description = "조회 타입(0: BillingKey, 1: 계좌번호)",in = ParameterIn.PATH)
     })
     public ResponseEntity<?> getPayMethod(@PathVariable("type") int type) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getPayMethod(type));
     }
 
     @PostMapping("/pay-method")
-    @Operation(description = "사용자 계좌 관련 정보 추가")
-    public ResponseEntity<?> InsertPayMethod(@RequestBody PaymentMethodRequestDTO paymentMethodRequestDTO) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "계좌 정보 추가 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "계좌 정보 추가 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "사용자 계좌 관련 정보 추가", description = "사용자 계좌 관련 정보를 추가합니다.")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "사용자 계좌 정보", required = true, content = @Content(schema = @Schema(implementation = PaymentMethodRequestDTO.class)))
+    public ResponseEntity<?> InsertPayMethod(@RequestBody @Valid PaymentMethodRequestDTO paymentMethodRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.insertPayMethod(paymentMethodRequestDTO));
     }
 
     @DeleteMapping("/pay-method/account-number")
-    @Operation(description = "사용자 계좌 번호 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 계좌 번호 삭제 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 계좌 번호 삭제 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "사용자 계좌 번호 삭제", description = "사용자 계좌 번호를 삭제합니다.")
     public ResponseEntity<?> DeleteAccountNumber() {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.deleteAccountNumber());
     }
 
     @GetMapping("/pay-method/check/{type}")
-    @Operation(description = "사용자 계좌 관련 정보 등록 여부 체크")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 계좌 관련 정보 체크 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 계좌 관련 정보 체크 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "사용자 계좌 관련 정보 등록 여부 체크",description = "결제 관련 서비스 이용 전 사용자 계좌 관련 정보 등록 여부를 체크합니다.")
     @Parameters({
-            @Parameter(name = "type", description = "조회 타입(0: BillingKey 등록 여부, 1: 계좌 번호 등록 여부, 2: 계좌 관련 모든 데이터 여부)")
+            @Parameter(name = "type", description = "조회 타입(0: BillingKey 등록 여부, 1: 계좌 번호 등록 여부, 2: 계좌 관련 모든 데이터 여부)", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> getPayMethodDataCheck(@PathVariable("type") int type) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, paymentService.getPayMethodDataCheck(type));

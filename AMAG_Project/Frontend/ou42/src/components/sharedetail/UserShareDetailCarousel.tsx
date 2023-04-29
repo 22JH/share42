@@ -1,7 +1,8 @@
+
 export interface UserShareDetailCarouselProps {
   slideRef: React.RefObject<HTMLDivElement>;
-  handleTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
-  handleTouchMove: (e: React.TouchEvent<HTMLDivElement>) => void;
+  handleTouchStart: (e: React.TouchEvent) => void;
+  handleTouchMove: (e: React.TouchEvent) => void;
   handleTouchEnd: () => void;
   slides: {
     id: number;
@@ -22,8 +23,9 @@ const UserShareDetailCarousel = ({
   handleDotClick,
   currentSlide,
 }: UserShareDetailCarouselProps) => {
+
   return (
-    <div>
+    <>
       <div
         ref={slideRef}
         style={{
@@ -69,7 +71,7 @@ const UserShareDetailCarousel = ({
           ></button>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

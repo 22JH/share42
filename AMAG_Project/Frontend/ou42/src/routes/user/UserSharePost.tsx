@@ -10,6 +10,7 @@ import driver4 from "../../assets/driver3.jpg";
 import UserShareDetailCarousel from "../../components/sharedetail/UserShareDetailCarousel";
 import UserShareDetailPostInfo from "../../components/sharedetail/UserShareDetailPostInfo";
 import UserShareDetailContent from "../../components/sharedetail/UserShareDetailContent";
+import { useNavigate } from "react-router-dom";
 
 export const pulse = keyframes`
   30% {
@@ -39,6 +40,8 @@ const UserSharePost = () => {
   const [currentTouchStart, setCurrentTouchStart] = useState(0);
   const [slideOffset, setSlideOffset] = useState(0);
   const [isLike, setIsLike] = useState<null | boolean>(null);
+  const [useRequest, setUseRequest] = useState<null | boolean>(true);
+  const navigate = useNavigate();
 
   const slides = [
     { id: 0, image: driver1 },
@@ -59,17 +62,18 @@ const UserSharePost = () => {
   };
 
   // 슬라이드 손가락 누른부분을 시작점으로
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     const touchStartX = e.touches[0].clientX;
     setCurrentTouchStart(touchStartX);
   };
 
   // 누른 상태로 이동하여 거리 계산
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const touchMoveX = e.touches[0].clientX;
-    const deltaX = touchMoveX - currentTouchStart;
-    setSlideOffset(deltaX);
-    e.preventDefault();
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (slideRef.current) {
+      const touchMoveX = e.touches[0].clientX;
+      const deltaX = touchMoveX - currentTouchStart;
+      setSlideOffset(deltaX);
+    }
   };
 
   // 손가락을 떼로 난 다음거리 계산해서 이미지 조정하기
@@ -106,6 +110,30 @@ const UserSharePost = () => {
     setIsLike(!isLike);
   };
 
+  // 사용신청 하기
+  const handleUseRequest = () => {
+    setUseRequest(false);
+    // useQuery 또는 api 요청
+  };
+
+  // 사용취소 하기
+  const handleUseCancel = () => {
+    setUseRequest(true);
+    // useQuery 또는 api 요청
+  };
+
+  // 채팅하기 화면으로
+  const handleChating = () => {
+    // 채팅화면으로 가기
+    navigate("/user/chat/userId");
+  };
+
+  // NFC 화면으로
+  const handleNFC = () => {
+    // NFC 화면으로 가기
+    navigate("/")
+  }
+
   return (
     <>
       <UserShareDetailCarousel
@@ -131,8 +159,100 @@ const UserSharePost = () => {
           isLike={isLike}
         />
         <UserShareDetailContent />
-        <div>
+        <div
+          style={{
+            width: "85vw",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: "2vh",
+            marginBottom: "2vh",
+            fontWeight: "900",
+          }}
+        >
           {/* NFC버튼, 사용하기, 채팅하기, 가격, 동네 가져오기 */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* toLocaleString() */}
+            <span>{`200원`}</span>
+            <span
+              style={{
+                color: "#adadad",
+                fontWeight: "500",
+              }}
+            >
+              구미 인동
+            </span>
+          </div>
+          <div>
+            {useRequest ? (
+              <button
+                style={{
+                  color: "#ffffff",
+                  backgroundColor: "#FFABAB",
+                  border: "none",
+                  borderRadius: "5px",
+                  boxShadow: "2px 2px 5px #00000051",
+                  padding: "1.4vh 4vw",
+                }}
+                onClick={handleUseRequest}
+              >
+                사용신청
+              </button>
+            ) : (
+              <>
+                <button
+                  style={{
+                    color: "#ffffff",
+                    backgroundColor: "#909090",
+                    border: "none",
+                    borderRadius: "5px",
+                    boxShadow: "2px 2px 5px #00000051",
+                    padding: "1.4vh 4vw",
+                  }}
+                  onClick={handleUseCancel}
+                >
+                  사용취소
+                </button>
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '5vh',
+                    right: '8vw',
+                    width: '5rem',
+                    height: '5rem',
+                    borderRadius: '50%',
+                    textAlign: 'center',
+                    lineHeight: '5rem',
+                    backgroundColor: 'red',
+                    color: 'white',
+                    fontWeight: '900'
+                  }}
+                  onClick={handleNFC}
+                >
+                  NFC
+                </div>
+              </>
+            )}
+            <button
+              style={{
+                marginLeft: "3vw",
+                color: "#ffffff",
+                backgroundColor: "#FFABAB",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+              onClick={handleChating}
+            >
+              채팅하기
+            </button>
+          </div>
         </div>
       </div>
     </>

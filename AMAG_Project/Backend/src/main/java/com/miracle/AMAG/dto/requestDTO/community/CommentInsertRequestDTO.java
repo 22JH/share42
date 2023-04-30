@@ -12,17 +12,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Schema(description = "댓글 작성")
+@Schema(title = "댓글 작성 DTO",description = "댓글 작성에 사용되는 RequestDTO입니다.")
 public class CommentInsertRequestDTO {
 
     @NotNull
     @NotBlank
-    @Schema(description = "커뮤니티 글 아이디")
+    @Schema(title = "커뮤니티 글 아이디",description = "댓글을 작성할 커뮤니티 글 아이디")
     private int communityId;
 
     @NotNull
     @NotBlank
-    @Schema(description = "댓글 내용")
+    @Schema(title = "댓글 내용", description = "해당 커뮤니티 글에 작성할 댓글 내용", maxLength = 100)
     @Column(length = 100)
     private String content;
 }

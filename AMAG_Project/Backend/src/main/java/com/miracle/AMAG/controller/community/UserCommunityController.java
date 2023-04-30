@@ -59,11 +59,11 @@ public class UserCommunityController {
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "커뮤니티 글 목록 조회", description = "해당 파라미터 조건들에 맞는 커뮤니티 글 목록을 조회합니다.")
     @Parameters({
-            @Parameter(name = "page", description = "글 페이지 번호"),
-            @Parameter(name = "size", description = "페이지 당 글 수"),
-            @Parameter(name = "sort", description = "정렬 기준(0: 최신순, 1: 인기순)"),
-            @Parameter(name = "category", description = "보고 싶은 카테고리(0: 모든 카테고리, 1: 소식공유, 2: 필요해요, 3: 공유해요)"),
-            @Parameter(name = "search", description = "검색어")
+            @Parameter(name = "page", description = "글 페이지 번호",in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지 당 글 수",in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬 기준(0: 최신순, 1: 인기순)",in = ParameterIn.QUERY),
+            @Parameter(name = "category", description = "보고 싶은 카테고리(0: 모든 카테고리, 1: 소식공유, 2: 필요해요, 3: 공유해요)",in = ParameterIn.QUERY),
+            @Parameter(name = "search", description = "검색어",in = ParameterIn.QUERY)
     })
     public ResponseEntity<?> getCommunityList(@RequestParam("page") int page, @RequestParam("size") int size,
                                               @RequestParam("sort") int sort, @RequestParam("category") int category,

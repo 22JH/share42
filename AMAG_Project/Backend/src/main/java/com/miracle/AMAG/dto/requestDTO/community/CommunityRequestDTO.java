@@ -14,22 +14,22 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
-@Schema(description = "커뮤니티 글 작성")
+@Schema(title = "커뮤니티 글 작성", description = "커뮤니티 글 작성을 위해 사용되는 RequestDTO 입니다.")
 public class CommunityRequestDTO {
 
-    @Schema(description = "글 카테고리")
+    @Schema(title = "글 카테고리", description = "작성할 커뮤니티의 카테고리", maxLength = 10)
     @NotNull
     @NotBlank
     @Column(length = 10)
     private String category;
 
-    @Schema(description = "글 제목")
+    @Schema(title = "글 제목", description = "작성할 커뮤니티의 제목", maxLength = 30)
     @NotNull
     @NotBlank
     @Column(length = 30)
     private String title;
 
-    @Schema(description = "글 내용")
+    @Schema(title = "글 내용", description = "작성할 커뮤니티의 내용", maxLength = 200)
     @NotNull
     @NotBlank
     @Column(length = 200)

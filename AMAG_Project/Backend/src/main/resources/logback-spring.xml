@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <!-- Define the Papertrail appender -->
+    <appender name="PAPERTRAIL" class="ch.qos.logback.classic.net.SyslogAppender">
+        <syslogHost>logs6.papertrailapp.com</syslogHost>
+        <port>10101</port>
+        <facility>LOCAL0</facility>
+        <suffixPattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c:%M:%L - %m%n</suffixPattern>
+    </appender>
+
+    <!-- Configure root logger to use the Papertrail appender -->
+    <root level="INFO">
+        <appender-ref ref="PAPERTRAIL"/>
+    </root>
+
+    <!-- Configure Hibernate SQL logging -->
+    <logger name="org.hibernate.SQL" level="DEBUG">
+        <appender-ref ref="PAPERTRAIL"/>
+    </logger>
+
+    <!-- Optional: Configure Hibernate type descriptor logging -->
+    <logger name="org.hibernate.type.descriptor.sql" level="TRACE">
+        <appender-ref ref="PAPERTRAIL"/>
+    </logger>
+</configuration>

@@ -125,4 +125,19 @@ public class UserShareService {
 
         return result;
     }
+
+    public String deleteShareArticle(int shareArticleId){
+        String loginId = SecurityUtil.getCurrentUserId();
+
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+        shareArticleRepository.updateStatus(shareArticleId, BoardUtils.BOARD_STATUS_TRUE);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 }

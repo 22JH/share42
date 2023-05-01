@@ -28,14 +28,14 @@ public class ShareArticle {
     @Column(length = 10)
     private String name;
 
-    @Column(length = 10)
+    @Column(length = 100)
     private String content;
 
     private int price;
 
     private int sharePrice;
 
-    @Column(length = 10)
+    @Column(length = 100)
     private String img;
 
     private LocalDateTime regDt;
@@ -47,4 +47,16 @@ public class ShareArticle {
     private boolean status;
 
     private int hits;
+
+    @Column(length = 10)
+    private String sido;
+
+    @Column(length = 10)
+    private String sigungu;
+
+    @Column(length = 10)
+    private String dong;
+
+    @Column(length = 100)
+    private String address;
 }

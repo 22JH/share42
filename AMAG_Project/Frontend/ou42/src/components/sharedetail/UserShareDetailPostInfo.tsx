@@ -2,12 +2,8 @@
 
 import { FaHeart } from "react-icons/fa";
 import ProfilePic from "../../assets/ProfilePic.svg";
-import { FaHeartStyle } from "../../routes/user/UserSharePost";
-
-export interface UserShareDetailPostInfoProps {
-  isLike: null | boolean;
-  handleLikeRequest: () => void;
-}
+import { FaHeartStyle } from "./style/UserShareDetailStyle";
+import { UserShareDetailPostInfoProps } from "./type/UserShareDetailType";
 
 const UserShareDetailPostInfo = ({
   isLike,

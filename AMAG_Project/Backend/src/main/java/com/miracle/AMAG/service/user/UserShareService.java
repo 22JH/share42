@@ -67,7 +67,8 @@ public class UserShareService {
         shareArticle.setShareStatus(ShareArticleUtils.KEEP_STAY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
-        Locker locker = lockerRepository.findById(shareArticleRequestDTO.getLockerId());
+        //락커를 배정하는 부분(현재는 임시로 2 상우가 구현하는 부분)
+        Locker locker = lockerRepository.findById(2);
         shareArticle.setSido(locker.getLockerStation().getSido());
         shareArticle.setSigungu(locker.getLockerStation().getSigungu());
         shareArticle.setDong(locker.getLockerStation().getDong());
@@ -105,20 +106,9 @@ public class UserShareService {
         }
         BeanUtils.copyProperties(shareArticle, shareArticleUpdateRequestDTO);
 
-        Locker before_locker = lockerRepository.findByShareArticle_Id(shareArticle.getId());
-        Locker after_locker = lockerRepository.findById(shareArticleUpdateRequestDTO.getLockerId());
-
-        lockerRepository.updateShareArticle(shareArticle);
-
-        shareArticle.setSido(after_locker.getLockerStation().getSido());
-        shareArticle.setSigungu(after_locker.getLockerStation().getSigungu());
-        shareArticle.setDong(after_locker.getLockerStation().getDong());
-        shareArticle.setAddress(after_locker.getLockerStation().getAddress());
-        after_locker.setShareArticle(shareArticle);
-
         shareArticle.setUptDt(LocalDateTime.now());
         shareArticleRepository.save(shareArticle);
-        lockerRepository.save(after_locker);
+
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
@@ -134,5 +124,20 @@ public class UserShareService {
         result.put("likeCount", likeCount);
 
         return result;
+    }
+
+    public String deleteShareArticle(int shareArticleId){
+        String loginId = SecurityUtil.getCurrentUserId();
+
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+        shareArticleRepository.updateStatus(shareArticleId, BoardUtils.BOARD_STATUS_TRUE);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 }

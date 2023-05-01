@@ -18,4 +18,8 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
     @Modifying
     @Query("update ShareArticle s set s.hits = s.hits + 1 where s.id = :id")
     void updateHitUP(@Param("id") int id);
+
+    @Modifying
+    @Query("update ShareArticle s set s.status = :status where s.id = :id")
+    void updateStatus(@Param("id") int id, @Param("status") boolean status);
 }

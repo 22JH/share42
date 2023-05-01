@@ -1,5 +1,6 @@
 package com.miracle.AMAG.controller.user;
 
+import com.miracle.AMAG.dto.requestDTO.account.UserInfoRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.service.user.UserShareService;
@@ -64,8 +65,8 @@ public class UserShareController {
     }
     @GetMapping("/{share_article_id}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "사용자 정보 상세 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
-            @ApiResponse(responseCode = "500", description = "사용자 정보 상세 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "물품 공유 글 상세 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "뭎룸 공유 글 상세 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
@@ -75,5 +76,20 @@ public class UserShareController {
     })
     public ResponseEntity<?> getShareArticle(@PathVariable("share_article_id") int shareArticleId) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.getShareArticle(shareArticleId));
+    }
+
+    @DeleteMapping("/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 정보 변경 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 정보 변경 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "물품 공유 글 삭제", description = "본인이 작성한 물품 공유 글을 삭제합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "삭제할 공유 물품 글 번호", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> updateUserInfo(@PathVariable("share_article_id") int shareArticleId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.deleteShareArticle(shareArticleId));
     }
 }

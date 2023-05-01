@@ -44,9 +44,13 @@ function BottomMenuBar() {
   const { pathname } = useLocation();
   const homeIcons = [
     { title: "홈", Icon: AiOutlineHome, url: "/home" },
-    { title: "커뮤니티", Icon: BsFillMenuButtonWideFill, url: "/community" },
-    { title: "NFC", Icon: TbNfc, url: "" },
-    { title: "채팅", Icon: BsChatRightHeart, url: "/chat" },
+    {
+      title: "커뮤니티",
+      Icon: BsFillMenuButtonWideFill,
+      url: "/user/community",
+    },
+    { title: "NFC", Icon: TbNfc, url: "/uesr/nfc" },
+    { title: "채팅", Icon: BsChatRightHeart, url: "/user/chat" },
     { title: "내 프로필", Icon: RxPerson, url: "/user/mypage" },
   ];
 

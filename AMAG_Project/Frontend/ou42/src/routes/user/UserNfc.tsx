@@ -1,9 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropDown from "../../components/UI/DropDown";
 import Btn from "./../../components/UI/Btn";
 import pinkBox from "../../assets/pinkBox.png";
+import AlertDialogSlide from "../../components/UI/AlertDialog";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import Alert from "./../../components/UI/Alert";
+import NfcCheck from "../../components/user/nfc/NfcCheck";
 
 const container = (selectType: boolean, selectItem: string) => css`
   width: 100%;
@@ -76,11 +80,21 @@ export default function UserNfc() {
   const [selectType, setSelectType] = useState<boolean>(false);
   // 선택한 물품
   const [selectItem, setSelectItem] = useState<string>("");
+  // dialog 컨트롤
+  const [open, setOpen] = useState<boolean>(false);
   const handleUseReturn = () => {
     setSelectType(() => false);
   };
   const handleKeepTakeOut = () => {
     setSelectType(() => true);
+  };
+
+  const handleBtnClick = () => {
+    if (selectItem) {
+      setOpen(true);
+    } else {
+      Alert("error", "물품을 선택해 주세요");
+    }
   };
   return (
     <div css={container(selectType, selectItem)}>
@@ -93,7 +107,6 @@ export default function UserNfc() {
         </div>
       </div>
       <div className="selectItme">
-        {/* <div>물품 선택</div> */}
         <DropDown
           content={"물품을 선택해 주세요"}
           data={tempData}
@@ -106,9 +119,10 @@ export default function UserNfc() {
           width={"100%"}
           height={"40px"}
           content={"NFC태그"}
-          backGroundColor={"#FFABAB"}
+          backGroundColor={selectItem ? "#FFABAB" : "gray"}
           border={null}
           color={"#FFFFFF"}
+          onClick={handleBtnClick}
         />
       </div>
       <div className="logoSection">
@@ -116,6 +130,7 @@ export default function UserNfc() {
           <img src={pinkBox} alt="logo" height="auto" width="30%" />
         ) : null}
       </div>
+      {open ? <NfcCheck open={open} setOpen={setOpen} /> : null}
     </div>
   );
 }

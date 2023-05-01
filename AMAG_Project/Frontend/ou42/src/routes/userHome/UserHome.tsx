@@ -10,7 +10,6 @@ import {
   useQueryErrorResetBoundary,
 } from "react-query";
 import axios from "axios";
-
 import Loading from "../../components/Loading";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import DropDown from "../../components/UI/DropDown";

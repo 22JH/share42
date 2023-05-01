@@ -16,6 +16,7 @@ pipeline {
         SPRING_ROOT_PATH = 'S08P31D102/AMAG_Project/Backend'
         SPRING_IMAGE_NAME = 'miracle3070/share42-spring:latest'
         SPRING_CONTAINER_NAME = 'spring-server'
+        SPRING_PICTURE_PATH = '/home/ubuntu/images'
 
         REACT_ROOT_PATH = 'S08P31D102/AMAG_Project/Frontend/ou42'
         REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
@@ -85,7 +86,7 @@ pipeline {
                     docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
-                    dockerImage.run("-p 8088:8088 --name ${SPRING_CONTAINER_NAME}")
+                    dockerImage.run("-p 8088:8088 -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME}")
                 }
             }
         }

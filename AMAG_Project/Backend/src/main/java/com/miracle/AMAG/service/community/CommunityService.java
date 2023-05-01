@@ -101,6 +101,9 @@ public class CommunityService {
 
     public String updateCommunity(int postId, CommunityRequestDTO communityRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
 
@@ -120,6 +123,9 @@ public class CommunityService {
 
     public String deleteCommunity(int postId) {
         String loginId = SecurityUtil.getCurrentUserId();
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
         Community community = communityRepository.findById(postId);

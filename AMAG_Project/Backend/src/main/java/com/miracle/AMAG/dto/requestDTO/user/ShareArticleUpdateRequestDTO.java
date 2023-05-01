@@ -46,7 +46,7 @@ public class ShareArticleUpdateRequestDTO {
             nullable = true)
     private MultipartFile imgFile;
 
-    @Schema(title = "보관할 공유함 id", description = "수정할 공유 물품 보관함 위치 id")
+    @Schema(title = "보관할 공유함 id", description = "수정할 공유 물품 보관함 위치 id(수정 사항이 그대로 인 경우 원래 데이터 입력)")
     @NotNull
     private int lockerId;
 }

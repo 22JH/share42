@@ -58,7 +58,7 @@ public class UserShareController {
     @Parameters({
             @Parameter(name = "share_article_id", description = "수정할 공유 물품 글 번호", in = ParameterIn.PATH)
     })
-    public ResponseEntity<?> updateUserInfo(@ModelAttribute @Valid ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO,
+    public ResponseEntity<?> updateShareArticle(@ModelAttribute @Valid ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO,
                                             @PathVariable("share_article_id") int shareArticleId){
         return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.updateShareArticle(shareArticleUpdateRequestDTO, shareArticleId));
     }

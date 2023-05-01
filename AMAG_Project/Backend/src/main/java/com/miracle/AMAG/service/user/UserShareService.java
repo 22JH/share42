@@ -48,6 +48,8 @@ public class UserShareService {
         ShareArticle shareArticle = new ShareArticle();
         BeanUtils.copyProperties(shareArticleRequestDTO,shareArticle);
 
+        //이미지 유효성 검사 부분
+
         if (shareArticleRequestDTO.getImgFile() != null) {
             String fileName = BoardUtils.singleFileSave((shareArticleRequestDTO).getImgFile());
             shareArticle.setImg(fileName);
@@ -98,8 +100,20 @@ public class UserShareService {
         }
         BeanUtils.copyProperties(shareArticle, shareArticleUpdateRequestDTO);
 
-        shareArticle.setUptDt(LocalDateTime.now());
+        Locker before_locker = lockerRepository.findByShareArticle_Id(shareArticle.getId());
+        Locker after_locker = lockerRepository.findById(shareArticleUpdateRequestDTO.getLockerId());
 
+        lockerRepository.updateShareArticle(shareArticle);
+
+        shareArticle.setSido(after_locker.getLockerStation().getSido());
+        shareArticle.setSigungu(after_locker.getLockerStation().getSigungu());
+        shareArticle.setDong(after_locker.getLockerStation().getDong());
+        shareArticle.setAddress(after_locker.getLockerStation().getAddress());
+        after_locker.setShareArticle(shareArticle);
+
+        shareArticle.setUptDt(LocalDateTime.now());
+        shareArticleRepository.save(shareArticle);
+        lockerRepository.save(after_locker);
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 

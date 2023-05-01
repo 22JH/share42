@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.account;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.config.auth.jwt.TokenProvider;
+import com.miracle.AMAG.dto.requestDTO.account.LoginRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.AccountLoginLog;
 import com.miracle.AMAG.repository.account.AccountLoginLogRepository;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,22 +39,23 @@ public class LoginService {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public Map<String, Object> login(Account account, HttpServletRequest request) {
-        if (account.getPassword() == null || account.getPassword().isBlank()) {
+    public Map<String, Object> login(LoginRequestDTO dto, HttpServletRequest request) {
+        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
             throw new NullPointerException("비밀번호를 입력해주세요");
         }
 
-        Account findAccount = accountRepository.findByUserId(account.getUserId());
-        if (findAccount == null || passwordEncoder.matches(account.getPassword(), findAccount.getPassword()) == false) {
+        Account findAccount = accountRepository.findByUserId(dto.getUserId());
+        if (findAccount == null || passwordEncoder.matches(dto.getPassword(), findAccount.getPassword()) == false) {
             throw new NullPointerException("아이디 혹은 비밀번호가 틀렸습니다");
         }
 
         // 사용자 인증 과정
+        Account account = new Account();
+        BeanUtils.copyProperties(dto, account);
         account.setRole(findAccount.getRole());
         UsernamePasswordAuthenticationToken authToken = account.toAuthentication();
         Authentication auth = managerBuilder.getObject()
                 .authenticate(authToken);
-
 
         // 로그인 로그 기록
         insertLoginLog(findAccount, request);

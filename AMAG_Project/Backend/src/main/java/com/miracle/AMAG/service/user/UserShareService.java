@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.user;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.account.AccountRepository;
@@ -53,6 +54,33 @@ public class UserShareService {
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
         shareArticleRepository.save(shareArticle);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String updateShareArticle(ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO, int shareArticleId){
+        String loginId = SecurityUtil.getCurrentUserId();
+
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+
+        if(!loginId.equals(shareArticle.getAccount().getUserId())){
+            throw new RuntimeException("글 작성자와 로그인 정보가 다릅니다.");
+        }
+
+        if (shareArticle.isStatus()) {
+            throw new RuntimeException("삭제된 글입니다.");
+        }
+
+        if (shareArticleUpdateRequestDTO.getImgFile() != null) {
+            String fileName = BoardUtils.singleFileSave((shareArticleUpdateRequestDTO).getImgFile());
+            shareArticle.setImg(fileName);
+        }
+        BeanUtils.copyProperties(shareArticle, shareArticleUpdateRequestDTO);
+
+        shareArticle.setUptDt(LocalDateTime.now());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

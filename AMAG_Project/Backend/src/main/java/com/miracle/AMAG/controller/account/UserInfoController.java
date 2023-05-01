@@ -45,7 +45,7 @@ public class UserInfoController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userInfoService.getPayMethod(type));
     }
 
-    @PostMapping("/pay-method")
+    @PatchMapping("/pay-method")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "계좌 정보 추가 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "계좌 정보 추가 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),

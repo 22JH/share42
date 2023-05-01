@@ -4,8 +4,10 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.account.AccountRepository;
+import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
@@ -31,6 +33,9 @@ public class UserShareService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private LockerRepository lockerRepository;
+
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
 
@@ -55,7 +60,16 @@ public class UserShareService {
         shareArticle.setShareStatus(ShareArticleUtils.KEEP_STAY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
+        Locker locker = lockerRepository.findById(shareArticleRequestDTO.getLockerId());
+        shareArticle.setSido(locker.getLockerStation().getSido());
+        shareArticle.setSigungu(locker.getLockerStation().getSigungu());
+        shareArticle.setDong(locker.getLockerStation().getDong());
+        shareArticle.setAddress(locker.getLockerStation().getAddress());
+
         shareArticleRepository.save(shareArticle);
+
+        locker.setShareArticle(shareArticle);
+        lockerRepository.save(locker);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
@@ -75,6 +89,8 @@ public class UserShareService {
         if (shareArticle.isStatus()) {
             throw new RuntimeException("삭제된 글입니다.");
         }
+        //이미지 유효성 검사 부분
+
 
         if (shareArticleUpdateRequestDTO.getImgFile() != null) {
             String fileName = BoardUtils.singleFileSave((shareArticleUpdateRequestDTO).getImgFile());

@@ -44,8 +44,4 @@ public class ShareArticleRequestDTO {
     @Schema(title = "공유 물품 글의 이미지 파일", description = "공유할 물품 글의 사진 파일")
     @NotNull
     private MultipartFile imgFile;
-
-    @Schema(title = "보관할 공유함 id", description = "수정할 공유 물품 보관함 위치 id")
-    @NotNull
-    private int lockerId;
 }

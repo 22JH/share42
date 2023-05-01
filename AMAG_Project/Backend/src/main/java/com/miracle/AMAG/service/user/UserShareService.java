@@ -30,6 +30,7 @@ public class UserShareService {
 
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
+
         if(loginId.equals("anonymousUser")){
             throw new NullPointerException("로그인된 아이디가 없습니다.");
         }
@@ -43,6 +44,7 @@ public class UserShareService {
             String fileName = BoardUtils.singleFileSave((shareArticleRequestDTO).getImgFile());
             shareArticle.setImg(fileName);
         }
+
         shareArticle.setAccount(account);
         shareArticle.setHits(0);
         shareArticle.setRegDt(LocalDateTime.now());

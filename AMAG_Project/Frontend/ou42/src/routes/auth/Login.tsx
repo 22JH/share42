@@ -7,6 +7,10 @@ import logo from "../../assets/logo.png";
 import { GoCheck } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import Circle from "../../components/UI/Circle";
+import { useApi } from "./../../hooks/useApi";
+import Alert from "../../components/UI/Alert";
+import { useMutation } from "react-query";
+const URL = "http://k8d102.p.ssafy.io:8088/api/login";
 
 const container = css`
   width: 100%;
@@ -77,25 +81,50 @@ export default function Login() {
     setPd(() => temp as string);
   };
 
+  const loginOptions = {
+    data: {
+      userId: id,
+      password: pd,
+    },
+  };
+
+  const postLogin = useApi("post", URL, loginOptions);
+
+  const { mutate } = useMutation(postLogin);
+
+  const handleLogin = () => {
+    postLogin()
+      .then((res) => {
+        localStorage.setItem("token", res.data.message.token.accessToken);
+        navigate("/home");
+      })
+      .catch((err) => Alert("error", err.response.data.message));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
   return (
     <div css={container}>
       <div className="back"></div>
       <div className="logo">
         <img src={logo} alt="logo" height="300" width="300" />
       </div>
-      <div className="loginInput">
+      <div className="loginInput" onKeyDown={handleKeyDown}>
         <TextField
           size="small"
           className="textField"
           placeholder="ID"
-          onBlur={handleId}
+          onChange={handleId}
           sx={{ zIndex: "2" }}
         />
         <TextField
           size="small"
           className="textField"
           placeholder="PASSWORD"
-          onBlur={handlePd}
+          onChange={handlePd}
           type="password"
           sx={{ zIndex: "2" }}
         />
@@ -114,6 +143,7 @@ export default function Login() {
           backGroundColor="#FFABAB"
           border={0}
           color={"white"}
+          onClick={handleLogin}
         />
         <div className="signUp" onClick={() => navigate("/signup")}>
           회원가입

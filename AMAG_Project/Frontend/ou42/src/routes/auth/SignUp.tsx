@@ -12,6 +12,7 @@ import logo from "../../assets/logo.png";
 import { useApi } from "../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
+import { AxiosResponse } from "axios";
 
 const URL = `http://k8d102.p.ssafy.io:8088/api/join`;
 
@@ -114,11 +115,13 @@ export default function SignUp() {
       dong &&
       addrDetail
     ) {
-      submitSignUp().then((res) =>
-        Alert("success", "모든 항목을 올바르게 채워 주세요", () =>
-          navigate("/home")
-        )
-      );
+      submitSignUp()
+        .then((res) => {
+          Alert("success", "회원가입이 완료되었습니다", () =>
+            navigate("/home")
+          );
+        })
+        .catch((err) => Alert("error", err.response.data.message));
     } else {
       Alert("error", "모든 항목을 올바르게 채워 주세요");
     }

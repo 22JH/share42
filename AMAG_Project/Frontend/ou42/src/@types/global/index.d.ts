@@ -9,8 +9,9 @@ declare namespace NodeJS {
 }
 
 declare global {
-  interface window {
+  interface Window {
     kakao: any;
+    NDEFReader?: any;
   }
 }
 

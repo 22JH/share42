@@ -7,7 +7,8 @@ const circle = css`
   background-color: rgba(209, 77, 114, 0.25);
   position: absolute;
   top: 50%;
-  right: 35%;
+  right: 50%;
+  transform: translate(50%, -50%);
   box-shadow: 0px 0px 100px 100px rgba(209, 77, 114, 0.25);
 `;
 export default function Circle() {

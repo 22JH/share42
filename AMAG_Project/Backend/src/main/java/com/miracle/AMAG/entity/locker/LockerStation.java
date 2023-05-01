@@ -15,6 +15,9 @@ public class LockerStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(length = 20)
+    private String name;
+
     @Column(length = 10)
     private String sido;
 
@@ -26,4 +29,8 @@ public class LockerStation {
 
     @Column(length = 100)
     private String address;
+
+    private double lat;
+
+    private double lng;
 }

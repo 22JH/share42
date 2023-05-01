@@ -7,6 +7,9 @@ import com.miracle.AMAG.util.network.CUDResponse;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -52,8 +55,25 @@ public class UserShareController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 글 수정", description = "공유 물품 글을 수정합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "수정할 공유 물품 글 번호", in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> updateUserInfo(@ModelAttribute @Valid ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO,
                                             @PathVariable("share_article_id") int shareArticleId){
         return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.updateShareArticle(shareArticleUpdateRequestDTO, shareArticleId));
+    }
+    @GetMapping("/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 정보 상세 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 정보 상세 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유 물품 글 상세 조회", description = "공유 물품 글 아이디에 해당하는 내용을 상세 조회합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "조회할 공유 물품 글 번호", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getShareArticle(@PathVariable("share_article_id") int shareArticleId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.getShareArticle(shareArticleId));
     }
 }

@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -83,5 +85,20 @@ public class UserShareService {
         shareArticle.setUptDt(LocalDateTime.now());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public Map<String, Object> getShareArticle(int shareArticleId){
+        String loginId = SecurityUtil.getCurrentUserId();
+
+        if(loginId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
+
+
+        Map<String, Object> result = new HashMap<>();
+
+
+        return result;
     }
 }

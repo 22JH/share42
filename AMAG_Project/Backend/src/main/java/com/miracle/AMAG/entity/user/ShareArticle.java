@@ -47,4 +47,16 @@ public class ShareArticle {
     private boolean status;
 
     private int hits;
+
+    @Column(length = 10)
+    private String sido;
+
+    @Column(length = 10)
+    private String sigungu;
+
+    @Column(length = 10)
+    private String dong;
+
+    @Column(length = 100)
+    private String address;
 }

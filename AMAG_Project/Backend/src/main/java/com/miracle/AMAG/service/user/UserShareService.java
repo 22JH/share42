@@ -6,7 +6,9 @@ import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
+import com.miracle.AMAG.repository.account.ArticleLikeRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
@@ -35,6 +37,9 @@ public class UserShareService {
 
     @Autowired
     private LockerRepository lockerRepository;
+
+    @Autowired
+    private ArticleLikeRepository articleLikeRepository;
 
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
@@ -118,16 +123,15 @@ public class UserShareService {
     }
 
     public Map<String, Object> getShareArticle(int shareArticleId){
-        String loginId = SecurityUtil.getCurrentUserId();
 
-        if(loginId.equals("anonymousUser")){
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
+        shareArticleRepository.updateHitUP(shareArticleId);
 
-
+        ShareArticleGetMapping sagm = shareArticleRepository.findByIdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
+        long likeCount = articleLikeRepository.countByShareArticle_Id(shareArticleId);
 
         Map<String, Object> result = new HashMap<>();
-
+        result.put("article", sagm);
+        result.put("likeCount", likeCount);
 
         return result;
     }

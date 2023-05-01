@@ -9,11 +9,11 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "LIKE")
+@Table(name = "ARTICLE_LIKE")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Like {
+public class ArticleLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

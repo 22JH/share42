@@ -67,7 +67,7 @@ public class UserCommunityController {
     })
     public ResponseEntity<?> getCommunityList(@RequestParam("page") int page, @RequestParam("size") int size,
                                               @RequestParam("sort") int sort, @RequestParam("category") int category,
-                                              @RequestParam("search") String search) {
+                                              @RequestParam(value = "search", required = false) String search) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK, communityService.getListData(sort,category,search,pageRequest));
     }

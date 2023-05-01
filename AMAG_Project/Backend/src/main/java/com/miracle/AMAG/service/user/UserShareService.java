@@ -4,8 +4,12 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
+import com.miracle.AMAG.repository.account.ArticleLikeRepository;
+import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
@@ -31,6 +35,12 @@ public class UserShareService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private LockerRepository lockerRepository;
+
+    @Autowired
+    private ArticleLikeRepository articleLikeRepository;
+
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO){
         String loginId = SecurityUtil.getCurrentUserId();
 
@@ -42,6 +52,8 @@ public class UserShareService {
 
         ShareArticle shareArticle = new ShareArticle();
         BeanUtils.copyProperties(shareArticleRequestDTO,shareArticle);
+
+        //이미지 유효성 검사 부분
 
         if (shareArticleRequestDTO.getImgFile() != null) {
             String fileName = BoardUtils.singleFileSave((shareArticleRequestDTO).getImgFile());
@@ -55,7 +67,16 @@ public class UserShareService {
         shareArticle.setShareStatus(ShareArticleUtils.KEEP_STAY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
+        Locker locker = lockerRepository.findById(shareArticleRequestDTO.getLockerId());
+        shareArticle.setSido(locker.getLockerStation().getSido());
+        shareArticle.setSigungu(locker.getLockerStation().getSigungu());
+        shareArticle.setDong(locker.getLockerStation().getDong());
+        shareArticle.setAddress(locker.getLockerStation().getAddress());
+
         shareArticleRepository.save(shareArticle);
+
+        locker.setShareArticle(shareArticle);
+        lockerRepository.save(locker);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
@@ -75,6 +96,8 @@ public class UserShareService {
         if (shareArticle.isStatus()) {
             throw new RuntimeException("삭제된 글입니다.");
         }
+        //이미지 유효성 검사 부분
+
 
         if (shareArticleUpdateRequestDTO.getImgFile() != null) {
             String fileName = BoardUtils.singleFileSave((shareArticleUpdateRequestDTO).getImgFile());
@@ -82,22 +105,33 @@ public class UserShareService {
         }
         BeanUtils.copyProperties(shareArticle, shareArticleUpdateRequestDTO);
 
-        shareArticle.setUptDt(LocalDateTime.now());
+        Locker before_locker = lockerRepository.findByShareArticle_Id(shareArticle.getId());
+        Locker after_locker = lockerRepository.findById(shareArticleUpdateRequestDTO.getLockerId());
 
+        lockerRepository.updateShareArticle(shareArticle);
+
+        shareArticle.setSido(after_locker.getLockerStation().getSido());
+        shareArticle.setSigungu(after_locker.getLockerStation().getSigungu());
+        shareArticle.setDong(after_locker.getLockerStation().getDong());
+        shareArticle.setAddress(after_locker.getLockerStation().getAddress());
+        after_locker.setShareArticle(shareArticle);
+
+        shareArticle.setUptDt(LocalDateTime.now());
+        shareArticleRepository.save(shareArticle);
+        lockerRepository.save(after_locker);
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
     public Map<String, Object> getShareArticle(int shareArticleId){
-        String loginId = SecurityUtil.getCurrentUserId();
 
-        if(loginId.equals("anonymousUser")){
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
+        shareArticleRepository.updateHitUP(shareArticleId);
 
-
+        ShareArticleGetMapping sagm = shareArticleRepository.findByIdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
+        long likeCount = articleLikeRepository.countByShareArticle_Id(shareArticleId);
 
         Map<String, Object> result = new HashMap<>();
-
+        result.put("article", sagm);
+        result.put("likeCount", likeCount);
 
         return result;
     }

@@ -10,7 +10,11 @@ function UserMyPageETC() {
   const navigate = useNavigate();
 
   const contents = [
-    { title: "회원 정보 수정", Icon: BsPersonVcard, url: "" },
+    {
+      title: "회원 정보 수정",
+      Icon: BsPersonVcard,
+      url: "/user/mypage/modify",
+    },
     { title: "신고하기", Icon: RiErrorWarningLine, url: "/user/report" },
   ];
   return (

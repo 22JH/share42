@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Circle from "../../components/UI/Circle";
 import { useApi } from "./../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
-import { useMutation } from "react-query";
+
 const URL = "http://k8d102.p.ssafy.io:8088/api/login";
 
 const container = css`
@@ -89,8 +89,6 @@ export default function Login() {
   };
 
   const postLogin = useApi("post", URL, loginOptions);
-
-  const { mutate } = useMutation(postLogin);
 
   const handleLogin = () => {
     postLogin()

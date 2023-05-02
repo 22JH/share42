@@ -2,6 +2,9 @@
 import { css } from "@emotion/react";
 
 const titleStyle = css`
+  width: 100%;
+  height: 10%;
+
   p:nth-of-type(1) {
     color: #ff4f4f;
     font-weight: 900;

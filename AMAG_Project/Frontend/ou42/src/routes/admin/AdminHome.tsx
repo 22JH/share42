@@ -4,7 +4,7 @@ import AdminHomeTitle from "../../components/admin/home/AdminHomeTitle";
 
 function AdminHome() {
   return (
-    <div style={{ width: "100vw", height: "85vh" }}>
+    <div style={{ width: "100vw", height: "84vh" }}>
       {/* 타이틀 */}
       <AdminHomeTitle />
       {/* 차트 */}

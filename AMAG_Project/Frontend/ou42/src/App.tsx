@@ -26,6 +26,9 @@ import UserNfc from "./routes/user/UserNfc";
 import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
 import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
+import UserCommunity from "./routes/user/UserCommunity";
+import CommunityNavBar from "./components/NavBar/CommunitySearchNavBar";
+import UserCommunityReg from "./routes/user/UserCommunityReg";
 
 const globalStyle = css`
   body {
@@ -56,6 +59,10 @@ function App() {
               path="/user/mypage/stats"
               element={<UserMyPageStatistics />}
             />
+          </Route>
+          <Route element={<CommunityNavBar/>}>
+            <Route path="/user/community" element={<UserCommunity />} />
+            <Route path="/user/community/reg" element={<UserCommunityReg />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

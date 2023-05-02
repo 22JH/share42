@@ -4,7 +4,14 @@ import profile from "../../assets/testObject.jpg";
 import { AiFillCamera } from "react-icons/ai";
 import { TextField } from "@mui/material";
 import DropDown from "../../components/UI/DropDown";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useQuery } from "react-query";
+import { useApi, useMultiPartApi } from "./../../hooks/useApi";
+import { prePro } from "../../components/auth/Address";
+import Btn from "../../components/UI/Btn";
+import { useGetUserToken } from "./../../hooks/useGetToken";
+import Alert from "./../../components/UI/Alert";
+import { useNavigate } from "react-router-dom";
 
 const container = css`
   width: 100%;
@@ -12,19 +19,17 @@ const container = css`
   flex-direction: column;
   display: flex;
   align-items: center;
-  justify-content: center;
   .imgSection,
   .nickNameSection,
   .addrSection {
-    /* border: 1px solid black; */
     width: 80%;
     display: flex;
-    align-items: center;
     justify-content: center;
   }
   .imgSection {
-    flex: 3;
+    height: auto;
     display: flex;
+    margin: 30px 0;
     .imgBox {
       width: 7rem;
       height: 7rem;
@@ -58,10 +63,11 @@ const container = css`
     }
   }
   .nickNameSection {
-    flex: 3;
+    height: auto;
     display: flex;
     flex-direction: column;
     width: 80%;
+    margin: 20px 0;
     .title {
       width: 100%;
       display: flex;
@@ -69,39 +75,194 @@ const container = css`
     }
   }
   .addrSection {
-    flex: 5;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 20px 0;
+    .dropDownSection {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .title {
+      width: 100%;
+      display: flex;
+      justify-content: start;
+      margin-bottom: 20px;
+    }
   }
 `;
 
 export default function UserInfoModify() {
+  const navigate = useNavigate();
+
   const [siData, setSiData] = useState<string[]>([]);
   const [guData, setGuData] = useState<string[]>([]);
   const [dongData, setDongData] = useState<string[]>([]);
 
+  const [si, setSi] = useState<string>("");
+  const [goon, setGoon] = useState<string>("");
+  const [dong, setDong] = useState<string>("");
+  const [addr, setAddr] = useState<string>("");
+  const [nickName, setNickName] = useState<string>("");
+
+  const GET_SI_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sido`;
+  const GET_GU_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sigungu/${si}`;
+  const GET_DONG_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/dong/${si}/${goon}`;
+  const GET_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
+  // const PATCH_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
+  const PATCH_USER_DATA = "http://192.168.100.176:8088/api/user/info";
+
+  const getUserDataOptions = {
+    headers: { Authorization: `Bearer ${useGetUserToken()}` },
+  };
+
+  const getSiData = useApi("get", GET_SI_URL);
+  const getGuData = useApi("get", GET_GU_URL);
+  const getDongData = useApi("get", GET_DONG_URL);
+  const getUserData = useApi("get", GET_USER_DATA, getUserDataOptions);
+
+  useQuery(["getSiData"], getSiData, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => setSiData(() => res),
+    suspense: false,
+  });
+
+  useQuery(["getGuData", si], getGuData, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => setGuData(() => res),
+    suspense: false,
+    enabled: !!si,
+  });
+
+  useQuery(["getDongData", goon], getDongData, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => setDongData(() => res),
+    suspense: false,
+    enabled: !!goon,
+  });
+
+  const { data } = useQuery("getUserData", getUserData, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => setNickName(res.nickname),
+    suspense: false,
+  });
+
+  const inputFile = useRef<any>(data?.img || profile);
+
+  const handleProfile = () => {
+    //div에서 input 선택 click이벤트발생시킴
+    if (inputFile.current) {
+      inputFile.current.click();
+    }
+  };
+
+  const patchUserData = async () => {
+    const formData: any = new FormData();
+    if (nickName) formData.append("nickname", nickName);
+    if (si) formData.append("sido", si);
+    if (goon) formData.append("sigungu", goon);
+    if (dong) formData.append("dong", dong);
+    if (addr) formData.append("address", addr);
+    if (inputFile?.current)
+      formData.append("imgFile", inputFile?.current?.files[0]);
+    if (!inputFile?.current) {
+      formData.append("img", data?.img);
+    }
+    for (let i of formData) {
+      console.log(i);
+    }
+
+    return fetch(PATCH_USER_DATA, {
+      method: "PATCH",
+      body: formData,
+      ...getUserDataOptions,
+    });
+  };
+  const handleNickName = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
+    setNickName(e.target.value);
+  };
+  console.log(data);
+  const handleAddr = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
+    setAddr(e.target.value);
+  };
+
+  const modifyInfo = () => {
+    if ((si && goon && dong) || (!si && !goon && !dong)) {
+      patchUserData()
+        .then((res) =>
+          // Alert("success", "회원정보가 수정되었습니다.", navigate("/home"))
+          console.log(res)
+        )
+        .catch((err) => console.log(err));
+    } else {
+      Alert("error", "주소를 올바르게 선택해 주세요.");
+    }
+  };
   return (
     <div css={container}>
       <div className="imgSection">
         <div className="imgBox">
-          <img src={profile} alt="profile" className="profile" />
+          <img
+            // src={inputFile.current.value}
+            src={`http://k8d102.p.ssafy.io:8088/images/${data?.img}`}
+            alt="profile"
+            className="profile"
+          />
         </div>
         <div className="iconFrame">
-          <div className="cameraIcon">
+          <div className="cameraIcon" onClick={handleProfile}>
             <AiFillCamera size="22" />
+            <input
+              type="file"
+              id="file"
+              ref={inputFile}
+              style={{ display: "none" }}
+            />
           </div>
         </div>
       </div>
       <div className="nickNameSection">
         <div className="title">닉네임</div>
-        <TextField id="standard-basic" variant="standard" fullWidth />
+        <TextField
+          id="standard-basic"
+          variant="standard"
+          fullWidth
+          placeholder={data?.nickname}
+          onBlur={handleNickName}
+        />
       </div>
       <div className="addrSection">
         <div className="title">주소</div>
         <div className="dropDownSection">
-          {/* <DropDown content="123123" setValue={setSiData} /> */}
-          {/* <DropDown content="123123" setValue={setGuData} /> */}
-          {/* <DropDown content="123123" setValue={setDongData} /> */}
+          <DropDown content="시/도" setValue={setSi} data={prePro(siData)} />
+          <DropDown content="시/군" setValue={setGoon} data={prePro(guData)} />
+          <DropDown content="동" setValue={setDong} data={prePro(dongData)} />
         </div>
+        <TextField
+          id="standard-basic"
+          variant="standard"
+          fullWidth
+          placeholder={data?.address}
+          onBlur={handleAddr}
+        />
       </div>
+      <Btn
+        content="수정하기"
+        width="80%"
+        height="50px"
+        backGroundColor="#FFABAB"
+        border="0"
+        color="white"
+        marginTop={15}
+        onClick={modifyInfo}
+      />
     </div>
   );
 }

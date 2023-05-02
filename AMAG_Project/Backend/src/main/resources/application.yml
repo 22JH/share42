@@ -23,6 +23,10 @@ spring:
       port: 6379
       host: k8d102.p.ssafy.io
       password: ssafy123!@#
+    mongodb:
+      host: 52.79.216.253
+      port: 27017
+      database: chat-test
 
   logging:
     level:

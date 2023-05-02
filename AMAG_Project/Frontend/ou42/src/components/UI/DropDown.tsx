@@ -29,13 +29,11 @@ export default function DropDown({
   setValue,
 }: PropType) {
   const [current, setCurrent] = React.useState("");
+
   const handleChange = (event: SelectChangeEvent<string>) => {
     setCurrent(() => event.target.value);
     setValue(() => event.target.value);
   };
-  React.useEffect(() => {
-    setCurrent(() => "");
-  }, [data]);
   return (
     <div>
       <FormControl
@@ -51,11 +49,7 @@ export default function DropDown({
         size="small"
       >
         <InputLabel>{content}</InputLabel>
-        <Select
-          value={data?.includes(current) ? current : ""}
-          onChange={handleChange}
-          label={content}
-        >
+        <Select value={current} onChange={handleChange} label={content}>
           {data?.map((ele: string, idx: number) => (
             <MenuItem value={ele} key={idx}>
               {ele ? ele : null}

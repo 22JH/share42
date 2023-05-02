@@ -5,8 +5,6 @@ import DropDown from "../UI/DropDown";
 import { useApi } from "../../hooks/useApi";
 import { useQuery } from "react-query";
 import { useState, useEffect } from "react";
-import { AxiosResponse } from "axios";
-import axios from "axios";
 
 interface PropType {
   setSi: React.Dispatch<React.SetStateAction<string>>;
@@ -33,15 +31,8 @@ const container = css`
     justify-content: space-between;
   }
 `;
-//임시데이터
-// const siData = ["대구광역시", "2", "3", "4", "5"];
-// const guData = ["1", "2", "3", "4", "5"];
-// const dongData = ["1", "2", "3", "4", "5"];
-///
 
-const prePro = (data: Array<Object>) => {
-  // setFt(data?.map((ele : string) => {
-  // }))
+export const prePro = (data: any) => {
   const temp = data.reduce((pre: any, ele: any) => {
     return [...pre, Object.values(ele)[0]];
   }, []);

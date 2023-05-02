@@ -26,6 +26,7 @@ import UserNfc from "./routes/user/UserNfc";
 import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
 import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
+import UserInfoModify from "./routes/auth/UserInfoModify";
 
 const globalStyle = css`
   body {
@@ -56,6 +57,7 @@ function App() {
               path="/user/mypage/stats"
               element={<UserMyPageStatistics />}
             />
+            <Route path="/user/mypage/modify" element={<UserInfoModify />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

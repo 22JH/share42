@@ -112,8 +112,7 @@ export default function UserInfoModify() {
   const GET_GU_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sigungu/${si}`;
   const GET_DONG_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/dong/${si}/${goon}`;
   const GET_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
-  // const PATCH_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
-  const PATCH_USER_DATA = "http://192.168.100.176:8088/api/user/info";
+  const PATCH_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
 
   const getUserDataOptions = {
     headers: { Authorization: `Bearer ${useGetUserToken()}` },
@@ -146,29 +145,55 @@ export default function UserInfoModify() {
 
   const { data } = useQuery("getUserData", getUserData, {
     select: (res) => res.data.message,
-    onSuccess: (res) => setNickName(res.nickname),
+    onSuccess: (res) => {
+      setNickName(() => res.nickname);
+      if (res.img)
+        setCurrentImg(() => `http://k8d102.p.ssafy.io:8088/images/${res.img}`);
+      // setSi(() => res.sido);
+      // setGoon(() => res.sigungu);
+      // setDong(() => res.dong);
+      setAddr(() => res.address);
+    },
     suspense: false,
   });
 
-  const inputFile = useRef<any>(data?.img || profile);
+  // input click 이벤트 발생 및 선택한 사진
+  // 초기값
+  //   프로필 사진이 등록되었을 경우 : 받아온이미지
+  //   없을 경우 : 기본 이미지
+  const inputFile = useRef<any>(null);
+  const [currentImg, setCurrentImg] = useState<any>(profile);
+  const [isChange, setIsChange] = useState<boolean>(false);
 
+  // 사진 버튼 클릭///////
   const handleProfile = () => {
     //div에서 input 선택 click이벤트발생시킴
-    if (inputFile.current) {
-      inputFile.current.click();
-    }
+    inputFile.current.click();
   };
+  ////////////////
 
+  ////////// 사진 바뀜 /////////
+  const saveImgFile = () => {
+    const file = inputFile.current.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setCurrentImg(reader.result);
+    };
+    setIsChange(() => true);
+  };
+  //////////
+
+  // 버튼 클릭//////////
   const patchUserData = async () => {
     const formData: any = new FormData();
-    if (nickName) formData.append("nickname", nickName);
-    if (si) formData.append("sido", si);
-    if (goon) formData.append("sigungu", goon);
-    if (dong) formData.append("dong", dong);
-    if (addr) formData.append("address", addr);
-    if (inputFile?.current)
-      formData.append("imgFile", inputFile?.current?.files[0]);
-    if (!inputFile?.current) {
+    formData.append("nickname", nickName);
+    formData.append("sido", si);
+    formData.append("sigungu", goon);
+    formData.append("dong", dong);
+    formData.append("address", addr);
+    if (isChange) formData.append("imgFile", inputFile?.current?.files[0]);
+    else if (!isChange && data?.img) {
       formData.append("img", data?.img);
     }
     for (let i of formData) {
@@ -181,45 +206,47 @@ export default function UserInfoModify() {
       ...getUserDataOptions,
     });
   };
+  ///////////
+
+  // 닉네임/////
   const handleNickName = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     setNickName(e.target.value);
   };
-  console.log(data);
+  ///////////
+
+  // 주소////////
   const handleAddr = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     setAddr(e.target.value);
   };
-
+  /////////////
+  ////////// 클릭 /////////////
   const modifyInfo = () => {
-    if ((si && goon && dong) || (!si && !goon && !dong)) {
+    if (si && goon && dong) {
       patchUserData()
         .then((res) =>
-          // Alert("success", "회원정보가 수정되었습니다.", navigate("/home"))
-          console.log(res)
+          Alert("success", "회원정보가 수정되었습니다.", navigate("/home"))
         )
         .catch((err) => console.log(err));
     } else {
       Alert("error", "주소를 올바르게 선택해 주세요.");
     }
   };
+  ///////////////////
   return (
     <div css={container}>
       <div className="imgSection">
         <div className="imgBox">
-          <img
-            // src={inputFile.current.value}
-            src={`http://k8d102.p.ssafy.io:8088/images/${data?.img}`}
-            alt="profile"
-            className="profile"
-          />
+          <img src={currentImg} alt="profile" className="profile" />
         </div>
         <div className="iconFrame">
           <div className="cameraIcon" onClick={handleProfile}>
             <AiFillCamera size="22" />
             <input
+              onChange={saveImgFile}
               type="file"
               id="file"
               ref={inputFile}

@@ -1,5 +1,5 @@
 interface LType {
-  range: (L: number) => number[];
+  range: any;
   map: any;
   filter: any;
   flatten: any;
@@ -64,7 +64,12 @@ const head = (iter: IterableIterator<any>) =>
 
 // reduceF
 const reduceF = (f: any, acc: any, a: any) =>
-  a instanceof Promise ? a.then((a) => f(acc, a)) : f(acc, a);
+  a instanceof Promise
+    ? a.then(
+        (a) => f(acc, a),
+        (e) => (e === nop ? acc : Promise.reject(e))
+      )
+    : f(acc, a);
 
 // reduce
 export const reduce = curry(
@@ -102,10 +107,10 @@ export const range = curry((length: number) => {
 });
 
 // L.range
-L.range = curry(function* (length: number) {
+L.range = function* (length: number) {
   let i = -1;
   while (++i < length) yield i;
-});
+};
 
 // take
 export const take = curry((limit: number, iter: IterableIterator<any>) => {
@@ -165,7 +170,7 @@ export const find = curry((f: any, iter: IterableIterator<any>) =>
 const isIterable = (a: any) => a && a[Symbol.iterator];
 
 // L.flatten
-L.flatten = curry(function* (iter: IterableIterator<any>) {
+L.flatten = function* (iter: IterableIterator<any>) {
   iter = iter[Symbol.iterator]();
   let cur;
   while (!(cur = iter.next()).done) {
@@ -173,23 +178,26 @@ L.flatten = curry(function* (iter: IterableIterator<any>) {
     if (isIterable(a)) yield* a;
     else yield a;
   }
-});
+};
 
 // L.deepFlat
-L.deepFlat = curry(function* f(iter: IterableIterator<any>): any {
+L.deepFlat = function* f(iter: IterableIterator<any>): any {
   iter = iter[Symbol.iterator]();
   let cur;
   while (!(cur = iter.next()).done) {
     const a = cur.value;
     if (isIterable(a)) yield* f(a);
   }
-});
+};
 
 // flatten
 export const flatten = curry(pipe(L.flatten, takeAll));
 
 // L.flatMap
-L.flatMap = curry(pipe(L.map, L.flatMap));
+// L.flatMap = curry(pipe(L.map, L.flatMap));
+L.flatMap = curry((f: any, iter: IterableIterator<any>) =>
+  go(iter, L.deepFlat, L.map(f), take(Infinity))
+);
 export const flatMap = curry(pipe(L.map, L.flatten, takeAll));
 
 function noop() {}

@@ -8,6 +8,7 @@ import axios from "axios";
 import UserCommunityBtns from "../../components/community/UserCommunityBtns";
 import UserCommunityPosts from "../../components/community/UserCommunityPosts";
 import UserCommunityBottomBar from "../../components/community/UserCommunityBottomBar";
+import { useEffect } from 'react';
 
 export const UserCommunityBtnStyle = css`
   & > button {

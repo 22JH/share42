@@ -1,4 +1,5 @@
 import { FaRegComment, FaEye } from "react-icons/fa";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export interface UserCommunityPostsProps {
   data: any[];
@@ -11,6 +12,13 @@ const UserCommunityPosts = ({
   divRef,
   getTimeAgo,
 }: UserCommunityPostsProps) => {
+  const navigate = useNavigate();
+
+  const handleDetailNavigate = (id:number) => {
+    console.log(id)
+    navigate(`/user/community/${id}`)
+  }
+
   return (
     <div
       style={{
@@ -18,6 +26,7 @@ const UserCommunityPosts = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginBottom: "7vh"
       }}
     >
       {data.map((item: any, index: number) => {
@@ -34,6 +43,7 @@ const UserCommunityPosts = ({
               alignItems: "center",
             }}
             key={index}
+            onClick={() => handleDetailNavigate(item.communityId)}
           >
             <div
               style={{
@@ -90,6 +100,7 @@ const UserCommunityPosts = ({
                 height: "100%",
                 display: "flex",
                 alignItems: "flex-end",
+                justifyContent: 'end',
               }}
             >
               <div

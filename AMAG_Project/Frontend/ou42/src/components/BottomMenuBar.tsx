@@ -62,8 +62,6 @@ function BottomMenuBar() {
     { title: "맵", Icon: BsMap, url: "/user/map" },
   ];
 
-  console.log(pathname);
-
   return (
     <div css={bottomMenuBarStyle}>
       {(pathname.includes("admin") ? adminIcons : homeIcons).map(

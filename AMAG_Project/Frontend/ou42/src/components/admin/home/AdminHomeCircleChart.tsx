@@ -85,7 +85,7 @@ function AdminHomeCircleChart({
       .attr("d", f)
       .on("click", (event: any, d: any) => {
         setChange((isChange) => !isChange);
-      }) // 이 부분을 추가합니다.
+      })
       .transition()
       .duration(DURATION)
       .attrTween("d", (d: any) => {
@@ -110,6 +110,9 @@ function AdminHomeCircleChart({
           return d.data[2];
         }
         return;
+      })
+      .on("click", (event: any, d: any) => {
+        setChange((isChange) => !isChange);
       })
       .transition()
       .duration(DURATION)

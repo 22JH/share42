@@ -92,7 +92,7 @@ public class UserShareController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.deleteShareArticle(shareArticleId));
     }
 
-    @PostMapping("/share-articles/{share_article_id}")
+    @PostMapping("/share-articles/like/{share_article_id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "공유 게시글 찜하기 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "공유 게시글 찜하기 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -105,6 +105,21 @@ public class UserShareController {
     })
     public ResponseEntity<?> likeShareArticle(@PathVariable("share_article_id") int shareArticleId) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.likeShareArticle(shareArticleId));
+    }
+
+    @PostMapping("/share-articles/unlike/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유 게시글 찜하기 취소 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "공유 게시글 찜하기 취소 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유 게시글 찜하기 취소", description = "대여 물품 게시글 찜하기 취소를 진행합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "찜하기를 취소할 대여 게시글 ID", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> unlikeShareArticle(@PathVariable("share_article_id") int shareArticleId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.unlikeShareArticle(shareArticleId));
     }
 
 

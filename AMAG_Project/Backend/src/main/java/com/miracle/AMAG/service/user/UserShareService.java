@@ -42,7 +42,7 @@ public class UserShareService {
     @Autowired
     private ArticleLikeRepository articleLikeRepository;
 
-    public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO){
+    public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
 
         checkLogin(loginId);
@@ -50,7 +50,7 @@ public class UserShareService {
         Account account = accountRepository.findByUserId(loginId);
 
         ShareArticle shareArticle = new ShareArticle();
-        BeanUtils.copyProperties(shareArticleRequestDTO,shareArticle);
+        BeanUtils.copyProperties(shareArticleRequestDTO, shareArticle);
 
         //이미지 유효성 검사 부분
 
@@ -81,13 +81,13 @@ public class UserShareService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String updateShareArticle(ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO, int shareArticleId){
+    public String updateShareArticle(ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO, int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
 
         checkLogin(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
 
-        if(!loginId.equals(shareArticle.getAccount().getUserId())){
+        if (!loginId.equals(shareArticle.getAccount().getUserId())) {
             throw new RuntimeException("글 작성자와 로그인 정보가 다릅니다.");
         }
 
@@ -110,8 +110,7 @@ public class UserShareService {
     }
 
 
-
-    public Map<String, Object> getShareArticle(int shareArticleId){
+    public Map<String, Object> getShareArticle(int shareArticleId) {
 
         shareArticleRepository.updateHitUP(shareArticleId);
 
@@ -125,12 +124,12 @@ public class UserShareService {
         return result;
     }
 
-    public String deleteShareArticle(int shareArticleId){
+    public String deleteShareArticle(int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
 
         checkLogin(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
-        if(shareArticle.isStatus()){
+        if (shareArticle.isStatus()) {
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
         shareArticleRepository.updateStatus(shareArticleId, BoardUtils.BOARD_STATUS_TRUE);
@@ -145,10 +144,11 @@ public class UserShareService {
         Account account = accountRepository.findByUserId(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         ArticleLike registedArticleLike = articleLikeRepository.findRegistedArticleLike(account, shareArticle);
-        if(registedArticleLike != null) {
-            throw new NullPointerException("이미 찜하기를 등록한 게시글입니다.");
+        if (registedArticleLike != null) {
+            throw new NullPointerException("이미 찜하기에 등록된 게시글입니다.");
         }
 
+        // 찜하기 진행
         ArticleLike articleLike = new ArticleLike();
         articleLike.setAccount(account);
         articleLike.setShareArticle(shareArticle);
@@ -161,8 +161,29 @@ public class UserShareService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String unlikeShareArticle(int shareArticleId) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        checkLogin(loginId);
+
+        Account account = accountRepository.findByUserId(loginId);
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        ArticleLike registedArticleLike = articleLikeRepository.findRegistedArticleLike(account, shareArticle);
+        if (registedArticleLike == null) {
+            throw new NullPointerException("찜하기에 등록되지 않은 게시글입니다.");
+        }
+
+        // 찜하기 취소 진행
+        registedArticleLike.setStatus(true);
+        LocalDateTime curTime = LocalDateTime.now();
+        registedArticleLike.setUptDt(curTime);
+        articleLikeRepository.save(registedArticleLike);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+
     private static void checkLogin(String loginId) {
-        if(loginId.equals("anonymousUser")){
+        if (loginId.equals("anonymousUser")) {
             throw new NullPointerException("로그인된 아이디가 없습니다.");
         }
     }

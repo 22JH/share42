@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user/share")
 @RequiredArgsConstructor
 @RestController
-public class UserShareController {
+public class UserShareArticleController {
 
     @Autowired
     private UserShareService userShareService;

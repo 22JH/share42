@@ -9,6 +9,9 @@ import com.miracle.AMAG.util.common.HTTPUtils;
 import com.miracle.AMAG.util.common.URLUtils;
 import com.miracle.AMAG.util.network.Get;
 import com.miracle.AMAG.util.network.Header;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class AddressService {
 
     @Value("${kakao.restApiKey}")

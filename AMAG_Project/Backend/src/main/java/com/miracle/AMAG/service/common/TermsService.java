@@ -3,6 +3,7 @@ package com.miracle.AMAG.service.common;
 import com.miracle.AMAG.mapping.common.JoinTermsMapping;
 import com.miracle.AMAG.repository.common.TermsRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Slf4j
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class TermsService {
 
     @Autowired

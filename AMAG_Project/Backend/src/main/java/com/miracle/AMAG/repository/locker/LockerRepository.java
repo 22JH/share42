@@ -15,6 +15,8 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
 
     Locker findByShareArticle_Id(@Param("shareArticleId") int shareArticleId);
 
+    Locker findByShareArticle(@Param("shareArticle") ShareArticle shareArticle);
+
     @Query("SELECT lo FROM Locker lo WHERE lo.lockerStation.id = :lockerStationId AND lo.shareArticle IS NULL ORDER BY lo.lockerNumber ASC LIMIT 1")
     Locker getLockerToStore(@Param("lockerStationId") int lockerStationId);
 

@@ -1,6 +1,6 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-
 import { useRef, useState } from "react";
 import communityStore from "../../store/communityStore";
 import { useQuery, useQueryClient } from "react-query";
@@ -37,7 +37,6 @@ const UserCommunity = () => {
   const { search } = communityStore();
   const divRef = useRef<HTMLDivElement | any>({});
   const queryClient = useQueryClient();
-
 
   const SORT_API = (sort: any, category: any) => {
     // eslint-disable-next-line max-len
@@ -126,7 +125,6 @@ const UserCommunity = () => {
     }
   };
 
-
   return (
     <>
       <UserCommunityBtns
@@ -134,7 +132,7 @@ const UserCommunity = () => {
         handleCommunitySort={handleCommunitySort}
       />
       <UserCommunityPosts data={data} divRef={divRef} getTimeAgo={getTimeAgo} />
-      <UserCommunityBottomBar/>
+      <UserCommunityBottomBar />
     </>
   );
 };

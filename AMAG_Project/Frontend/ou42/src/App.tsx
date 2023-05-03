@@ -27,7 +27,7 @@ import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
 import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
 import UserCommunity from "./routes/user/UserCommunity";
-import CommunityNavBar from "./components/NavBar/CommunitySearchNavBar";
+import CommunityNavBar from "./components/NavBar/CommunityNavBar";
 import UserCommunityReg from "./routes/user/UserCommunityReg";
 
 const globalStyle = css`

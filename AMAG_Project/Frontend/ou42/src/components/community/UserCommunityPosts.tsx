@@ -15,9 +15,9 @@ const UserCommunityPosts = ({
     <div
       style={{
         borderTop: "1px solid #adadad",
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       {data.map((item: any, index: number) => {

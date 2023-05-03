@@ -76,7 +76,7 @@ public class Account {
     @Column(length = 20)
     private Role role;
 
-    @Column(name="WALLET_HASH",length = 100)
+    @Column(name="WALLET_HASH",length = 200)
     private String walletHash;
 
     public UsernamePasswordAuthenticationToken toAuthentication() {

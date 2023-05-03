@@ -59,4 +59,6 @@ public class ShareArticle {
 
     @Column(length = 100)
     private String address;
+
+
 }

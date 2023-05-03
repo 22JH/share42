@@ -67,8 +67,8 @@ public class UserShareService {
         shareArticle.setShareStatus(ShareArticleUtils.KEEP_STAY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
-        //락커를 배정하는 부분(현재는 임시로 2 상우가 구현하는 부분)
-        Locker locker = lockerRepository.findById(2);
+        //락커를 배정하는 부분
+        Locker locker = lockerRepository.getLockerToStore(shareArticleRequestDTO.getLockerStationId());
         shareArticle.setSido(locker.getLockerStation().getSido());
         shareArticle.setSigungu(locker.getLockerStation().getSigungu());
         shareArticle.setDong(locker.getLockerStation().getDong());

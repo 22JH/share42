@@ -1,6 +1,7 @@
 package com.miracle.AMAG.service.user;
 
 import com.miracle.AMAG.config.SecurityUtil;
+import com.miracle.AMAG.dto.klaytn.BorrowDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.Borrow;
@@ -16,11 +17,13 @@ import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Transactional
@@ -70,9 +73,15 @@ public class UserBorrowService {
         borrow.setRegDt(curTime);
         borrow.setUseType(BorrowUtils.APPLY_BORROW);
 
+        BorrowDTO borrowDTO = new BorrowDTO();
+        BeanUtils.copyProperties(borrow,borrowDTO);
+        borrowDTO.setLocker(locker.getId());
+        borrowDTO.setAccount(account.getId());
+        borrowDTO.setShareArticle(shareArticle.getId());
+
         // 블록체인 관련 항목
-        String alias = "b0_" + account.getId() + "_" + curTime;
-        String metadataUri = klaytnService.getUri(borrow);
+        String alias = "b0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(borrowDTO);
         klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
         borrow.setContractHash(alias);
         borrow.setMetadataUri(metadataUri);

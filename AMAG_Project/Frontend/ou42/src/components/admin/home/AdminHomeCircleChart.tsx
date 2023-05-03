@@ -2,17 +2,17 @@
 import { css } from "@emotion/react";
 
 import { useEffect, useRef } from "react";
-import { arc, interpolate, pie, select } from "d3";
+import { arc, interpolate, pie, select, scaleLinear } from "d3";
 
 const data = [
-  [50, "red", "전국"],
-  [150, "orange", "서울"],
-  [100, "green", "대전"],
-  [200, "tomato", "인천"],
-  [250, "blue", "대구"],
-  [30, "purple", "광주"],
-  [170, "black", "부산"],
-  [230, "lightgreen", "울산"],
+  [50, "전국"],
+  [150, "서울"],
+  [100, "대전"],
+  [200, "인천"],
+  [250, "대구"],
+  [30, "광주"],
+  [170, "부산"],
+  [230, "울산"],
 ];
 
 const info = css`
@@ -39,8 +39,8 @@ const outer = css`
   justify-content: center;
 `;
 
-const box = (d: any[]) => css`
-  background-color: ${d[1]};
+const box = (d: any) => css`
+  background-color: ${d};
   width: 15px;
   height: 15px;
   margin-left: 5vw;
@@ -54,6 +54,10 @@ function AdminHomeCircleChart({
   setChange: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const canvas = useRef<HTMLDivElement>(null);
+
+  const color = scaleLinear()
+    .domain([0, 1])
+    .range(["#ff4f4f", "white"] as any);
 
   useEffect((): any => {
     const canv = select(canvas.current);
@@ -78,8 +82,8 @@ function AdminHomeCircleChart({
       .data(pieGraph(data))
       .enter()
       .append("path")
-      .attr("fill", (d: any) => {
-        return d.data[1];
+      .attr("fill", (d: any, index: number): any => {
+        return color(index * 0.1);
       })
       .attr("stroke-width", "2px")
       .attr("d", f)
@@ -107,7 +111,7 @@ function AdminHomeCircleChart({
       .attr("font-weight", "900")
       .text((d: any) => {
         if (d.data[0] >= 100) {
-          return d.data[2];
+          return d.data[1];
         }
         return;
       })
@@ -125,10 +129,11 @@ function AdminHomeCircleChart({
       <div css={info}>
         <div css={outer}>
           {data.map((d: any[], index: number) => {
+            console.log(color(index * 0.1));
             return (
               <div className="container" key={index}>
-                <div css={box(d)}></div>
-                <p>{d[2]}</p>
+                <div css={box(color(index * 0.1))}></div>
+                <p>{d[1]}</p>
               </div>
             );
           })}

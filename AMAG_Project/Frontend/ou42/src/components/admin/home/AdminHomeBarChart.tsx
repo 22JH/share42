@@ -143,7 +143,7 @@ let data: any[] = [
   },
   {
     지역이름: "제주",
-    확진자수: 59,
+    확진자수: 5900,
     격리해제수: 59,
     사망자수: 0,
     십만명당발생율: 8.8,
@@ -183,6 +183,9 @@ function AdminHomeBarChart({
   setChange: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const canvas = useRef<HTMLDivElement>(null);
+  const color = scaleLinear()
+    .domain([0, 1])
+    .range(["#ff4f4f", "white"] as any);
 
   useEffect(() => {
     const canv = select(canvas.current);
@@ -221,7 +224,7 @@ function AdminHomeBarChart({
       .append("rect")
       .attr("height", 0) // 초기 높이를 0으로 설정
       .attr("width", x.bandwidth)
-      .attr("fill", "hotpink")
+      .attr("fill", (d, index) => color(index * 0.05))
       .attr("x", (d) => x(d["지역이름"]))
       .attr("y", Y) // 초기 위치를 Y 좌표로 설정
       .transition() // 애니메이션 시작
@@ -261,9 +264,11 @@ function AdminHomeBarChart({
 
     xAxisG
       .selectAll("text")
-      .attr("fill", "blue")
+      .attr("fill", "black")
       .attr("transform", "rotate(-45)")
-      .attr("text-anchor", "end");
+      .attr("font-weight", "900")
+      .attr("text-anchor", "end")
+      .attr("font-size", "0.8rem");
   }, []);
 
   return (

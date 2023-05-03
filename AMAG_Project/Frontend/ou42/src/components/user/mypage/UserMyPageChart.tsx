@@ -34,7 +34,6 @@ function UserMyPageChart() {
         .attr("x", 40 * index)
         .attr("y", 350 - data);
     });
-    // const graph2 = svg.append("g").attr("width", "auto").attr("height", "auto");
   }, []);
   return (
     <div css={chartStyle}>

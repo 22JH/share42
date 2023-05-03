@@ -147,12 +147,13 @@ export default function UserInfoModify() {
     select: (res) => res.data.message,
     onSuccess: (res) => {
       setNickName(() => res.nickname);
-      if (res.img)
+      setAddr(() => res.address);
+      if (res.img) {
         setCurrentImg(() => `http://k8d102.p.ssafy.io:8088/images/${res.img}`);
+      }
       // setSi(() => res.sido);
       // setGoon(() => res.sigungu);
       // setDong(() => res.dong);
-      setAddr(() => res.address);
     },
     suspense: false,
   });

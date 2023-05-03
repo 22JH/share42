@@ -2,15 +2,13 @@
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 
-import caution from "../../../assets/caution.svg";
-import logFile from "../../../assets/logFile.svg";
-import manufacturing from "../../../assets/manufacturing.svg";
-import map from "../../../assets/map.svg";
 import { BsMap } from "react-icons/bs";
 import { MdDevices } from "react-icons/md";
 import { RiAlarmWarningLine, RiFileListLine } from "react-icons/ri";
 
 const container = css`
+  width: 100%;
+  height: auto;
   .item-container {
     display: flex;
     flex-wrap: wrap;
@@ -57,16 +55,6 @@ function AdminHomeMenuBtn() {
               className="item"
               onClick={() => navigate(`${url}`)}
             >
-              {/* <object
-                data={item[1]}
-                type="image/svg+xml"
-                style={{ marginTop: "13%" }}
-              ></object> */}
-              {/* <img
-                src={item[1]}
-                style={{ marginTop: "13%" }}
-                onClick={() => navigate(`${item[2]}`)}
-              /> */}
               <Icon size={35} style={{ color: "#ff4f4f" }} />
               <p onClick={() => navigate(`${url}`)}>{title}</p>
             </div>

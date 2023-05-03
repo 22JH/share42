@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.1",
+    "@tanstack/react-query": "^4.29.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -23,6 +24,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-infinite-scroller": "^1.2.6",
     "react-kakao-maps": "^0.0.13",
     "react-kakao-maps-sdk": "^1.1.8",
     "react-query": "^3.39.3",
@@ -84,6 +87,7 @@
   },
   "devDependencies": {
     "@types/kakao-js-sdk": "^1.39.1",
+    "@types/react-infinite-scroller": "^1.2.3",
     "json-server": "^0.17.3"
   }
 }

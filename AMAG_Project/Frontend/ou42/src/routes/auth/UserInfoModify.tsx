@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import profile from "../../assets/testObject.jpg";
 import { AiFillCamera } from "react-icons/ai";
 import { TextField } from "@mui/material";
-import DropDown from "../../components/UI/DropDown";
 import { useRef, useState } from "react";
 import { useQuery } from "react-query";
-import { useApi, useMultiPartApi } from "./../../hooks/useApi";
+import { useApi } from "./../../hooks/useApi";
 import { prePro } from "../../components/auth/Address";
-import Btn from "../../components/UI/Btn";
 import { useGetUserToken } from "./../../hooks/useGetToken";
-import Alert from "./../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
+import profile from "../../assets/testObject.jpg";
+import DropDown from "../../components/UI/DropDown";
+import Btn from "../../components/UI/Btn";
+import Alert from "./../../components/UI/Alert";
 
 const container = css`
   width: 100%;
@@ -147,12 +147,12 @@ export default function UserInfoModify() {
     select: (res) => res.data.message,
     onSuccess: (res) => {
       setNickName(() => res.nickname);
+      setAddr(() => res.address);
       if (res.img)
         setCurrentImg(() => `http://k8d102.p.ssafy.io:8088/images/${res.img}`);
       // setSi(() => res.sido);
       // setGoon(() => res.sigungu);
       // setDong(() => res.dong);
-      setAddr(() => res.address);
     },
     suspense: false,
   });
@@ -196,9 +196,10 @@ export default function UserInfoModify() {
     else if (!isChange && data?.img) {
       formData.append("img", data?.img);
     }
-    for (let i of formData) {
-      console.log(i);
-    }
+
+    // for (let i of formData) {
+    //   console.log(i);
+    // }
 
     return fetch(PATCH_USER_DATA, {
       method: "PATCH",

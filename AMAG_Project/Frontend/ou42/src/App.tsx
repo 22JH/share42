@@ -27,6 +27,7 @@ import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
 import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
 import UserInfoModify from "./routes/auth/UserInfoModify";
+import RouterGuard from "./components/auth/RouterGuard";
 
 const globalStyle = css`
   body {
@@ -43,23 +44,29 @@ function App() {
       <Router>
         <Routes>
           {/* 유저 홈 */}
-          <Route element={<HomeNavBar />}>
-            <Route path="/home" element={<UserHome />} />
+          <Route element={<RouterGuard />}>
+            <Route element={<HomeNavBar />}>
+              <Route path="/home" element={<UserHome />} />
+            </Route>
+            {/* 유저 마이페이지 */}
+            <Route element={<MyPageNavBar />}>
+              <Route path="/user/mypage" element={<UserMyPage />} />
+              <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
+              <Route path="/user/nfc" element={<UserNfc />} />
+              <Route path="/user/mypage/share" element={<UserMyPageShare />} />
+              <Route path="/user/mypage/like" element={<UserMyPageLike />} />
+              <Route
+                path="/user/mypage/stats"
+                element={<UserMyPageStatistics />}
+              />
+              <Route path="/user/chat" element={<UserChat />} />
+              <Route path="/user/mypage/modify" element={<UserInfoModify />} />
+              <Route path="/user/share-reg" element={<UserShareReg />} />
+              <Route path="/user/payment" element={<UserPay />} />
+              <Route path="/user/report" element={<UserReport />} />
+              <Route path="/user/share-post" element={<UserSharePost />} />
+            </Route>
           </Route>
-          {/* 유저 마이페이지 */}
-          <Route element={<MyPageNavBar />}>
-            <Route path="/user/mypage" element={<UserMyPage />} />
-            <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
-            <Route path="/user/nfc" element={<UserNfc />} />
-            <Route path="/user/mypage/share" element={<UserMyPageShare />} />
-            <Route path="/user/mypage/like" element={<UserMyPageLike />} />
-            <Route
-              path="/user/mypage/stats"
-              element={<UserMyPageStatistics />}
-            />
-            <Route path="/user/mypage/modify" element={<UserInfoModify />} />
-          </Route>
-
           <Route path="/" element={<UserWelcome />} />
           <Route path="/start" element={<UserBeforeMain />} />
           <Route path="/login" element={<Login />} />
@@ -71,11 +78,6 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/map" element={<AdminMap />} />
-          <Route path="/user/share-reg" element={<UserShareReg />} />
-          <Route path="/user/payment" element={<UserPay />} />
-          <Route path="/user/chat" element={<UserChat />} />
-          <Route path="/user/report" element={<UserReport />} />
-          <Route path="/user/share-post" element={<UserSharePost />} />
         </Routes>
       </Router>
     </>

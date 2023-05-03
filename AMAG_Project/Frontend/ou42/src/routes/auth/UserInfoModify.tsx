@@ -126,12 +126,15 @@ export default function UserInfoModify() {
   useQuery(["getSiData"], getSiData, {
     select: (res) => res.data.message,
     onSuccess: (res) => setSiData(() => res),
+    onError: (err) => console.error,
     suspense: false,
   });
 
   useQuery(["getGuData", si], getGuData, {
     select: (res) => res.data.message,
     onSuccess: (res) => setGuData(() => res),
+    onError: (err) => console.error,
+
     suspense: false,
     enabled: !!si,
   });
@@ -139,11 +142,14 @@ export default function UserInfoModify() {
   useQuery(["getDongData", goon], getDongData, {
     select: (res) => res.data.message,
     onSuccess: (res) => setDongData(() => res),
+    onError: (err) => console.error,
+
     suspense: false,
     enabled: !!goon,
   });
 
   const { data } = useQuery("getUserData", getUserData, {
+    onError: (err) => console.log(err),
     select: (res) => res.data.message,
     onSuccess: (res) => {
       setNickName(() => res.nickname);
@@ -154,6 +160,7 @@ export default function UserInfoModify() {
       // setGoon(() => res.sigungu);
       // setDong(() => res.dong);
     },
+
     suspense: false,
   });
 

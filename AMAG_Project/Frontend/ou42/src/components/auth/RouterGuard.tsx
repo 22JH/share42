@@ -6,8 +6,20 @@ export default function RaouterGuard() {
   const url = useLocation().pathname;
   const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) Alert("error", "로그인이 필요합니다.", navigate("/login"));
+    const loginInfo = localStorage.getItem("loginInfo");
+    if (loginInfo) {
+      const parsedLoginInfo = JSON.parse(loginInfo);
+      const expire = parsedLoginInfo.expire;
+
+      if (Date.now() > expire)
+        Alert(
+          "error",
+          "로그인이 만료되었습니다. 다시 로그인 해주세요.",
+          navigate("/login")
+        );
+    } else {
+      Alert("error", "로그인이 필요합니다.", navigate("/login"));
+    }
   }, [url]);
   return <Outlet />;
 }

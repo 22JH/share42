@@ -28,6 +28,7 @@ import UserMyPageLike from "./routes/userHome/UserMyPageLike";
 import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
 import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
+import UserChatList from "./routes/user/UserChatList";
 
 const globalStyle = css`
   body {
@@ -60,6 +61,7 @@ function App() {
                 element={<UserMyPageStatistics />}
               />
               <Route path="/user/chat" element={<UserChat />} />
+              <Route path="/user/chat/list" element={<UserChatList />} />
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
               <Route path="/user/share-reg" element={<UserShareReg />} />
               <Route path="/user/payment" element={<UserPay />} />

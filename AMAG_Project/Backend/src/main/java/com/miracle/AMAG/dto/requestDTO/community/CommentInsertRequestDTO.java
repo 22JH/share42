@@ -16,7 +16,6 @@ import lombok.Setter;
 public class CommentInsertRequestDTO {
 
     @NotNull
-    @NotBlank
     @Schema(title = "커뮤니티 글 아이디",description = "댓글을 작성할 커뮤니티 글 아이디")
     private int communityId;
 

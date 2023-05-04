@@ -1,9 +1,128 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
-<h1>공유사이 화이팅!</h1>
-</body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <div class="card">
+                <div class="card-header text-center">Chat Room</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="roomName">Room Name</label>
+                        <input type="text" class="form-control" id="roomName">
+                    </div>
+                    <div class="form-group">
+                        <label for="receiverName">Receiver</label>
+                        <input type="text" class="form-control" id="receiverName">
+                    </div>
+                    <button class="btn btn-primary btn-block" id="joinBtn">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="container mt-5" id="chatContainer" style="display: none;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header text-center" id="roomTitle"></div>
+                <div class="card-body" id="chatBox">
+                    <ul class="list-group" id="messageList"></ul>
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter message to send" id="messageInput">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" id="sendBtn">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script>
+    var socket;
+    var username;
+    var roomName;
+
+    function connect() {
+        socket = new WebSocket('ws://localhost:8088/chat/' + roomName);
+        socket.onmessage = function (event) {
+            var message = JSON.parse(event.data);
+            showMessage(message.sender, message.receiver, message.content);
+        }
+        socket.onopen = function () {
+            var joinMessage = {
+                sender: username,
+                receiver: "receiver",
+                content: username + ' joined the chat.',
+                roomName : roomName
+            }
+            socket.send(JSON.stringify(joinMessage));
+        }
+    }
+
+    function disconnect() {
+        var leaveMessage = {
+            sender: username,
+            receiver : "receiverFromt",
+            content: username + ' left the chat.'
+        }
+        socket.send(JSON.stringify(leaveMessage));
+        socket.close();
+    }
+
+    function sendMessage() {
+        var message = {
+            sender: username,
+            receiver: $('#receiverName').val(),
+            content: $('#messageInput').val(),
+            roomName : roomName
+        }
+        socket.send(JSON.stringify(message));
+        $('#messageInput').val('');
+    }
+    function showMessage(sender, receiver, content) {
+        var messageItem = '<li class="list-group-item">' + sender + ' -> ' + receiver + ': ' + content + '</li>';
+        $('#messageList').append(messageItem);
+    }
+
+    $(document).ready(function () {
+        $('#joinBtn').click(function () {
+            username = $('#username').val();
+            roomName = $('#roomName').val();
+            connect();
+            $('#roomTitle').text(roomName);
+            $('#chatContainer').show();
+            $('#messageInput').focus();
+        });
+        $('#sendBtn').click(function () {
+            sendMessage();
+        });
+        $('#messageInput').keypress(function (event) {
+            if (event.which == 13) {
+                sendMessage();
+            }
+        });
+    });
+</script>
+</body>
 </html>

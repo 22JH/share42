@@ -49,6 +49,12 @@ dependencies {
 	//Logback
 	implementation group: 'com.papertrailapp', name: 'logback-syslog4j', version: '1.0.0'
 
+	//socket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	//mongodb
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
 	implementation 'com.microsoft.onnxruntime:onnxruntime:1.13.1' //yolov5를 위한 라이브러리 2개
 	implementation 'org.openpnp:opencv:4.5.5-1'
 

@@ -129,7 +129,6 @@ function AdminHomeCircleChart({
       <div css={info}>
         <div css={outer}>
           {data.map((d: any[], index: number) => {
-            console.log(color(index * 0.1));
             return (
               <div className="container" key={index}>
                 <div css={box(color(index * 0.1))}></div>

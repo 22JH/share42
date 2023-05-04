@@ -3,6 +3,7 @@ package com.miracle.AMAG.service.common;
 import ai.onnxruntime.OrtException;
 import com.miracle.AMAG.dto.requestDTO.common.DetectionRequestDTO;
 import com.miracle.AMAG.entity.common.Category;
+import com.miracle.AMAG.mapping.common.CategoryMapping;
 import com.miracle.AMAG.repository.common.CategoryRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.yolo.Detection;
@@ -61,5 +62,9 @@ public class DetectionService {
             }
         }
         return BoardUtils.BOARD_CRUD_FAIL;
+    }
+
+    public List<CategoryMapping> getArticleCategory(){
+        return categoryRepository.findDistinctBy();
     }
 }

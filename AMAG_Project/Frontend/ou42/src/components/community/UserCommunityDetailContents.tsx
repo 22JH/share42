@@ -31,7 +31,7 @@ const UserCommunityDetailContents = ({
           marginBottom: "0px",
         }}
       >
-        {data.communityDetail.title}
+        {data?.communityDetail.title}
       </p>
       <div
         style={{
@@ -44,7 +44,7 @@ const UserCommunityDetailContents = ({
             color: "#7e7e7e",
           }}
         >
-          {data.communityDetail.content}
+          {data?.communityDetail.content}
         </span>
       </div>
       <div
@@ -59,7 +59,7 @@ const UserCommunityDetailContents = ({
             marginTop: "1%",
           }}
         />
-        <span>댓글 {data.commentCount}</span>
+        <span>댓글 {data?.commentCount}</span>
       </div>
     </div>
   );

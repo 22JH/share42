@@ -43,13 +43,13 @@ const UserCommunityDetailInfo = ({
             fontWeight: "900",
           }}
         >
-          {data.communityDetail.accountNickname}
+          {data?.communityDetail?.accountNickname}
         </span>
         <span>
-          {data.communityDetail.accountSigungu +
+          {data?.communityDetail?.accountSigungu +
             " " +
-            data.communityDetail.accountDong}{" "}
-          · {getTimeAgo(data.communityDetail.uptDt)}
+            data?.communityDetail?.accountDong}{" "}
+          · {getTimeAgo(data?.communityDetail?.uptDt)}
         </span>
       </div>
       <div
@@ -67,7 +67,7 @@ const UserCommunityDetailInfo = ({
             color: "#3F3F3F",
           }}
         >
-          {data.communityDetail.category}
+          {data?.communityDetail?.category}
         </span>
         <div
           style={{
@@ -83,7 +83,7 @@ const UserCommunityDetailInfo = ({
               marginTop: "5%",
             }}
           />
-          <span>{data.communityDetail.hits}회</span>
+          <span>{data?.communityDetail?.hits}회</span>
         </div>
       </div>
     </div>

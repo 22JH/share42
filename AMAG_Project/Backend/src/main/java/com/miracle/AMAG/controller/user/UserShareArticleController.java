@@ -2,7 +2,7 @@ package com.miracle.AMAG.controller.user;
 
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
-import com.miracle.AMAG.service.user.UserShareService;
+import com.miracle.AMAG.service.user.UserShareArticleService;
 import com.miracle.AMAG.util.network.CUDResponse;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserShareArticleController {
 
     @Autowired
-    private UserShareService userShareService;
+    private UserShareArticleService userShareArticleService;
 
     @PostMapping(value = "/share-articles", consumes = {
             "multipart/form-data"
@@ -42,7 +42,7 @@ public class UserShareArticleController {
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 글 등록", description = "공유 물품 글을 등록합니다.")
     public ResponseEntity<?> insertShareArticle(@ModelAttribute @Valid ShareArticleRequestDTO shareArticleRequestDTO) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.insertShareArticle(shareArticleRequestDTO));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.insertShareArticle(shareArticleRequestDTO));
     }
 
     @PatchMapping(value = "/share-articles/{share_article_id}",consumes = {
@@ -60,7 +60,7 @@ public class UserShareArticleController {
     })
     public ResponseEntity<?> updateShareArticle(@ModelAttribute @Valid ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO,
                                             @PathVariable("share_article_id") int shareArticleId){
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.updateShareArticle(shareArticleUpdateRequestDTO, shareArticleId));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.updateShareArticle(shareArticleUpdateRequestDTO, shareArticleId));
     }
     @GetMapping("/share-articles/{share_article_id}")
     @ApiResponses(value = {
@@ -74,7 +74,7 @@ public class UserShareArticleController {
             @Parameter(name = "share_article_id", description = "조회할 공유 물품 글 번호", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> getShareArticle(@PathVariable("share_article_id") int shareArticleId) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.getShareArticle(shareArticleId));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.getShareArticle(shareArticleId));
     }
 
     @DeleteMapping("/share-articles/{share_article_id}")
@@ -89,7 +89,7 @@ public class UserShareArticleController {
             @Parameter(name = "share_article_id", description = "삭제할 공유 물품 글 번호", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> deleteShareArticle(@PathVariable("share_article_id") int shareArticleId) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.deleteShareArticle(shareArticleId));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.deleteShareArticle(shareArticleId));
     }
 
     @PostMapping("/share-articles/like/{share_article_id}")
@@ -104,7 +104,7 @@ public class UserShareArticleController {
             @Parameter(name = "share_article_id", description = "찜하기를 진행할 대여 게시글 ID", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> likeShareArticle(@PathVariable("share_article_id") int shareArticleId) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.likeShareArticle(shareArticleId));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.likeShareArticle(shareArticleId));
     }
 
     @PostMapping("/share-articles/unlike/{share_article_id}")
@@ -119,7 +119,7 @@ public class UserShareArticleController {
             @Parameter(name = "share_article_id", description = "찜하기를 취소할 대여 게시글 ID", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> unlikeShareArticle(@PathVariable("share_article_id") int shareArticleId) {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareService.unlikeShareArticle(shareArticleId));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.unlikeShareArticle(shareArticleId));
     }
 
 

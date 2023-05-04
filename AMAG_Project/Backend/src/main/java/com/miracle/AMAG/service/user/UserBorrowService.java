@@ -12,6 +12,7 @@ import com.miracle.AMAG.repository.user.BorrowRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
+import com.miracle.AMAG.util.common.AccountUtils;
 import com.miracle.AMAG.util.common.BorrowUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
@@ -49,7 +50,7 @@ public class UserBorrowService {
 
     public String applyBorrow(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
-        checkLogin(loginId);
+        AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         if(shareArticle.isStatus()){
@@ -94,7 +95,7 @@ public class UserBorrowService {
 
     public String cancelBorrow(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
-        checkLogin(loginId);
+        AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         if(!shareArticle.getAccount().getUserId().equals(loginId)) {
@@ -144,7 +145,7 @@ public class UserBorrowService {
 
     public String receiveProduct(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
-        checkLogin(loginId);
+        AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
@@ -188,9 +189,4 @@ public class UserBorrowService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    private static void checkLogin(String loginId) {
-        if(loginId.equals("anonymousUser")) {
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
-    }
 }

@@ -5,6 +5,7 @@ import com.miracle.AMAG.util.network.Header;
 import com.miracle.AMAG.util.network.Post;
 import com.miracle.AMAG.util.network.RequestBody;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@Transactional
 public class KlaytnService {
     @Value("${klaytn.accessKeyId}")
     public String accessKey;

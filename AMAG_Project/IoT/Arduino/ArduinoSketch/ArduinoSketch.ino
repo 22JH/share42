@@ -12,7 +12,6 @@ void setup() {
   Serial.begin(9600);
 
   pinMode(2,INPUT_PULLUP);
-  pinMode(13, OUTPUT);
 }
 
 void loop() {
@@ -28,14 +27,10 @@ void loop() {
       mag_sensor = digitalRead(2);
       if(mag_sensor == LOW){
         //달라붙어있는거 = 닫힘
-        Serial.println("close");
-        digitalWrite(13, 0);
-        delay(1000);
+        Serial.println("아! 닫혔네요!");
       }else{
         //열림
-        Serial.println("open");
-        digitalWrite(13, 1);
-        delay(1000);
+        Serial.println("열렸습니다!");
       }
       delay(100);
     }

@@ -16,26 +16,25 @@ import DropDown from "../../components/UI/DropDown";
 import * as userHomeStyle from "../../components/user/UserHomeStyle";
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
 import BottomMenuBar from "../../components/BottomMenuBar";
+import { L, pipe, takeAll } from "./../../custom/FxJS";
 
 // intersaction 옵션
 const intersectionOptions = {
   root: document.querySelector("#scrollArea"),
   rootMargin: "0px",
-  threshold: 0.3,
+  threshold: 0.5,
 };
 
-// 테스트 데이터
-const sampleData = [1, 2, 3, 4, 5, 6, 7, 8];
+// API_URL
+const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 
+// infinityquery 함수
 const getListFnc = ({ pageParam = 1 }) => {
   return axios({
     method: "get",
     url: `${API_URL}${pageParam}`,
   });
 };
-
-// API_URL
-const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 
 // 데이터 fetch 컴포넌트
 function UserHomeList() {
@@ -47,11 +46,22 @@ function UserHomeList() {
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
-        return;
+        return allPage.length + 1;
       },
       useErrorBoundary: true,
       suspense: true,
       retry: 0,
+      select: (data) => {
+        const newData = pipe(
+          L.map((arr: any) => arr.data),
+          L.flatten,
+          takeAll
+        );
+        return {
+          pages: newData(data.pages),
+          pageParams: data.pageParams,
+        };
+      },
     }
   );
 
@@ -70,8 +80,7 @@ function UserHomeList() {
   // data가 변경될 떄마다 새로운 요소를 감시한다.
   useEffect(() => {
     if (divRef?.current && data) {
-      let lastPage = 0;
-      intersection.observe(divRef?.current[lastPage]);
+      intersection.observe(divRef?.current[data?.pages.length - 1]);
     }
   }, [data]);
 
@@ -82,7 +91,7 @@ function UserHomeList() {
 
   return (
     <>
-      {sampleData.map((data, index) => {
+      {data?.pages.map((data, index) => {
         return (
           <div
             className="item"
@@ -157,7 +166,6 @@ const 임시 = ["1", "2", "3"];
 
 function UserHome() {
   const [value, setValue] = useState<string>("");
-
   return (
     <>
       <div css={userHomeStyle.content(value)} id="scrollArea">

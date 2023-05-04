@@ -48,9 +48,9 @@ public class ShareReturn {
 
     private byte returnType;
 
-    @Column(name="CONTRACT_HASH",length = 100)
+    @Column(name="CONTRACT_HASH",length = 200)
     private String contractHash;
 
-    @Column(name="METADATA_URI",length = 100)
+    @Column(name="METADATA_URI",length = 200)
     private String metadataUri;
 }

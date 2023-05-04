@@ -1,7 +1,8 @@
 export const useGetUserToken = () => {
-  if (localStorage?.getItem("token")) {
-    return localStorage.getItem("token");
-  } else return null;
+  const loginInfo = localStorage.getItem("loginInfo");
+  if (loginInfo) {
+    return JSON.parse(loginInfo).token;
+  }
 };
 
 export function useGetAdminToken() {

@@ -22,7 +22,7 @@ function UserMyPageProfile() {
   const handleLogOut = () => {
     logOut()
       .then(() => {
-        localStorage.removeItem("token");
+        localStorage.removeItem("loginInfo");
         navigate("/");
       })
       .catch((err) => console.log(err));

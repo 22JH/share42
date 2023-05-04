@@ -3,7 +3,6 @@ import { css } from "@emotion/react";
 
 import { AiOutlineHome } from "react-icons/ai";
 import {
-  BsClipboard2Plus,
   BsChatRightHeart,
   BsFillMenuButtonWideFill,
   BsMap,
@@ -42,6 +41,7 @@ const bottomMenuBarStyle = css`
 function BottomMenuBar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
   const homeIcons = [
     { title: "홈", Icon: AiOutlineHome, url: "/home" },
     {
@@ -49,7 +49,7 @@ function BottomMenuBar() {
       Icon: BsFillMenuButtonWideFill,
       url: "/user/community",
     },
-    { title: "NFC", Icon: TbNfc, url: "/uesr/nfc" },
+    { title: "NFC", Icon: TbNfc, url: "/user/nfc" },
     { title: "채팅", Icon: BsChatRightHeart, url: "/user/chat" },
     { title: "내 프로필", Icon: RxPerson, url: "/user/mypage" },
   ];
@@ -61,6 +61,7 @@ function BottomMenuBar() {
     { title: "기기조작", Icon: MdDevices, url: "/admin/operation" },
     { title: "맵", Icon: BsMap, url: "/user/map" },
   ];
+
   return (
     <div css={bottomMenuBarStyle}>
       {(pathname.includes("admin") ? adminIcons : homeIcons).map(

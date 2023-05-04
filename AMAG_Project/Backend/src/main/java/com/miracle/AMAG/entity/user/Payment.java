@@ -44,10 +44,10 @@ public class Payment {
     @Column(name = "RECEIPT_ID", length = 30)
     private String receiptId;
 
-    @Column(name = "METADATA_URI",length = 100)
+    @Column(name = "METADATA_URI",length = 200)
     private String metadataUri;
 
-    @Column(name = "CONTRACT_HASH",length = 100)
+    @Column(name = "CONTRACT_HASH",length = 200)
     private String contractHash;
 
 

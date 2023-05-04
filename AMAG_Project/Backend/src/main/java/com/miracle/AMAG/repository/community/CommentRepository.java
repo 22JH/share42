@@ -15,5 +15,5 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     Comment findById(@Param("id") int id);
 
-    Page<CommentDetailListMapping> findAllByCommunity_Id(@Param("communityId") int communityId, Pageable pageable);
+    Page<CommentDetailListMapping> findAllByCommunity_IdAndStatus(@Param("communityId") int communityId,@Param("status") boolean status,Pageable pageable);
 }

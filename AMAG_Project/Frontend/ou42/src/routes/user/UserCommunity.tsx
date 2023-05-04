@@ -37,6 +37,7 @@ const UserCommunity = () => {
   const { search } = communityStore();
   const divRef = useRef<HTMLDivElement | any>({});
   const queryClient = useQueryClient();
+  const accessToken = localStorage.getItem("token");
 
   const SORT_API = (sort: any, category: any) => {
     // eslint-disable-next-line max-len
@@ -58,10 +59,14 @@ const UserCommunity = () => {
           : SORT_API(sort, category),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       const { content } = response.data.message;
       return content;
+    },
+    {
+      suspense: false,
     }
   );
 

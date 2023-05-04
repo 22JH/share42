@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { css, Global } from "@emotion/react";
@@ -32,6 +33,7 @@ import UserCommunityReg from "./routes/user/UserCommunityReg";
 import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
 import UserChatList from "./routes/user/UserChatList";
+import UserCommunityDetail from "./routes/user/UserCommunityDetail";
 
 const globalStyle = css`
   body {
@@ -79,6 +81,7 @@ function App() {
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
+            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

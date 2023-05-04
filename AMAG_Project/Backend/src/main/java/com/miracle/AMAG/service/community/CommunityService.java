@@ -47,7 +47,7 @@ public class CommunityService {
 
         int commentCount = commentRepository.countByCommunity_Id(id);
 
-        Page<CommentDetailListMapping> cdlm = commentRepository.findAllByCommunity_Id(id, pageable);
+        Page<CommentDetailListMapping> cdlm = commentRepository.findAllByCommunity_IdAndStatus(id,BoardUtils.BOARD_STATUS_FALSE, pageable);
 
         Map<String, Object> result = new HashMap<>();
         result.put("communityDetail", cddm);

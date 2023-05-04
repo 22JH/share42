@@ -13,6 +13,7 @@ import com.miracle.AMAG.repository.account.ArticleLikeRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
+import com.miracle.AMAG.util.common.AccountUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ import java.util.Map;
 @Slf4j
 @Transactional
 @Service
-public class UserShareService {
+public class UserShareArticleService {
 
     @Autowired
     private ShareArticleRepository shareArticleRepository;
@@ -44,8 +45,8 @@ public class UserShareService {
 
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
 
-        checkLogin(loginId);
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
 
@@ -83,8 +84,8 @@ public class UserShareService {
 
     public String updateShareArticle(ShareArticleUpdateRequestDTO shareArticleUpdateRequestDTO, int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
 
-        checkLogin(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
 
         if (!loginId.equals(shareArticle.getAccount().getUserId())) {
@@ -126,8 +127,8 @@ public class UserShareService {
 
     public String deleteShareArticle(int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
 
-        checkLogin(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         if (shareArticle.isStatus()) {
             throw new RuntimeException("이미 삭제된 글입니다.");
@@ -139,7 +140,7 @@ public class UserShareService {
 
     public String likeShareArticle(int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
-        checkLogin(loginId);
+        AccountUtils.checkLogin(loginId);
 
         Account account = accountRepository.findByUserId(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
@@ -163,7 +164,7 @@ public class UserShareService {
 
     public String unlikeShareArticle(int shareArticleId) {
         String loginId = SecurityUtil.getCurrentUserId();
-        checkLogin(loginId);
+        AccountUtils.checkLogin(loginId);
 
         Account account = accountRepository.findByUserId(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
@@ -179,12 +180,5 @@ public class UserShareService {
         articleLikeRepository.save(registedArticleLike);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
-    }
-
-
-    private static void checkLogin(String loginId) {
-        if (loginId.equals("anonymousUser")) {
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
     }
 }

@@ -24,9 +24,7 @@ spring:
       host: k8d102.p.ssafy.io
       password: ssafy123!@#
     mongodb:
-      host: 52.79.216.253
-      port: 27017
-      database: chat-test
+      uri: mongodb://share42:ssafy8@52.79.216.253:27017/share42?authSource=admin
 
   logging:
     level:

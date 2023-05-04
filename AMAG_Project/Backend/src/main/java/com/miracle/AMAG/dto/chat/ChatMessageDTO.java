@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document(collection = "share-chat")
+@Document(collection = "messages")
 public class ChatMessageDTO {
     @Id
     private String id;

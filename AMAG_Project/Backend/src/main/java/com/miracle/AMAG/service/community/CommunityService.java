@@ -11,6 +11,7 @@ import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.community.CommentRepository;
 import com.miracle.AMAG.repository.community.CommunityRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
+import com.miracle.AMAG.util.common.BorrowUtils;
 import com.miracle.AMAG.util.common.SearchTypeEnum;
 import com.miracle.AMAG.util.common.SortUtils;
 import jakarta.transaction.Transactional;
@@ -45,7 +46,7 @@ public class CommunityService {
 
         CommunityDetailDataMapping cddm = communityRepository.findByIdAndStatus(id, BoardUtils.BOARD_STATUS_FALSE);
 
-        int commentCount = commentRepository.countByCommunity_Id(id);
+        int commentCount = commentRepository.countByCommunity_IdAndStatus(id, BoardUtils.BOARD_STATUS_FALSE);
 
         Page<CommentDetailListMapping> cdlm = commentRepository.findAllByCommunity_IdAndStatus(id,BoardUtils.BOARD_STATUS_FALSE, pageable);
 

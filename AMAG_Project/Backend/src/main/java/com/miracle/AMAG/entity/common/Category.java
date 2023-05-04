@@ -20,6 +20,6 @@ public class Category {
     @Column(length = 10)
     private String category;
 
-    @Column(length = 10)
+    @Column(length = 20)
     private String productName;
 }

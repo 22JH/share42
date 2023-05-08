@@ -1,22 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-import testObject from "../../assets/testObject.jpg";
-
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
 import { Suspense, useEffect, useRef, useState } from "react";
+import axios from "axios";
 import {
   useInfiniteQuery,
   useQueryClient,
   useQueryErrorResetBoundary,
 } from "react-query";
-import axios from "axios";
-import Loading from "../../components/Loading";
-import ErrorBoundary from "../../components/ErrorBoundary";
-import DropDown from "../../components/UI/DropDown";
-import * as userHomeStyle from "../../components/user/UserHomeStyle";
+
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
+import * as userHomeStyle from "../../components/user/UserHomeStyle";
+import ErrorBoundary from "../../components/ErrorBoundary";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import { L, pipe, takeAll } from "./../../custom/FxJS";
+import DropDown from "../../components/UI/DropDown";
+import Loading from "../../components/Loading";
+
+import testObject from "../../assets/testObject.jpg";
 
 // intersaction 옵션
 const intersectionOptions = {
@@ -80,7 +81,8 @@ function UserHomeList() {
   // data가 변경될 떄마다 새로운 요소를 감시한다.
   useEffect(() => {
     if (divRef?.current && data) {
-      intersection.observe(divRef?.current[data?.pages.length - 1]);
+      const lastIndex = data?.pages?.length - 1;
+      intersection.observe(divRef?.current[lastIndex]);
     }
   }, [data]);
 

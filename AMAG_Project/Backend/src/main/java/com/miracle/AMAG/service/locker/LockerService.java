@@ -27,8 +27,8 @@ public class LockerService {
     @Autowired
     private LockerRepository lockerRepository;
 
-    public List<LockerStationGetListMapping> getLocker(String sido, String sigungu, String dong){
-        List<LockerStationGetListMapping> lsglm = lockerStationRepository.findAllBySidoAndSigunguAndDong(sido, sigungu, dong);
+    public List<LockerStationGetListMapping> getLocker(double lat, double lng){
+        List<LockerStationGetListMapping> lsglm = lockerStationRepository.getNearLocker(lat, lng);
         return lsglm;
     }
 

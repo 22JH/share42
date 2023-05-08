@@ -34,9 +34,6 @@ public class LockerController {
     @Autowired
     private LockerService lockerService;
 
-    @Autowired
-    private AddressService addressService;
-
     @GetMapping("/{lat}/{lng}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "대여함 정보 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
@@ -50,9 +47,7 @@ public class LockerController {
             @Parameter(name = "lng", description = "현재 위치의 경도", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> getNearLockers(@PathVariable("lat") double lat, @PathVariable("lng") double lng) {
-        Map<String, Object> map = addressService.getReverseGeo(lat, lng);
-        return NormalResponse.toResponseEntity(HttpStatus.OK, lockerService.getLocker(map.get("region_1depth_name").toString()
-                , map.get("region_2depth_name").toString(), map.get("region_3depth_name").toString()));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, lockerService.getLocker(lat,lng));
     }
 
     @GetMapping("/detail/{page}/{size}/{lockerLocationId}")

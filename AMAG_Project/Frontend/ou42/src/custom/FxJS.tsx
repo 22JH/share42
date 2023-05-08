@@ -14,8 +14,8 @@ interface CType {
   filter: any;
 }
 
-const L: Partial<LType> = {};
-const C: Partial<CType> = {};
+export const L: Partial<LType> = {};
+export const C: Partial<CType> = {};
 
 // go1
 const go1 = (a: any, f: any) => (a instanceof Promise ? a.then(f) : f(a));

@@ -154,8 +154,9 @@ export default function UserInfoModify() {
     onSuccess: (res) => {
       setNickName(() => res.nickname);
       setAddr(() => res.address);
-      if (res.img)
+      if (res.img) {
         setCurrentImg(() => `http://k8d102.p.ssafy.io:8088/images/${res.img}`);
+      }
       // setSi(() => res.sido);
       // setGoon(() => res.sigungu);
       // setDong(() => res.dong);

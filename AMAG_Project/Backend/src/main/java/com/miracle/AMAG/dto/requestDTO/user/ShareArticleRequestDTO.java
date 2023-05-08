@@ -45,7 +45,7 @@ public class ShareArticleRequestDTO {
     @NotNull
     private MultipartFile imgFile;
 
-    @Schema(title = "보관할 대여함 지점", description = "공유할 물품을 보관할 대여함 지짐의 ID값")
+    @Schema(title = "보관할 대여함 지점", description = "공유할 물품을 보관할 대여함 지점의 ID값")
     @NotNull
     private int lockerStationId;
 }

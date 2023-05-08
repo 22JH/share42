@@ -1,8 +1,6 @@
 package com.miracle.AMAG.controller.Admin;
 
-import com.miracle.AMAG.mapping.admin.ReportListMapping;
 import com.miracle.AMAG.service.admin.AdminReportService;
-import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "관리자", description = "대여 관련 상태 신고 기능")
+@Tag(name = "관리자", description = "대여 신고글 관리")
 @RequestMapping("/api/admin/reports")
 @RequiredArgsConstructor
 @RestController
@@ -36,7 +31,7 @@ public class AdminReportController {
     private AdminReportService adminReportService;
 
 
-    @GetMapping("/{categoty}/{page}/{size}")
+    @GetMapping("/{category}/{page}/{size}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "신고내역 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
             @ApiResponse(responseCode = "500", description = "신고내역 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -49,11 +44,13 @@ public class AdminReportController {
             @Parameter(name = "page", description = "글 페이지 번호",in = ParameterIn.PATH),
             @Parameter(name = "size", description = "페이지 당 글 수",in = ParameterIn.PATH)
     })
-    public ResponseEntity<?> getReportList(@PathVariable("categoty") int categoty,
+    public ResponseEntity<?> getReportList(@PathVariable("category") int category,
                                            @PathVariable("page") int page,
                                            @PathVariable("size") int size){
         PageRequest pageRequest = PageRequest.of(page - 1,size);
-        return NormalResponse.toResponseEntity(HttpStatus.OK, adminReportService.getReportList(categoty,pageRequest));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminReportService.getReportList(category,pageRequest));
     }
+
+
 
 }

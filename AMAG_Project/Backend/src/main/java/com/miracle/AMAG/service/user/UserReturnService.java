@@ -121,4 +121,30 @@ public class UserReturnService {
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
+
+    public String cancelReturn(int shareArticleId) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        Account account = accountRepository.findByUserId(loginId);
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 반납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
+        }
+
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+
+        shareReturnRepository.findRecentReturnRecord(shareArticle);
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY || borrowRecord.getUseType() != ShareReturnUtils.RETURN_APPLY) {
+            throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+
+        ShareReturn recentReturnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
+
+
+
+    }
 }

@@ -75,7 +75,7 @@ export default function SignUp() {
       sido: si,
       sigungu: goon,
       dong: dong,
-      address: addrDetail,
+      address: `${si} ${goon} ${dong} ${addrDetail}`,
     },
   };
   const submitSignUp = useApi("post", URL, options);

@@ -13,5 +13,5 @@ export default function Alert(
     timerProgressBar: true,
   });
 
-  Toast.fire({ icon, title, didClose });
+  Toast.fire({ icon, title }).then(() => didClose);
 }

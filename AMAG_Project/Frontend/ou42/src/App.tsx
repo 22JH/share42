@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { css, Global } from "@emotion/react";
@@ -30,6 +31,9 @@ import UserCommunity from "./routes/user/UserCommunity";
 import CommunityNavBar from "./components/NavBar/CommunityNavBar";
 import UserCommunityReg from "./routes/user/UserCommunityReg";
 import UserInfoModify from "./routes/auth/UserInfoModify";
+import RouterGuard from "./components/auth/RouterGuard";
+import UserChatList from "./routes/user/UserChatList";
+import UserCommunityDetail from "./routes/user/UserCommunityDetail";
 
 const globalStyle = css`
   body {
@@ -46,25 +50,38 @@ function App() {
       <Router>
         <Routes>
           {/* 유저 홈 */}
-          <Route element={<HomeNavBar />}>
-            <Route path="/home" element={<UserHome />} />
+          <Route element={<RouterGuard />}>
+            <Route element={<HomeNavBar />}>
+              <Route path="/home" element={<UserHome />} />
+            </Route>
+            {/* 유저 마이페이지 */}
+            <Route element={<MyPageNavBar />}>
+              <Route path="/user/mypage" element={<UserMyPage />} />
+              <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
+              <Route path="/user/nfc" element={<UserNfc />} />
+              <Route path="/user/mypage/share" element={<UserMyPageShare />} />
+              <Route path="/user/mypage/like" element={<UserMyPageLike />} />
+              <Route
+                path="/user/mypage/stats"
+                element={<UserMyPageStatistics />}
+              />
+              <Route path="/user/chat" element={<UserChat />} />
+              <Route path="/user/chat/list" element={<UserChatList />} />
+              <Route path="/user/mypage/modify" element={<UserInfoModify />} />
+              <Route path="/user/share-reg" element={<UserShareReg />} />
+              <Route path="/user/payment" element={<UserPay />} />
+              <Route path="/user/report" element={<UserReport />} />
+              <Route path="/user/share-post" element={<UserSharePost />} />
+            </Route>
           </Route>
           {/* 유저 마이페이지 */}
-          <Route element={<MyPageNavBar />}>
-            <Route path="/user/mypage" element={<UserMyPage />} />
-            <Route path="/user/mypage/usage" element={<UserMyPageUsage />} />
-            <Route path="/user/nfc" element={<UserNfc />} />
-            <Route path="/user/mypage/share" element={<UserMyPageShare />} />
-            <Route path="/user/mypage/like" element={<UserMyPageLike />} />
-            <Route
-              path="/user/mypage/stats"
-              element={<UserMyPageStatistics />}
-            />
-            <Route path="/user/mypage/modify" element={<UserInfoModify />} />
-          </Route>
-          <Route element={<CommunityNavBar/>}>
+
+          <Route path="/user/mypage/stats" element={<UserMyPageStatistics />} />
+
+          <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
+            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />
@@ -78,11 +95,6 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/map" element={<AdminMap />} />
-          <Route path="/user/share-reg" element={<UserShareReg />} />
-          <Route path="/user/payment" element={<UserPay />} />
-          <Route path="/user/chat" element={<UserChat />} />
-          <Route path="/user/report" element={<UserReport />} />
-          <Route path="/user/share-post" element={<UserSharePost />} />
         </Routes>
       </Router>
     </>

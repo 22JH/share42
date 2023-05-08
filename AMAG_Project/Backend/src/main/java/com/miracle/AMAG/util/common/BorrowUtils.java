@@ -1,10 +1,14 @@
 package com.miracle.AMAG.util.common;
 
 public class BorrowUtils {
-    public static final byte APPLY_BORROW = 0;
+    
+    // 사용신청
+    public static final byte BORROW_APPLY = 0;
 
+    // 사용
     public static final byte BORROW= 1;
 
-    public static final byte CANCEL_BORROW = 2;
+    // 취소
+    public static final byte BORROW_CANCEL = 2;
 
 }

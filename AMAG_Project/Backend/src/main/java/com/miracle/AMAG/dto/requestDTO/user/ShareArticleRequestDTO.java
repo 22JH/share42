@@ -22,7 +22,7 @@ public class ShareArticleRequestDTO {
     private String category;
 
     @Column(length = 10)
-    @Schema(title = "공유 물품 이름", description = "작성할 공유 물품의 이름", maxLength = 10)
+    @Schema(title = "공유 물품 이름", description = "작성할 공유 물품의 이름", maxLength = 30)
     @NotNull
     @NotBlank
     private String name;

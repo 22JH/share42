@@ -25,7 +25,7 @@ public class ShareArticle {
     @Column(length = 10)
     private String category;
 
-    @Column(length = 10)
+    @Column(length = 30)
     private String name;
 
     @Column(length = 100)

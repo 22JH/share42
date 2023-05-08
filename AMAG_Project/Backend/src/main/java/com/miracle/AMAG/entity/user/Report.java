@@ -31,8 +31,7 @@ public class Report {
     @JoinColumn(name = "SHARE_ARTICLE_ID", nullable = false)
     private ShareArticle shareArticle;
 
-    @Column(length = 10)
-    private String category;
+    private int category;
 
     @Column(length = 30)
     private String title;

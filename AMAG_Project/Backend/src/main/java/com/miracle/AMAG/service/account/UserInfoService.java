@@ -17,7 +17,6 @@ import kr.co.bootpay.model.request.SubscribePayload;
 import kr.co.bootpay.model.request.User;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -227,6 +226,12 @@ public class UserInfoService {
         String userId = SecurityUtil.getCurrentUserId();
         if(userId.equals("anonymousUser")){
             throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+
+        String requestNickname = userInfoRequestDTO.getNickname();
+        Account findAccount = accountRepository.checkDuplicatedNickname(userId, requestNickname);
+        if(findAccount != null) {
+            throw new RuntimeException("중복된 닉네임입니다.");
         }
 
         if (userInfoRequestDTO.getImgFile() != null) {

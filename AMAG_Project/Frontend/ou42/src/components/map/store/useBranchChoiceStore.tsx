@@ -1,11 +1,12 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-export interface useBranchChoiceStoreType{
-  branchChoice: string,
-  setBranchChoice: (name: string) => void;
+export interface useBranchChoiceStoreType {
+  branchChoice: { name: string; id: string | null };
+  setBranchChoice: (branchChoice: { name: string; id: string | null }) => void;
 }
 
 export const useBranchChoiceStore = create<useBranchChoiceStoreType>((set) => ({
-  branchChoice: '',
-  setBranchChoice: (name) => set({ branchChoice: name}),
-}))
+  branchChoice: { name: "", id: null },
+  setBranchChoice: (branchChoice: { name: string; id: string | null }) =>
+    set({ branchChoice }),
+}));

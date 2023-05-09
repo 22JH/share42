@@ -12,7 +12,6 @@ import { EventMarkerComponentProps } from "./type/MapType";
 const EventMarkerComponent = ({
   marker,
   position,
-  setIsOpenMap
 }: EventMarkerComponentProps) => {
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
@@ -64,7 +63,6 @@ const EventMarkerComponent = ({
         isOpen={isOpen}
         isVisible={isVisible}
         handleMarkerInfo={handleMarkerInfo}
-        setIsOpenMap={setIsOpenMap}
       />
     </div>
   );

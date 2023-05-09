@@ -1,18 +1,19 @@
 /** @jsxImportSource @emotion/react */
 
+import shareIsOpenStore from "../../store/shareIsOpenStore";
 import { useBranchChoiceStore } from "./store/useBranchChoiceStore";
 import { MarkerShareInfoComponentProps } from "./type/MapType";
 
 const MarkerShareInfoComponent = ({
   marker,
   handleMarkerInfo,
-  setIsOpenMap
 }: MarkerShareInfoComponentProps) => {
   const { setBranchChoice } = useBranchChoiceStore();
+  const { setIsOpenShareMap } = shareIsOpenStore();
 
-  const handleChoiceName = (name: string) => {
-    setBranchChoice(name);
-    setIsOpenMap && setIsOpenMap(false)
+  const handleChoiceName = (name: string, id: string | null) => {
+    setBranchChoice({name, id});
+    setIsOpenShareMap(false)
   };
 
   return (
@@ -79,7 +80,7 @@ const MarkerShareInfoComponent = ({
             backgroundColor: "#FFABAB",
             color: "white",
           }}
-          onClick={() => handleChoiceName(marker.content)}
+          onClick={() => handleChoiceName(marker.content, String(marker.id))}
         >
           <span>선택하기</span>
         </div>

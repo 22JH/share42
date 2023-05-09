@@ -10,34 +10,7 @@ import UserCommunityDetailInfo from "../../components/community/UserCommunityDet
 import UserCommunityDetailContents from "../../components/community/UserCommunityDetailContents";
 import UserCommunityCommentList from "../../components/community/UserCommunityCommentList";
 import UserCommunityCommentForm from "../../components/community/UserCommunityCommentForm";
-import TextField from "@mui/material/TextField";
-
-// 시간 측정하기
-const getTimeAgo = (timestamp: string) => {
-  const now = new Date().getTime();
-  const diff = now - new Date(timestamp).getTime();
-
-  const minute = 60 * 1000;
-  const hour = 60 * minute;
-  const day = 24 * hour;
-  const month = 30 * day;
-
-  if (diff < minute) {
-    return "방금 전";
-  } else if (diff < hour) {
-    return Math.floor(diff / minute) + "분 전";
-  } else if (diff < day) {
-    return Math.floor(diff / hour) + "시간 전";
-  } else if (diff < month) {
-    return Math.floor(diff / day) + "일 전";
-  } else {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${year}년 ${month}월 ${day}일`;
-  }
-};
+import { getTimeAgo } from "../../utils/getTimeAgo";
 
 export interface commentType {
   content: string;
@@ -54,10 +27,12 @@ export const StyleCommentInput = css`
 `;
 
 const UserCommunityDetail = () => {
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+
   const PAGE = 1;
   const SIZE = 5;
   const { id } = useParams();
-  const accessToken = localStorage.getItem("token");
   const [comment, setComment] = useState<string>("");
   const [postcomment, setPostComment] = useState<string>("");
 
@@ -77,7 +52,7 @@ const UserCommunityDetail = () => {
         url: Detail_API(id),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       return response.data.message;
@@ -106,7 +81,7 @@ const UserCommunityDetail = () => {
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 

@@ -34,6 +34,8 @@ import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
 import UserChatList from "./routes/user/UserChatList";
 import UserCommunityDetail from "./routes/user/UserCommunityDetail";
+import SharePageNavBar from "./components/NavBar/SharePageNavBar";
+import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
 
 const globalStyle = css`
   body {
@@ -54,6 +56,7 @@ function App() {
             <Route element={<HomeNavBar />}>
               <Route path="/home" element={<UserHome />} />
             </Route>
+
             {/* 유저 마이페이지 */}
             <Route element={<MyPageNavBar />}>
               <Route path="/user/mypage" element={<UserMyPage />} />
@@ -68,13 +71,23 @@ function App() {
               <Route path="/user/chat" element={<UserChat />} />
               <Route path="/user/chat/list" element={<UserChatList />} />
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
-              <Route path="/user/share-reg" element={<UserShareReg />} />
               <Route path="/user/payment" element={<UserPay />} />
-              <Route path="/user/report" element={<UserReport />} />
-              <Route path="/user/share-post" element={<UserSharePost />} />
             </Route>
           </Route>
-          {/* 유저 마이페이지 */}
+
+          {/* 등록된 공유 상세 페이지 */}
+          <Route element={<SharePageNavBar/>}>
+          </Route>
+
+          {/* 공유 등록 페이지, 등록된 공유 상세 페이지*/}
+          <Route element={<SharePageNavBar/>}>
+            <Route path="/user/share-reg" element={<UserShareReg />} />
+            <Route path="/user/share-category" element={<UserShareCategorySelect />} />
+            <Route path="/user/share-post/:id" element={<UserSharePost />} />
+          </Route>
+
+          
+          <Route path="/user/report" element={<UserReport />} />
 
           <Route path="/user/mypage/stats" element={<UserMyPageStatistics />} />
 

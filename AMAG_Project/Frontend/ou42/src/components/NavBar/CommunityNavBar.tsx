@@ -35,10 +35,13 @@ function CommunityNavBar() {
   };
 
   useEffect(() => {
+    console.log(pathname)
     if (pathname === "/user/community/reg") {
       setPathTitle("게시글 등록하기");
+    } else {
+      setPathTitle("")
     }
-  }, []);
+  }, [pathname]);
 
   return (
     <>
@@ -114,7 +117,7 @@ function CommunityNavBar() {
         >
           <MdArrowBackIosNew
             size={25}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/user/community")}
             style={{
               marginRight: "1rem",
             }}
@@ -133,7 +136,7 @@ function CommunityNavBar() {
             style={{
               marginLeft: "1rem",
             }}
-            onClick={() => navigate('/user/report')}
+            onClick={() => navigate("/user/report")}
           />
         </div>
       )}

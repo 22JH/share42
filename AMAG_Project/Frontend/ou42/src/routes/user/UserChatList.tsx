@@ -3,6 +3,9 @@ import { css } from "@emotion/react";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import profile from "../../assets/testObject.jpg";
 import ChatListDetail from "../../components/user/chat/ChatListDetail";
+import { useApi } from "../../hooks/useApi";
+
+const URL = "";
 
 const container = css`
   width: 100%;
@@ -43,6 +46,7 @@ const temp = [
 ];
 
 export default function UserChatList() {
+  const getUsers = useApi("get", URL);
   return (
     <div css={container}>
       {temp?.map((ele: PropType, idx: number) => (

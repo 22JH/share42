@@ -15,6 +15,18 @@ import UserShareDetailContent from "../../components/sharedetail/UserShareDetail
 import UserShareDetailRequest from "../../components/sharedetail/UserShareDetailRequest";
 import axios from "axios";
 import { useQuery } from "react-query";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../..";
 
 const SHARE_DETAIL_API = (id: any) => {
   // eslint-disable-next-line max-len
@@ -116,9 +128,38 @@ const UserSharePost = () => {
   };
 
   // 채팅하기 화면으로
-  const handleChating = () => {
-    // 채팅화면으로 가기
-    navigate("/user/chat/userId");
+  const handleChating = async () => {
+    const loginObject = localStorage.getItem("loginInfo");
+    const { userId } = loginObject ? JSON.parse(loginObject) : null;
+
+    /// 글 등록 유저 id 임시
+    const temp_reg_user_id = "test_user_id";
+    /// 유저 쿼리 찾기
+    const q = query(collection(db, "users"), where("userId", "==", "test_id"));
+    ////
+    const querySnapshot = await getDocs(q);
+    ///////
+    const chatName =
+      userId > temp_reg_user_id
+        ? userId + temp_reg_user_id
+        : temp_reg_user_id + userId;
+    const chats = await getDoc(doc(db, "chats", chatName));
+
+    if (!chats.exists()) {
+      await setDoc(doc(db, "chats", chatName), { message: [] });
+      console.log("1");
+      const res = await updateDoc(doc(db, "userChats", "ssafy1233"), {
+        [chatName + ".userInfo"]: {
+          id: temp_reg_user_id,
+          /// 프로필 받아와야함
+          profile: "",
+        },
+        // [chatName + ".date"]: serverTimestamp(),
+      });
+      console.log(res);
+    }
+
+    // navigate("/user/chat/userId");
   };
 
   // NFC 화면으로
@@ -129,7 +170,7 @@ const UserSharePost = () => {
 
   // 상세조회 페이지 데이터 가져오기
   const { data } = useQuery(
-    ['getShareDetail', id],
+    ["getShareDetail", id],
     async () => {
       try {
         const res = await axios({
@@ -137,8 +178,8 @@ const UserSharePost = () => {
           url: SHARE_DETAIL_API(id),
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setLikeCount(res.data.message.likeCount);
         return res.data.message.article;
@@ -149,12 +190,12 @@ const UserSharePost = () => {
     {
       suspense: false,
     }
-  )
+  );
 
   useEffect(() => {
     // console.log(likeCount)
     // console.log(data)
-  }, [likeCount, data])
+  }, [likeCount, data]);
 
   return (
     <>
@@ -182,7 +223,7 @@ const UserSharePost = () => {
           isLike={isLike}
           data={data}
         />
-        <UserShareDetailContent data={data} likeCount={likeCount}/>
+        <UserShareDetailContent data={data} likeCount={likeCount} />
         <UserShareDetailRequest
           useRequest={useRequest}
           handleUseRequest={handleUseRequest}

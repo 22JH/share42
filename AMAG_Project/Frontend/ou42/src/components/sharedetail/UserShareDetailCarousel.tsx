@@ -9,6 +9,7 @@ const UserShareDetailCarousel = ({
   slideWidth,
   handleDotClick,
   currentSlide,
+  data
 }: UserShareDetailCarouselProps) => {
 
   return (
@@ -29,11 +30,21 @@ const UserShareDetailCarousel = ({
           <div key={slide.id} style={{ width: slideWidth }}>
             <img
               src={slide.image}
-              alt={`Items ${idx}`}
+              alt={`${idx} Slide`}
               style={{ width: slideWidth, height: slideWidth }}
             />
           </div>
         ))}
+        {/* 이거 data 받아서 쓰는거 */}
+        {/*
+          <div style={{ width: slideWidth }}>
+            <img
+              src={data.img}
+              alt={data.img}
+              style={{ width: slideWidth, height: slideWidth }}
+            />
+          </div>
+        */}
       </div>
       <div
         style={{

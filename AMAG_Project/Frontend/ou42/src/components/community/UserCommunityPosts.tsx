@@ -1,5 +1,5 @@
 import { FaRegComment, FaEye } from "react-icons/fa";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface UserCommunityPostsProps {
   data: any[];

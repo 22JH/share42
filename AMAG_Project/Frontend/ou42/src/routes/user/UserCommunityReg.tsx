@@ -56,7 +56,8 @@ export interface SubmitDataType {
 }
 
 const UserCommunityReg = () => {
-  const accessToken = localStorage.getItem("token");
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -89,12 +90,12 @@ const UserCommunityReg = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((res) => res.data.status)
-      .then((statue) => navigate('/user/community/'))
+      .then((status) => navigate('/user/community/'))
   );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

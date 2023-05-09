@@ -4,8 +4,6 @@ import { CategorySelectStyle } from "./style/UserShareStyle";
 import { UserShareCategoryProps } from "./type/UserShareType";
 
 const UserShareCategory = ({
-  options,
-  handleSelectCategory,
   selectValue
 }: UserShareCategoryProps) => {
   return (
@@ -15,16 +13,13 @@ const UserShareCategory = ({
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginTop: '8vh',
+      fontSize: '1.5rem',
+      fontWeight: '900'
     }}
     css={CategorySelectStyle}>
-      <select value={selectValue} onChange={handleSelectCategory}>
-        {options.map((option, index) => (
-          <option key={option.value} value={option.value}>
-            {option.category}
-          </option>
-        ))}
-      </select>
+      [{selectValue}] 
     </div>
   );
 };

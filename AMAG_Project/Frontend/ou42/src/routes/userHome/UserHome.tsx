@@ -3,7 +3,7 @@
 import testObject from "../../assets/testObject.jpg";
 
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   useInfiniteQuery,
   useQueryClient,
@@ -16,6 +16,9 @@ import DropDown from "../../components/UI/DropDown";
 import * as userHomeStyle from "../../components/user/UserHomeStyle";
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
 import BottomMenuBar from "../../components/BottomMenuBar";
+import { useLocation } from "react-router-dom";
+import swal from 'sweetalert';
+import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
 
 // intersaction 옵션
 const intersectionOptions = {
@@ -41,6 +44,8 @@ const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 function UserHomeList() {
   const [isLike, setIslike] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement | any>({});
+  const { setBranchChoice } = useBranchChoiceStore();
+
   // 공유글 데이터 불러오는 query
   const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
     ["get-object-list"],
@@ -79,6 +84,10 @@ function UserHomeList() {
   const like = (e: React.MouseEvent<SVGElement>) => {
     setIslike(!isLike);
   };
+
+  useEffect(() => {
+    setBranchChoice({name : "", id: null})
+  }, [])
 
   return (
     <>

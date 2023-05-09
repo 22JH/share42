@@ -2,8 +2,10 @@
 import { css } from "@emotion/react";
 
 import { MdArrowBackIosNew } from "react-icons/md";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useQueryClient } from "react-query";
+import adminStore from "../../../store/adminStore";
 
 const titleStyle = (contentName: string) => css`
   .title {
@@ -18,6 +20,7 @@ const titleStyle = (contentName: string) => css`
     display: flex;
     flex-direction: row;
     padding: 0;
+    margin-bottom: 0;
     li {
       flex: 1;
       text-align: center;
@@ -41,7 +44,9 @@ const titleStyle = (contentName: string) => css`
 
 function AdminReportNav() {
   const [contentName, setContentName] = useState<string>("파손");
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { setCategory } = adminStore();
 
   const viewContent = (e: React.TouchEvent<HTMLUListElement>) => {
     e.isPropagationStopped();
@@ -62,10 +67,17 @@ function AdminReportNav() {
         <span>신고내역</span>
       </div>
 
-      <ul className="content" onTouchStart={viewContent}>
-        <li>파손(2)</li>
-        <li>분실</li>
-        <li>고장</li>
+      <ul
+        className="content"
+        onTouchStart={viewContent}
+        onClick={(e: React.MouseEvent<HTMLUListElement>) => {
+          setCategory(Number((e.target as HTMLElement).getAttribute("value")));
+          queryClient.invalidateQueries(["admin-report"]);
+        }}
+      >
+        <li value={2}>파손(2)</li>
+        <li value={0}>분실</li>
+        <li value={1}>고장</li>
       </ul>
     </div>
   );

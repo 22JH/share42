@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.admin;
 
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.mapping.admin.ReportDetailMapping;
 import com.miracle.AMAG.mapping.admin.ReportListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.user.ReportRepository;
@@ -32,6 +33,21 @@ public class AdminReportService {
             throw new RuntimeException("권한이 없습니다");
         }
         Page<ReportListMapping> result = reportRepository.findAllByCategoryOrderByIdDesc(category,pageRequest);
+
+        return result;
+    }
+
+
+    public ReportDetailMapping getReportDetail(int id){
+        String loginId = SecurityUtil.getCurrentUserId();
+        Account account = accountRepository.findByUserId(loginId);
+        if(account == null){
+            throw new NullPointerException("로그인 정보가 없습니다");
+        }
+        if (!account.getRole().value().equals("ROLE_ADMIN")){
+            throw new RuntimeException("권한이 없습니다");
+        }
+        ReportDetailMapping result = reportRepository.findAllById(id);
 
         return result;
     }

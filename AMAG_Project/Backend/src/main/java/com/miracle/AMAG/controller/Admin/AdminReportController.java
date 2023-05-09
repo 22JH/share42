@@ -51,6 +51,10 @@ public class AdminReportController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminReportService.getReportList(category,pageRequest));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getReportDetail(@PathVariable("id") int id){
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminReportService.getReportDetail(id));
+    }
 
 
 }

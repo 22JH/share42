@@ -1,4 +1,5 @@
 import { FaRegComment, FaEye } from "react-icons/fa";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export interface UserCommunityPostsProps {
   data: any[];
@@ -11,6 +12,12 @@ const UserCommunityPosts = ({
   divRef,
   getTimeAgo,
 }: UserCommunityPostsProps) => {
+  const navigate = useNavigate();
+
+  const handleDetailNavigate = (id:number) => {
+    navigate(`/user/community/${id}`)
+  }
+
   return (
     <div
       style={{
@@ -18,9 +25,10 @@ const UserCommunityPosts = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        marginBottom: "7vh"
       }}
     >
-      {data.map((item: any, index: number) => {
+      {data?.map((item: any, index: number) => {
         return (
           <div
             ref={(ref) => (divRef.current[index] = ref)}
@@ -34,6 +42,7 @@ const UserCommunityPosts = ({
               alignItems: "center",
             }}
             key={index}
+            onClick={() => handleDetailNavigate(item.communityId)}
           >
             <div
               style={{
@@ -60,7 +69,7 @@ const UserCommunityPosts = ({
                 }}
               >
                 {item.title.length > 15
-                  ? item.title.slice(10) + "..."
+                  ? item.title.slice(0, 10) + "..."
                   : item.title}
               </span>
               <span
@@ -71,7 +80,7 @@ const UserCommunityPosts = ({
                 }}
               >
                 {item.content.length > 15
-                  ? item.content.slice(15) + "..."
+                  ? item.content.slice(0, 15) + "..."
                   : item.content}
               </span>
               <span
@@ -90,6 +99,7 @@ const UserCommunityPosts = ({
                 height: "100%",
                 display: "flex",
                 alignItems: "flex-end",
+                justifyContent: 'end',
               }}
             >
               <div

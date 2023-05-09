@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    int countByCommunity_Id(@Param("communityId") int communityId);
+    int countByCommunity_IdAndStatus(@Param("communityId") int communityId, @Param("status") boolean status);
 
     Comment findById(@Param("id") int id);
 
-    Page<CommentDetailListMapping> findAllByCommunity_Id(@Param("communityId") int communityId, Pageable pageable);
+    Page<CommentDetailListMapping> findAllByCommunity_IdAndStatus(@Param("communityId") int communityId,@Param("status") boolean status,Pageable pageable);
 }

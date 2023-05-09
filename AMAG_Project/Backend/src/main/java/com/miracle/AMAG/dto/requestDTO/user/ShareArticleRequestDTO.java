@@ -22,7 +22,7 @@ public class ShareArticleRequestDTO {
     private String category;
 
     @Column(length = 10)
-    @Schema(title = "공유 물품 이름", description = "작성할 공유 물품의 이름", maxLength = 10)
+    @Schema(title = "공유 물품 이름", description = "작성할 공유 물품의 이름", maxLength = 30)
     @NotNull
     @NotBlank
     private String name;
@@ -45,7 +45,7 @@ public class ShareArticleRequestDTO {
     @NotNull
     private MultipartFile imgFile;
 
-    @Schema(title = "보관할 대여함 지점", description = "공유할 물품을 보관할 대여함 지짐의 ID값")
+    @Schema(title = "보관할 대여함 지점", description = "공유할 물품을 보관할 대여함 지점의 ID값")
     @NotNull
     private int lockerStationId;
 }

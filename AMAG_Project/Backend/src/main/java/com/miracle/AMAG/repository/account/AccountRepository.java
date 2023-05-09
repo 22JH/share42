@@ -18,6 +18,9 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Account findByUserId(String userId);
 
+    @Query("SELECT ac FROM Account ac WHERE ac.nickname = :nickname AND ac.userId != :userId")
+    Account checkDuplicatedNickname(String userId, String nickname);
+
     @Query("SELECT a FROM Account a WHERE a.userId = :id")
     Optional<Account> findByIdForOptional(@Param("id") String accountId);
 

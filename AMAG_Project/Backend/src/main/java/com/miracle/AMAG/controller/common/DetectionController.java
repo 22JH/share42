@@ -44,7 +44,7 @@ public class DetectionController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, detectionService.detection(dto));
     }
 
-    @PostMapping(value = "/category")
+    @GetMapping(value = "/category")
     @Operation(summary = "카테고리 목록",description = "공유 물품 글 작성에 사용되는 카테고리 목록을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),

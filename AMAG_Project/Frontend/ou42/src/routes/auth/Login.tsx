@@ -93,7 +93,13 @@ export default function Login() {
   const handleLogin = () => {
     postLogin()
       .then((res) => {
-        localStorage.setItem("token", res.data.message.token.accessToken);
+        const obj: { token: string; expire: number; userId: string } = {
+          token: res.data.message.token.accessToken,
+          expire: Date.now() + 1800000,
+          userId: id,
+        };
+        localStorage.setItem("loginInfo", JSON.stringify(obj));
+
         navigate("/home");
       })
       .catch((err) => Alert("error", err.response.data.message));

@@ -52,6 +52,16 @@ public class AdminReportController {
     }
 
     @GetMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "신고내역 상세 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "신고내역 상세 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "신고내역 상세 조회", description = "해당 파라미터 조건들에 맞는 신고내역 상세정보를 조회합니다.")
+    @Parameters({
+            @Parameter(name = "id", description = "신고 글 번호",in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> getReportDetail(@PathVariable("id") int id){
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminReportService.getReportDetail(id));
     }

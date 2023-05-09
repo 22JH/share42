@@ -1,32 +1,37 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import testObject from "../../assets/testObject.jpg";
-
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import axios from "axios";
 import {
   useInfiniteQuery,
   useQueryClient,
   useQueryErrorResetBoundary,
 } from "react-query";
-import axios from "axios";
-import Loading from "../../components/Loading";
-import ErrorBoundary from "../../components/ErrorBoundary";
-import DropDown from "../../components/UI/DropDown";
-import * as userHomeStyle from "../../components/user/UserHomeStyle";
+
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
+import * as userHomeStyle from "../../components/user/UserHomeStyle";
+import ErrorBoundary from "../../components/ErrorBoundary";
 import BottomMenuBar from "../../components/BottomMenuBar";
+import { L, pipe, takeAll } from "./../../custom/FxJS";
+import DropDown from "../../components/UI/DropDown";
+import Loading from "../../components/Loading";
+
+import testObject from "../../assets/testObject.jpg";
+import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
 
 // intersaction 옵션
 const intersectionOptions = {
   root: document.querySelector("#scrollArea"),
   rootMargin: "0px",
-  threshold: 0.3,
+  threshold: 0.5,
 };
 
-// 테스트 데이터
-const sampleData = [1, 2, 3, 4, 5, 6, 7, 8];
+// API_URL
+const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
 
+// infinityquery 함수
 const getListFnc = ({ pageParam = 1 }) => {
   return axios({
     method: "get",
@@ -34,24 +39,34 @@ const getListFnc = ({ pageParam = 1 }) => {
   });
 };
 
-// API_URL
-const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
-
 // 데이터 fetch 컴포넌트
 function UserHomeList() {
   const [isLike, setIslike] = useState<boolean>(false);
   const divRef = useRef<HTMLDivElement | any>({});
+  const { setBranchChoice } = useBranchChoiceStore();
+
   // 공유글 데이터 불러오는 query
   const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
     ["get-object-list"],
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
-        return;
+        return allPage.length + 1;
       },
       useErrorBoundary: true,
       suspense: true,
       retry: 0,
+      select: (data) => {
+        const newData = pipe(
+          L.map((arr: any) => arr.data),
+          L.flatten,
+          takeAll
+        );
+        return {
+          pages: newData(data.pages),
+          pageParams: data.pageParams,
+        };
+      },
     }
   );
 
@@ -70,8 +85,8 @@ function UserHomeList() {
   // data가 변경될 떄마다 새로운 요소를 감시한다.
   useEffect(() => {
     if (divRef?.current && data) {
-      let lastPage = 0;
-      intersection.observe(divRef?.current[lastPage]);
+      const lastIndex = data?.pages?.length - 1;
+      intersection.observe(divRef?.current[lastIndex]);
     }
   }, [data]);
 
@@ -80,9 +95,13 @@ function UserHomeList() {
     setIslike(!isLike);
   };
 
+  useEffect(() => {
+    setBranchChoice({ name: "", id: null });
+  }, []);
+
   return (
     <>
-      {sampleData.map((data, index) => {
+      {data?.pages.map((data, index) => {
         return (
           <div
             className="item"
@@ -157,7 +176,6 @@ const 임시 = ["1", "2", "3"];
 
 function UserHome() {
   const [value, setValue] = useState<string>("");
-
   return (
     <>
       <div css={userHomeStyle.content(value)} id="scrollArea">

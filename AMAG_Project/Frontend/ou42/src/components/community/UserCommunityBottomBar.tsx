@@ -20,7 +20,7 @@ const UserCommunityBottomBar = () => {
         <div 
           className="speed-dial"
           style={{ 
-            position: 'absolute',
+            position: 'fixed',
             bottom: '7%',
             right: '0%',
           }}

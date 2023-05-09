@@ -6,9 +6,13 @@ public interface ShareArticleGetMapping {
 
     String getAccountUserId();
 
+    String getAccountNickname();
+
     String getAccountSigungu();
 
     String getAccountDong();
+
+    String getAccountImg();
 
     String getCategory();
 

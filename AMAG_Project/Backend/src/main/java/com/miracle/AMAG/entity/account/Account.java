@@ -25,6 +25,10 @@ import java.time.LocalDateTime;
                 name="ACCOUNT_WALLET_HASH_UN",
                 columnNames = {"WALLET_HASH"}
         ),
+        @UniqueConstraint(
+                name="ACCOUNT_NICKNAME_UN",
+                columnNames = {"NICKNAME"}
+        ),
     }
 )
 @Getter
@@ -47,7 +51,7 @@ public class Account {
     @Column(length = 20)
     private String name;
 
-    @Column(length = 20)
+    @Column(name = "NICKNAME", length = 20)
     private String nickname;
 
     @Column(name = "PHONE_NUMBER", length = 20)

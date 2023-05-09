@@ -61,7 +61,8 @@ public class WebSecurityConfig {
 
                 .and()
                 .authorizeRequests()
-//                .requestMatchers("/api/common/**").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/user/**").hasAuthority("ROLE_USER")
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers( "/","/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()

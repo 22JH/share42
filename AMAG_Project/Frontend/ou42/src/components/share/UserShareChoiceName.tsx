@@ -31,11 +31,11 @@ const UserShareChoiceName = ({
             display: "flex",
             alignItems: "center",
             marginLeft: "5px",
-            width: "25%",
+            width: "90%",
             color: "#ADADAD",
           }}
         >
-          장소 선택
+          {branchChoice.name ? branchChoice.name : "장소 선택"}
         </span>
         <span
           style={{
@@ -46,35 +46,6 @@ const UserShareChoiceName = ({
           }}
         >
           {">"}
-        </span>
-      </div>
-      <div
-        style={{
-          width: "79vw",
-          paddingLeft: "3vw",
-          paddingRight: "3vw",
-          height: "5vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          border: "1px solid #ADADAD",
-          borderRadius: "5px",
-          marginTop: "5%",
-          marginLeft: "7.5%",
-          marginRight: "7.5%",
-          position: "relative",
-        }}
-      >
-        <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            color: branchChoice ? "#000000" : "#ADADAD",
-          }}
-        >
-          {branchChoice ? branchChoice : "지점 미선택"}
         </span>
       </div>
     </>

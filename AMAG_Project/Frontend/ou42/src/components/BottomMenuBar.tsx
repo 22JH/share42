@@ -49,7 +49,7 @@ function BottomMenuBar() {
       Icon: BsFillMenuButtonWideFill,
       url: "/user/community",
     },
-    { title: "NFC", Icon: TbNfc, url: "/uesr/nfc" },
+    { title: "NFC", Icon: TbNfc, url: "/user/nfc" },
     { title: "채팅", Icon: BsChatRightHeart, url: "/user/chat" },
     { title: "내 프로필", Icon: RxPerson, url: "/user/mypage" },
   ];
@@ -61,8 +61,6 @@ function BottomMenuBar() {
     { title: "기기조작", Icon: MdDevices, url: "/admin/operation" },
     { title: "맵", Icon: BsMap, url: "/user/map" },
   ];
-
-  console.log(pathname);
 
   return (
     <div css={bottomMenuBarStyle}>

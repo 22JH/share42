@@ -27,6 +27,7 @@ const UserShareInput = ({
         placeholder={text}
         defaultValue={value}
         onBlur={handleShareInput}
+        autoComplete='off'
       />
     </div>
   );

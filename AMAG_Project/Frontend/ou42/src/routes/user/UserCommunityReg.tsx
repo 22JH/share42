@@ -5,11 +5,13 @@ import { css } from "@emotion/react";
 import TextField from "@mui/material/TextField";
 
 import axios from "axios";
-import { useMutation } from 'react-query';
+import { useMutation } from "react-query";
 import { useEffect, useState } from "react";
 import UserCommunityRegCategory from "../../components/community/UserCommunityRegCategory";
 import UserCommunityRegContent from "../../components/community/UserCommunityRegContent";
 import UserCommunityRegTitle from "../../components/community/UserCommunityRegTitle";
+import { useNavigate } from "react-router";
+import UserCommunityRegSubmit from "../../components/community/UserCommunityRegSubmit";
 
 export const CategorySelectStyle = css`
   select {
@@ -54,6 +56,9 @@ export interface SubmitDataType {
 }
 
 const UserCommunityReg = () => {
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+  const navigate = useNavigate();
   const [title, setTitle] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -77,22 +82,29 @@ const UserCommunityReg = () => {
     setContent(e?.target?.value);
   };
 
-  const postCommunity = (e: React.FormEvent<HTMLFormElement>) => {
+  const { mutate } = useMutation((postData: SubmitDataType) =>
+    axios
+      .post(
+        "http://www.share42-together.com:8088/api/user/community/posts",
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => res.data.status)
+      .then((status) => navigate('/user/community/'))
+  );
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // useMutation으로 바꿔야지
-    axios({
-      method: "POST",
-      url:"http://www.share42-together.com:8088/api/user/community/posts",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: `Bearer ${accessToken}`,
-      },
-      data: {
-        category,
-        title,
-        content,
-      },
-    }).then((res) => console.log(res.data.status))
+    mutate({
+      category,
+      title,
+      content,
+    });
   };
 
   useEffect(() => {
@@ -108,7 +120,7 @@ const UserCommunityReg = () => {
       style={{
         marginTop: "4vh",
       }}
-      onSubmit={postCommunity}
+      onSubmit={handleSubmit}
     >
       <UserCommunityRegTitle
         title={title}
@@ -126,25 +138,9 @@ const UserCommunityReg = () => {
         handleShareArea={handleShareArea}
       />
       {/* 바텀 버튼 */}
-      <button
-        style={{
-          position: "fixed",
-          bottom: "0",
-          width: "100%",
-          height: "5vh",
-          background: isSubmit ? "#FFABAB" : "#F0F0F0",
-          color: isSubmit ? "#D14D72" : "#B2B2B2",
-          textAlign: "center",
-          lineHeight: "5vh",
-          fontSize: "1.2rem",
-          fontWeight: "900",
-          border: "none",
-        }}
-        type="submit"
-        disabled={isSubmit ? false : true}
-      >
-        완료
-      </button>
+      <UserCommunityRegSubmit
+        isSubmit={isSubmit}
+      />
     </form>
   );
 };

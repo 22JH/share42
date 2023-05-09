@@ -38,8 +38,8 @@ const nav = css`
 
 function MyPageNavBar() {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const { pathTitle } = navStore();
+  const navigate = useNavigate();
 
   return (
     <>

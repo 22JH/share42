@@ -1,23 +1,31 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import driver1 from "../../assets/testObject.jpg";
 import driver2 from "../../assets/driver1.jpg";
 import driver3 from "../../assets/driver2.jpg";
 import driver4 from "../../assets/driver3.jpg";
 
-import UserShareDetailCarousel 
-from "../../components/sharedetail/UserShareDetailCarousel";
-import UserShareDetailPostInfo 
-from "../../components/sharedetail/UserShareDetailPostInfo";
-import UserShareDetailContent 
-from "../../components/sharedetail/UserShareDetailContent";
-import UserShareDetailRequest 
-from "../../components/sharedetail/UserShareDetailRequest";
+import UserShareDetailCarousel from "../../components/sharedetail/UserShareDetailCarousel";
+import UserShareDetailPostInfo from "../../components/sharedetail/UserShareDetailPostInfo";
+import UserShareDetailContent from "../../components/sharedetail/UserShareDetailContent";
+import UserShareDetailRequest from "../../components/sharedetail/UserShareDetailRequest";
+import axios from "axios";
+import { useQuery } from "react-query";
+
+const SHARE_DETAIL_API = (id: any) => {
+  // eslint-disable-next-line max-len
+  return `http://www.share42-together.com:8088/api/user/share/share-articles/${id}`;
+};
 
 const UserSharePost = () => {
+  const { id } = useParams();
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+
   const slideWidth = 415;
   const [currentSlide, setCurrentSlide] = useState(0);
   const slideRef = useRef<HTMLDivElement>(null);
@@ -25,6 +33,7 @@ const UserSharePost = () => {
   const [slideOffset, setSlideOffset] = useState(0);
   const [isLike, setIsLike] = useState<null | boolean>(null);
   const [useRequest, setUseRequest] = useState<null | boolean>(true);
+  const [likeCount, setLikeCount] = useState<number>(0);
   const navigate = useNavigate();
 
   const slides = [
@@ -115,8 +124,37 @@ const UserSharePost = () => {
   // NFC 화면으로
   const handleNFC = () => {
     // NFC 화면으로 가기
-    navigate("/")
-  }
+    navigate("/");
+  };
+
+  // 상세조회 페이지 데이터 가져오기
+  const { data } = useQuery(
+    ['getShareDetail', id],
+    async () => {
+      try {
+        const res = await axios({
+          method: "GET",
+          url: SHARE_DETAIL_API(id),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setLikeCount(res.data.message.likeCount);
+        return res.data.message.article;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    {
+      suspense: false,
+    }
+  )
+
+  useEffect(() => {
+    // console.log(likeCount)
+    // console.log(data)
+  }, [likeCount, data])
 
   return (
     <>
@@ -129,6 +167,7 @@ const UserSharePost = () => {
         slideWidth={slideWidth}
         handleDotClick={handleDotClick}
         currentSlide={currentSlide}
+        data={data}
       />
       <div
         style={{
@@ -141,14 +180,16 @@ const UserSharePost = () => {
         <UserShareDetailPostInfo
           handleLikeRequest={handleLikeRequest}
           isLike={isLike}
+          data={data}
         />
-        <UserShareDetailContent />
+        <UserShareDetailContent data={data} likeCount={likeCount}/>
         <UserShareDetailRequest
           useRequest={useRequest}
           handleUseRequest={handleUseRequest}
           handleUseCancel={handleUseCancel}
           handleNFC={handleNFC}
           handleChating={handleChating}
+          data={data}
         />
       </div>
     </>

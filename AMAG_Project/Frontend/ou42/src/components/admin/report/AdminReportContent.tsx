@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
-import { cloneElement, Suspense, useEffect, useRef } from "react";
+import { cloneElement, memo, Suspense, useEffect, useRef } from "react";
 import {
   useInfiniteQuery,
   InfiniteQueryObserverResult,
@@ -14,11 +14,12 @@ import axios, { AxiosError } from "axios";
 
 import * as userHomeStyle from "../../user/UserHomeStyle";
 import testObject from "../../../assets/testObject.jpg";
+import AdminModalContent from "../AdminModalContent";
+import adminStore from "../../../store/adminStore";
 import pinkBox from "../../../assets/pinkBox.png";
 import ErrorBoundary from "../../ErrorBoundary";
 import * as FxJS from "../../../custom/FxJS";
 import Loading from "../../Loading";
-import adminStore from "../../../store/adminStore";
 
 export const contentStyle = css`
   width: 100%;
@@ -77,17 +78,62 @@ const emptyBox = css`
   }
 `;
 
+const dialog = css`
+  border: 0;
+  border-radius: 20px;
+  animation-name: show;
+  animation-duration: 0.5s;
+  outline: none;
+
+  background-color: #2e2e2e;
+
+  &::backdrop {
+    background-color: black;
+    opacity: 0.4;
+  }
+
+  @keyframes show {
+    0% {
+      transform: translate(0, 800px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+`;
+
+interface Data {
+  data?: any;
+  hasNextPage?: boolean;
+  fetchNextPage?: (
+    options?: FetchNextPageOptions
+  ) => Promise<InfiniteQueryObserverResult<any, AxiosError>>;
+}
+
+export interface Page {
+  accountNickname: string;
+  category: number;
+  content: string;
+  id: number;
+  img: string;
+  lockerLockerStationDong: string;
+  lockerLockerStationSido: string;
+  lockerLockerStationSigungu: string;
+  regDt: string;
+  title: string;
+}
+
+const SIZE = 8;
+
 // api 받는 컴포넌트
 function AdminReportFatcher(props: {
   children: React.PropsWithChildren<ReactJSXElement>;
 }) {
   const { children } = props;
-  const SIZE = 8;
   const { category } = adminStore();
-
   const queryClient = useQueryClient();
 
-  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNTMyNjY2fQ.fHZpwEpqFHhDgE5fmq1B1_LH2a4cJNxOLxbHUvABYkzZ1BnHdBASq2Jz28CDPkl_CnkMbCUZrY-2z1XbpxOHFQ`;
+  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNjI0MzU5fQ.NjkkC-OrCQ7TkwieSjGmloyGIK9JXkaFfAb7FdZCmHmgaCtyWxQSEXMmtyi73ZdxCnywlva5SSly2xyrouHyYQ`;
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["admin-report", category],
@@ -124,34 +170,25 @@ function AdminReportFatcher(props: {
     queryClient.prefetchInfiniteQuery(
       ["admin-report", category],
       ({ pageParam = 1 }) => {
-        return axios.get(
-          `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
-          {
-            headers: {
-              Authorization: `Bearer ${TOKEN}`,
-            },
-          }
-        );
+        return axios({
+          method: "get",
+          url: `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
       }
     );
   }, [category]);
-
   return cloneElement(children, { data, hasNextPage, fetchNextPage });
-}
-
-interface Data {
-  data?: any;
-  hasNextPage?: boolean;
-  fetchNextPage?: (
-    options?: FetchNextPageOptions
-  ) => Promise<InfiniteQueryObserverResult<any, AxiosError>>;
 }
 
 // 내용을 구성하는 컴포넌트
 function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
-  const divRef = useRef<HTMLDivElement | any>({});
   const { pages } = data;
-  console.log(pages);
+  const divRef = useRef<HTMLDivElement | any>({});
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
   const intersetion = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -175,7 +212,7 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
   return (
     <>
       {pages.length ? (
-        pages?.map((page: any, index: number) => {
+        pages?.map((page: Page, index: number) => {
           const {
             lockerLockerStationSigungu: si,
             lockerLockerStationDong: dong,
@@ -189,19 +226,31 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
 
           return (
             <div
-              css={contentStyle}
-              key={index}
-              ref={(ref) => {
-                return (divRef.current[index] = ref);
-              }}
+              key={`${index} / ${si} / ${dong} / ${accountNickname} / ${regDt} / ${content} / ${title}`}
             >
-              <img src={testObject} alt="test" className="img" />
-              <div className="text">
-                <p>{title}</p>
-                <p>{content}</p>
-                <p>{`${accountNickname} · ${date}`}</p>
-                <p>{`${si} · ${dong}`}</p>
+              {/* 목록 LIST */}
+              <div
+                css={contentStyle}
+                ref={(ref) => {
+                  return (divRef.current[index] = ref);
+                }}
+                onClick={() => {
+                  dialogRef?.current?.showModal();
+                }}
+              >
+                <img src={testObject} alt="test" className="img" />
+                <div className="text">
+                  <p>{title}</p>
+                  <p>{content}</p>
+                  <p>{`${accountNickname} · ${date}`}</p>
+                  <p>{`${si} · ${dong}`}</p>
+                </div>
               </div>
+
+              {/* modal */}
+              <dialog ref={dialogRef} css={dialog}>
+                <AdminModalContent dialogRef={dialogRef} data={page} />
+              </dialog>
             </div>
           );
         })
@@ -244,12 +293,14 @@ function AdminReportContent() {
       <ErrorBoundary fallback={ErrorMessage}>
         <Suspense fallback={<Loading />}>
           <AdminReportFatcher>
-            <AdminReportContainer />
+            <MemoizedContainer />
           </AdminReportFatcher>
         </Suspense>
       </ErrorBoundary>
     </>
   );
 }
+
+const MemoizedContainer = memo(AdminReportContainer);
 
 export default AdminReportContent;

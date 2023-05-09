@@ -1,7 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+
+import { Area } from "../../routes/admin/AdminLog";
 import { useLocation } from "react-router-dom";
+import { AxiosResponse } from "axios";
+import { memo } from "react";
+
 import Btn from "./../UI/Btn";
 
 const container = (pathName: string) => css`
@@ -32,9 +36,18 @@ const container = (pathName: string) => css`
   }
 `;
 
-function AdminSelectBox() {
-  const [area, setArea] = useState<string>("");
-  const [branch, setBranch] = useState<string>("");
+interface Props {
+  regionData?: AxiosResponse<any, any>;
+  pointData?: AxiosResponse<any, any>;
+  numberData?: AxiosResponse<any, any>;
+  listData?: AxiosResponse<any, any>;
+  setAreaInfo: React.Dispatch<React.SetStateAction<Area>>;
+  areaInfo: Area;
+}
+
+function AdminSelectBox(props: Props) {
+  const { regionData, pointData, numberData, setAreaInfo, areaInfo } = props;
+
   const location = useLocation();
   const pathName = location.pathname;
 
@@ -47,16 +60,30 @@ function AdminSelectBox() {
   // 지역 선택 함수
   const clickArea = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (area !== value) {
-      setArea(value);
+    if (areaInfo?.region !== value) {
+      setAreaInfo!((info) => {
+        return { ...info, region: value };
+      });
     }
   };
 
   // 지점 선택 함수
   const clickBranch = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (branch !== value) {
-      setBranch(value);
+    if (areaInfo?.point !== value) {
+      setAreaInfo!((info) => {
+        return { ...info, point: value };
+      });
+    }
+  };
+
+  // 번호 선택 함수
+  const clickNumber = (e: React.MouseEvent<HTMLSelectElement>) => {
+    const value = (e.target as HTMLSelectElement).value;
+    if (areaInfo?.number !== value) {
+      setAreaInfo!((info) => {
+        return { ...info, number: value };
+      });
     }
   };
 
@@ -86,10 +113,11 @@ function AdminSelectBox() {
           </option>
         ))}
       </select>
+
       {pathName === "/admin/operation" ? (
         <>
           <p>번호선택</p>
-          <select onClick={clickBranch}>
+          <select onClick={clickNumber}>
             <option value="">번호를 선택해주세요</option>
             {options.map((option, index) => (
               <option key={option.value} value={option.value}>
@@ -114,4 +142,4 @@ function AdminSelectBox() {
   );
 }
 
-export default AdminSelectBox;
+export default memo(AdminSelectBox);

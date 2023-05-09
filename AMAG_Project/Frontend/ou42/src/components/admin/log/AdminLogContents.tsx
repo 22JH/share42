@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { contentStyle } from "../report/AdminReportContent";
 
+import { memo } from "react";
+
+import { contentStyle } from "../report/AdminReportContent";
 import testObject from "../../../assets/testObject.jpg";
 
 function AdminLogContents() {
@@ -17,4 +19,4 @@ function AdminLogContents() {
   );
 }
 
-export default AdminLogContents;
+export default memo(AdminLogContents);

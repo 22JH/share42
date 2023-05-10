@@ -64,16 +64,18 @@
     var roomName;
 
     function connect() {
-        socket = new WebSocket('ws://localhost:8088/chat/' + roomName);
+        // socket = new WebSocket('ws://localhost:8088/chat/' + roomName);
+        socket = new WebSocket('ws://share42-together.com:8088/chat/' + roomName);
         socket.onmessage = function (event) {
+            console.log(event)
             var message = JSON.parse(event.data);
             showMessage(message.sender, message.receiver, message.content);
         }
         socket.onopen = function () {
             var joinMessage = {
                 sender: username,
-                receiver: "receiver",
-                content: username + ' joined the chat.',
+                receiver: " ",
+                content: username + ' 님이 입장했습니다.',
                 roomName : roomName
             }
             socket.send(JSON.stringify(joinMessage));

@@ -2,6 +2,8 @@ package com.miracle.AMAG.service.admin;
 
 import com.miracle.AMAG.dto.responseDTO.admin.AdminLogListDTO;
 import com.miracle.AMAG.mapping.locker.LockerListMapping;
+import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
+import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.locker.LockerStationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,11 @@ public class AdminLockerService {
     @Autowired
     private LockerStationRepository lockerStationRepository;
 
+    @Autowired
+    private LockerRepository lockerRepository;
 
-    public List<LockerListMapping> getLockerStationList(@PathVariable("sido") String sido){
+
+    public List<LockerStationListMapping> getLockerStationList(@PathVariable("sido") String sido){
         return lockerStationRepository.findBySido(sido);
     }
 
@@ -48,5 +53,10 @@ public class AdminLockerService {
             dto.setShareStatus((byte) objects[11]);
             return dto;
         });
+    }
+
+
+    public Page<LockerListMapping> getLockerList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable){
+        return lockerRepository.findByLockerStation_Id(lockerStationId, pageable);
     }
 }

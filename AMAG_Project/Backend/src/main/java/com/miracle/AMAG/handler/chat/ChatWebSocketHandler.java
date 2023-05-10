@@ -28,7 +28,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         // uri에서 room정보를 받는거
         String path = uri.getPath();
         String[] parts = path.split("/");
-        log.info("uri에 접근이 됬는데 어디냐면" + parts[parts.length - 1]);
+        log.info("uri에 접근 방이름{} : ", parts[parts.length - 1]);
         return parts[parts.length - 1];
     }
 
@@ -41,9 +41,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         if (sessionToRoomMap.get(roomName) == null) {
             sessions.add(session);
             sessionToRoomMap.put(roomName, sessions);
+            log.info("새방 접근 ssesion {} : ", session);
 
         } else {
-            System.out.println("기존방접근: " + session);
+            log.info("기존방접근 ssesion {} : ", session);
             List<WebSocketSession> sessionsInRoom = sessionToRoomMap.get(roomName);
             // 이미 종료된 WebSocket 세션은 제거
             sessionsInRoom.removeIf(s -> !s.isOpen());
@@ -66,7 +67,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         for (ChatMessageDTO chatMessage : chatMessages) {
             if (chatMessage.getRoomName().equals(roomName)) {
                 String payload = chatMessage.toString();
-                System.out.println(payload);
+                log.info("payload {} : ", payload);
                 TextMessage textMessage = new TextMessage(payload);
                 session.sendMessage(textMessage);
             }
@@ -86,15 +87,14 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         TextMessage textMessage = new TextMessage(payload);
         for (WebSocketSession webSocketSession : sessionToRoomMap.get(tmp.getRoomName())) {
             webSocketSession.sendMessage(textMessage);
-            log.info("textMessage{}" + textMessage);
+            log.info("textMessage{} : ", textMessage);
         }
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         // WebSocket 통신 중 에러가 발생할 때 실행되는 메서드
-        System.out.println("error");
-        log.debug("error{}" + exception);
+        log.debug("error{} : ", exception);
     }
 
     @Override

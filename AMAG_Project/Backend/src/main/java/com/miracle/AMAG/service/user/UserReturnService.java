@@ -136,15 +136,13 @@ public class UserReturnService {
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
 
-        shareReturnRepository.findRecentReturnRecord(shareArticle);
-        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY || borrowRecord.getUseType() != ShareReturnUtils.RETURN_APPLY) {
+        ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY || returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 
 
-        ShareReturn recentReturnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
-
-
+        return BoardUtils.BOARD_CRUD_SUCCESS;
 
     }
 }

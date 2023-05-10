@@ -2,6 +2,7 @@ package com.miracle.AMAG.service.common;
 
 import com.miracle.AMAG.mapping.common.JoinTermsMapping;
 import com.miracle.AMAG.repository.common.TermsRepository;
+import com.miracle.AMAG.util.common.TermsEnum;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,5 +24,8 @@ public class TermsService {
         return termsRepository.findAllByCategory("회원가입");
     }
 
+    public List<JoinTermsMapping> getUsageTerms(int type){
+        return termsRepository.findByCategory(TermsEnum.valueOf(type).getStringValue());
+    }
 
 }

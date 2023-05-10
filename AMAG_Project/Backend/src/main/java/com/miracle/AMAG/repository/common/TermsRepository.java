@@ -12,4 +12,6 @@ import java.util.List;
 public interface TermsRepository extends JpaRepository<Terms,Integer> {
 
     List<JoinTermsMapping> findAllByCategory(@Param("category") String category);
+
+    List<JoinTermsMapping> findByCategory(@Param("category") String category);
 }

@@ -16,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -32,7 +29,7 @@ public class UserReturnController {
     @Autowired
     private UserReturnService userReturnService;
 
-    @PostMapping(value = "/{share_article_id}", consumes = {
+    @PostMapping(value = "", consumes = {
             "multipart/form-data"
     })
     @ApiResponses(value = {
@@ -44,5 +41,29 @@ public class UserReturnController {
     @Operation(summary = "공유 물품 반납 신청", description = "공유 물품 반납 신청을 진행합니다.")
     public ResponseEntity<?> applyReturn(@ModelAttribute @Valid UserReturnRequestDTO userReturnRequestDTO) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.applyReturn(userReturnRequestDTO));
+    }
+
+    @PostMapping("/cancel/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유 물품 반납 신청취소 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "공유 물품 반납 신청취소 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유 물품 반납 신청취소", description = "공유 물품 반납 신청취소를 진행합니다.")
+    public ResponseEntity<?> cancelReturn(@PathVariable("share_article_id") int shareArticleId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.cancelReturn(shareArticleId));
+    }
+
+    @PostMapping("/put/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유 물품 반납 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "공유 물품 반납 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유 물품 반납", description = "공유 물품 반납을 진행합니다.")
+    public ResponseEntity<?> returnProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(shareArticleId));
     }
 }

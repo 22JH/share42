@@ -14,4 +14,6 @@ public interface LockerGetListMapping {
 
     int getLockerNumber();
 
+    boolean getError();
+
 }

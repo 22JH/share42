@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Map, ZoomControl, MapTypeControl } from "react-kakao-maps-sdk";
+import { Map } from "react-kakao-maps-sdk";
 import { useEffect, useState } from "react";
 import { mapStyle } from "./style/MapStyle";
 import EventMarkerComponent from "./EventMarkerComponent";
@@ -91,8 +91,6 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
           })
         }
       >
-        <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
-        <ZoomControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         {markersData?.map((marker) => (
           <EventMarkerComponent
             key={marker.id}

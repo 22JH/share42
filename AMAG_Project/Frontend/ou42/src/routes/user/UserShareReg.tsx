@@ -1,76 +1,61 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useMemo, useState } from "react";
-import UserShareCategory from "../../components/share/UserShareCategory";
+import React, { useEffect, useMemo, useState } from "react";
 import UserShareContent from "../../components/share/UserShareContent";
 import UserShareImg from "../../components/share/UserShareImg";
 import UserShareInput from "../../components/share/UserShareInput";
 import UserShareChoiceName from "../../components/share/UserShareChoiceName";
-import { useBranchChoiceStore } from 
-"../../components/map/store/useBranchChoiceStore";
-import { useShareDataStore } from 
-"../../components/map/store/useShareDataStore";
+import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
 import UserShareMap from "../../components/share/UserShareMap";
+import shareIsOpenStore from "../../store/shareIsOpenStore";
+import UserSharePrice from "../../components/share/UserSharePrice";
+import { useLocation, useNavigate } from "react-router-dom";
+import UserShareCategory from "../../components/share/UserShareCategory";
+import swal from 'sweetalert';
 
 const UserShareReg = () => {
-  ///////// 제일 중요한 키포인트는 NavBar이다. 일단 누군가 완성을 해야 진행이 된다고 생각한다.
-  //// 완료버튼을 누르면 formData로 보내줘야함, 그 대신 formData에 모든 내용을 담아서 전달해야함.
-  //// 일단 preview에 담겨있는 File을 어떻게 formData에 담아야할지 정해야함.
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // 아예 상태관리를 통해서 화면 구분 짓기
-  const [isOpenMap, setIsOpenMap] = useState<null | boolean>(null);
+  const { isOpenShareMap, setIsOpenShareMap } = shareIsOpenStore();
   const [preview, setPreview] = useState<null | File>(null);
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [sharePrice, setSharePrice] = useState<string>("");
   const [content, setContent] = useState<string>("");
-
-  const { branchChoice } = useBranchChoiceStore.getState();
-  const { shareData, setShareData } = useShareDataStore();
+  const [isFull, setIsFull] = useState<boolean>(false);
+  const { branchChoice, setBranchChoice } = useBranchChoiceStore();
 
   const formData = useMemo(() => new FormData(), []);
 
-  // 클릭과 동시에 담아 볼 생각도 해봄 => 요거는 물어봐야할듯
   useEffect(() => {
     if (preview) {
-      formData.append("preview", preview);
+      formData.append("imgFile", preview);
     }
-    formData.append("title", title);
+    formData.append("name", title);
     formData.append("price", price);
-    formData.append("category", category);
+    formData.append("sharePrice", sharePrice);
+    formData.append("category", location.state);
     formData.append("content", content);
-    formData.append("branchChoice", branchChoice);
-    setShareData(formData);
-  }, [
-    preview,
-    title,
-    price,
-    category,
-    content,
-    branchChoice,
-    setShareData,
-    formData,
-  ]);
-
-  const options = [
-    { value: "기본", category: "카테고리를 선택해주세요" },
-    { value: "공구", category: "공구" },
-    { value: "생활/주방", category: "생활/주방" },
-    { value: "취미/게임/음반", category: "취미/게임/음반" },
-    { value: "스포츠/레저", category: "스포츠/레저" },
-    { value: "디지털기기", category: "디지털기기" },
-  ];
-
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files != null) {
-      setPreview(e.target.files[0]);
+    formData.append("lockerStationId", String(branchChoice.id));
+    console.log(branchChoice.name)
+    if (
+      preview &&
+      title &&
+      price &&
+      sharePrice &&
+      location.state &&
+      content &&
+      branchChoice.id
+    ) {
+      setIsFull(true);
     }
-  };
-
-  const handleRemoveImage = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setPreview(null);
-  };
+  }, [preview, title, price, location.state, content, branchChoice, formData]);
 
   const handleShareTitle = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
@@ -78,17 +63,16 @@ const UserShareReg = () => {
     setTitle(e?.target?.value);
   };
 
-  const handleSharePrice = (
+  const handlePrice = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
   ) => {
     setPrice(e?.target?.value);
   };
 
-  const handleSelectCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = (e.target as HTMLSelectElement).value;
-    if (category !== value) {
-      setCategory(value);
-    }
+  const handleSharePrice = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
+  ) => {
+    setSharePrice(e?.target?.value);
   };
 
   const handleShareArea = (
@@ -98,46 +82,71 @@ const UserShareReg = () => {
   };
 
   const handleShareMapNavigate = () => {
-    setIsOpenMap(true);
+    setIsOpenShareMap(true);
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await fetch(
+      `http://www.share42-together.com:8088/api/user/share/share-articles`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      const data = response.json()
+      return data
+    })
+    .then((data) => {
+      console.log(data)
+      swal("등록이 완료되었습니다", "게시물을 확인해 보세요", "success");
+      navigate('/home')
+    })
+    .catch((e) => {
+      console.log(e);
+      setBranchChoice({name : "", id: null})
+      swal("등록이 실패하였습니다", "서버 오류가 발생했습니다.", "error");
+    })
   };
 
   useEffect(() => {
-    for (let key of formData.keys()) {
-      console.log(key, ":", formData.get(key));
+    for (let i of formData) {
+      console.log(i)
     }
-  }, [shareData]);
+  }, [preview, title, price, location.state, content, branchChoice, formData])
 
   return (
-    <div
+    <section
       style={{
         overflow: "hidden",
       }}
     >
-      {isOpenMap ? (
-        <div>
-          <UserShareMap setIsOpenMap={setIsOpenMap} />
-        </div>
+      {isOpenShareMap ? (
+        <>
+          <UserShareMap />
+        </>
       ) : (
-        <div>
+        <>
+          <UserShareCategory selectValue={location.state} />
           <UserShareImg
             preview={preview}
-            handleFileInputChange={handleFileInputChange}
-            handleRemoveImage={handleRemoveImage}
+            setPreview={setPreview}
+            formData={formData}
           />
           <UserShareInput
             value={title}
             text={"제목"}
             handleShareInput={handleShareTitle}
           />
-          <UserShareInput
-            value={price}
-            text={"대여금액"}
-            handleShareInput={handleSharePrice}
-          />
-          <UserShareCategory
-            selectValue={category}
-            options={options}
-            handleSelectCategory={handleSelectCategory}
+          <UserSharePrice
+            price={price}
+            sharePrice={sharePrice}
+            handlePrice={handlePrice}
+            handleSharePrice={handleSharePrice}
           />
           <UserShareContent
             content={content}
@@ -146,9 +155,27 @@ const UserShareReg = () => {
           <UserShareChoiceName
             handleShareMapNavigate={handleShareMapNavigate}
           />
-        </div>
+          <button
+            style={{
+              position: "absolute",
+              bottom: "0px",
+              width: "100%",
+              height: "6vh",
+              backgroundColor: isFull ? "#FFABAB" : "#F0F0F0",
+              color: isFull ? "#D14D72" : "#B2B2B2",
+              fontSize: "1.5rem",
+              fontWeight: "900",
+              border: "none",
+            }}
+            type="submit"
+            disabled={!isFull}
+            onClick={handleSubmit}
+          >
+            완료
+          </button>
+        </>
       )}
-    </div>
+    </section>
   );
 };
 

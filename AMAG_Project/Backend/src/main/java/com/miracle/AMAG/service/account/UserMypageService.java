@@ -1,15 +1,13 @@
 package com.miracle.AMAG.service.account;
 
 import com.miracle.AMAG.config.SecurityUtil;
+import com.miracle.AMAG.dto.responseDTO.account.MypageArticleResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.account.MypageLikeResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.mapping.user.MetadataURIMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.ArticleLikeRepository;
-import com.miracle.AMAG.repository.user.BorrowRepository;
-import com.miracle.AMAG.repository.user.CollectRepository;
-import com.miracle.AMAG.repository.user.KeepRepository;
-import com.miracle.AMAG.repository.user.ShareReturnRepository;
+import com.miracle.AMAG.repository.user.*;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.MypageUtils;
 import jakarta.transaction.Transactional;
@@ -46,6 +44,9 @@ public class UserMypageService {
 
     @Autowired
     private ArticleLikeRepository articleLikeRepository;
+
+    @Autowired
+    private ShareArticleRepository shareArticleRepository;
 
     public List<MetadataURIMapping> getUseList(int type, Pageable pageable){
         String userId = SecurityUtil.getCurrentUserId();
@@ -97,6 +98,32 @@ public class UserMypageService {
             dto.setImg((String) objects[9]);
             dto.setUserId((String) objects[10]);
             dto.setNickname((String) objects[11]);
+            return dto;
+        });
+    }
+
+    public Page<MypageArticleResponseDTO> getShareArticle(Pageable pageable){
+        String userId = SecurityUtil.getCurrentUserId();
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(userId);
+
+        Page<Object[]> result = shareArticleRepository.getArticleList(account.getId(),BoardUtils.BOARD_STATUS_FALSE ,pageable);
+
+        return result.map(objects -> {
+            MypageArticleResponseDTO dto = new MypageArticleResponseDTO();
+            dto.setId((int) objects[0]);
+            dto.setName((String) objects[1]);
+            dto.setSharePrice((int) objects[2]);
+            dto.setImg((String) objects[3]);
+            dto.setUptDt((Timestamp) objects[4]);
+            dto.setShareStatus((byte) objects[5]);
+            dto.setHits((int) objects[6]);
+            dto.setLikecount((Long) objects[7]);
+            dto.setUserId((String) objects[8]);
+            dto.setNickname((String) objects[9]);
             return dto;
         });
     }

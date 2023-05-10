@@ -61,4 +61,17 @@ public class UserMypageController {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK, userMypageService.getLikeList(pageRequest));
     }
+
+    @GetMapping("/posts/{page}/{size}")
+    @Operation(summary = "사용자가 작성한 글 목록 조회", description = "사용자가 작성한 글 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자가 작성한 글 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자가 작성한 글 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    public ResponseEntity<?> getShareArticle(@PathVariable("page") int page, @PathVariable("size") int size) {
+        PageRequest pageRequest = PageRequest.of(page - 1,size);
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userMypageService.getShareArticle(pageRequest));
+    }
 }

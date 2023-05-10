@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
 import { useState, useEffect } from "react";
 import { MdMap } from "react-icons/md";
+import mapicon from "../../assets/mapicon.svg";
 import { OverlayListStyle } from "./style/MapStyle";
 import MarkerCardsComponent from "./MarkerCardsComponent";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -12,18 +14,10 @@ const MarkerInfoComponent = ({
   handleMarkerInfo,
   address,
   name,
+  markerInfo,
 }: MarkerDetailShareInfoComponentProps) => {
   const { pathname } = useLocation();
-  const [markerInfo, setMarkerInfo] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://localhost:3001/items");
-      const data = await response.json();
-      setMarkerInfo(data);
-    })();
-  }, []);
 
   const handleLogNavigate = () => {
     navigate("/admin/log");
@@ -33,6 +27,10 @@ const MarkerInfoComponent = ({
     navigate("/admin/operation");
   };
 
+  const handleReturnNavigate = () => {
+    navigate("/user/return")
+  }
+
   return (
     <div
       style={{
@@ -41,6 +39,8 @@ const MarkerInfoComponent = ({
         background: "white",
         zIndex: "11 !important",
         cursor: "auto !important",
+        position: "fixed",
+        transform: "translate(-50%, -47%)",
       }}
     >
       <button
@@ -49,7 +49,7 @@ const MarkerInfoComponent = ({
           top: "8px",
           right: "10px",
           border: "none",
-          backgroundColor: "#4F63D2",
+          backgroundColor: "#FFABAB",
           color: "white",
           fontSize: "24px",
           cursor: "pointer",
@@ -65,8 +65,8 @@ const MarkerInfoComponent = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#4f63d2",
-          color: "white",
+          backgroundColor: "#FFABAB",
+          color: "#ffffff",
           fontSize: "1.5rem",
           fontWeight: "900",
         }}
@@ -85,36 +85,39 @@ const MarkerInfoComponent = ({
           overflow: "scroll",
         }}
       >
-        {markerInfo.map((ele: any) => (
-          <MarkerCardsComponent key={ele.id} markerInfo={ele} />
+        {markerInfo.map((ele: any, index: number) => (
+          <MarkerCardsComponent markerInfo={ele} key={index} />
         ))}
       </div>
       {/* 지점 주소 */}
       {pathname.includes("admin") ? (
-          <div
-            style={{
-              width: "100%",
-              height: "5rem",
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              backgroundColor: "#4f63d2",
-              color: "white",
-              fontSize: "1.2rem",
-            }}
-          >
-          <MdMap
+        <div
+          style={{
+            width: "100%",
+            height: "5rem",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            backgroundColor: "#FFABAB",
+            color: "white",
+            fontSize: "1.2rem",
+          }}
+        >
+          <img
             style={{
               width: "40px",
               height: "40px",
               marginRight: "10px",
               marginLeft: "10px",
             }}
+            src={mapicon}
+            alt="mapicon"
           />
           <div
             style={{
               width: "calc(100% - 160px)",
               whiteSpace: "normal",
+              fontSize: "1rem",
             }}
           >
             {address}
@@ -152,32 +155,57 @@ const MarkerInfoComponent = ({
           </div>
         </div>
       ) : (
-        <div 
+        <div
           style={{
-          width: "100%",
-          height: "5rem",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          backgroundColor: "#4f63d2",
-          color: "white",
-          fontSize: "1.2rem",
-        }}>
-          <MdMap
+            width: "100%",
+            height: "5rem",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            backgroundColor: "#FFABAB",
+            color: "white",
+            fontSize: "1.2rem",
+          }}
+        >
+          <img
             style={{
               width: "40px",
               height: "40px",
               marginRight: "10px",
               marginLeft: "10px",
             }}
+            src={mapicon}
+            alt="mapicon"
           />
           <div
             style={{
-              width: "calc(100% - 60px)",
+              width: "calc(100% - 160px)",
               whiteSpace: "normal",
+              fontSize: "1rem",
             }}
           >
             {address}
+          </div>
+          <div
+            style={{
+              width: "98px",
+              whiteSpace: "normal",
+            }}
+          >
+            <button
+              style={{
+                width: "90px",
+                height: "60px",
+                backgroundColor: "#c74695",
+                borderRadius: "5px",
+                color: "white",
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              onClick={handleReturnNavigate}
+            >
+              반납 하기
+            </button>
           </div>
         </div>
       )}

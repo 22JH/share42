@@ -1,21 +1,30 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect } from "react";
+import { fontWeight } from "@mui/system";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import markerImg from "../../assets/marker.png";
 import MapButtonComponent from "./MapButtonComponent";
 import { CustomOverlayContentProps } from "./type/MapType";
 
 const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
-  const shareSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // PUT 요청해야함 그리고 status = 2로 바꿔야함
-    markerInfo.status = 2;
-  };
-
   const { pathname } = useLocation();
-
+  const [statusName, setStatusName] = useState<string>("");
+  console.log(markerInfo);
   useEffect(() => {
-    console.log(pathname);
-  }, [pathname]);
+    if (markerInfo.shareArticleShareStatus === 0) {
+      setStatusName("수납 대기");
+    } else if (markerInfo.shareArticleShareStatus === 1) {
+      setStatusName("공유 대기");
+    } else if (markerInfo.shareArticleShareStatus === 2) {
+      setStatusName("공유 중");
+    } else if (markerInfo.shareArticleShareStatus === 3) {
+      setStatusName("반납 대기");
+    } else if (markerInfo.shareArticleShareStatus === 4) {
+      setStatusName("회수 대기");
+    } else if (markerInfo.shareArticleShareStatus === 5) {
+      setStatusName("회수");
+    }
+  }, []);
 
   return (
     <div
@@ -40,6 +49,14 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             alignItems: "center",
           }}
         >
+          <div
+            style={{
+              marginRight: "5%",
+              fontWeight: "900",
+            }}
+          >
+            {markerInfo?.lockerNumber}번
+          </div>
           <img
             style={{
               width: "100px",
@@ -58,7 +75,7 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             whiteSpace: "normal",
           }}
         >
-          <div style={{ marginTop: "30px" }}>
+          <div style={{ marginTop: "30px", marginLeft: "5%" }}>
             <p
               style={{
                 margin: "0",
@@ -67,7 +84,7 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
                 fontSize: "0.7rem",
               }}
             >
-              {markerInfo.userid}
+              {markerInfo.shareArticleAccountNickname}
             </p>
             <p
               style={{
@@ -75,7 +92,7 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
                 fontWeight: "700",
               }}
             >
-              {markerInfo.title}
+              {markerInfo.shareArticleName}
             </p>
             <br />
             <p
@@ -85,7 +102,7 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
                 fontSize: "1.2rem",
               }}
             >
-              {markerInfo.price.toLocaleString()}원
+              {markerInfo.shareArticleSharePrice.toLocaleString()}원
             </p>
           </div>
           <div
@@ -96,18 +113,14 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
               marginTop: "-10px",
             }}
           >
-            {!pathname.includes("admin") && markerInfo && (
-              <MapButtonComponent
-                status={markerInfo.status}
-                text={
-                  markerInfo.status === 0
-                    ? "사용신청"
-                    : markerInfo.status === 1
-                    ? "사용중"
-                    : "신청취소"
-                }
-              />
-            )}
+            {pathname.includes("admin") ||
+              (pathname.includes("user") && markerInfo && (
+                <MapButtonComponent
+                  status={markerInfo.shareArticleShareStatus}
+                  text={statusName}
+                  articleId={markerInfo.shareArticleId}
+                />
+              ))}
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ import UserShareDetailPostInfo from "../../components/sharedetail/UserShareDetai
 import UserShareDetailContent from "../../components/sharedetail/UserShareDetailContent";
 import UserShareDetailRequest from "../../components/sharedetail/UserShareDetailRequest";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 const SHARE_DETAIL_API = (id: any) => {
   // eslint-disable-next-line max-len
@@ -98,9 +98,15 @@ const UserSharePost = () => {
     }
   };
 
-  // 좋아요에 따라서 색 바꾸기 및 API 요청
+  // 찜하기
   const handleLikeRequest = () => {
     setIsLike(!isLike);
+  };
+
+  // 찜취소
+  const handleLikeCancel = () => {
+    setIsLike(!isLike);
+    console.log(id)
   };
 
   // 사용신청 하기
@@ -151,11 +157,6 @@ const UserSharePost = () => {
     }
   )
 
-  useEffect(() => {
-    // console.log(likeCount)
-    // console.log(data)
-  }, [likeCount, data])
-
   return (
     <>
       <UserShareDetailCarousel
@@ -179,6 +180,7 @@ const UserSharePost = () => {
       >
         <UserShareDetailPostInfo
           handleLikeRequest={handleLikeRequest}
+          handleLikeCancel={handleLikeCancel}
           isLike={isLike}
           data={data}
         />

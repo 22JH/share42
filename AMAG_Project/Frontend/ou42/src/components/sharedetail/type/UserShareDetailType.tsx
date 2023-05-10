@@ -17,6 +17,7 @@ export interface UserShareDetailCarouselProps {
 export interface UserShareDetailPostInfoProps {
   isLike: null | boolean;
   handleLikeRequest: () => void;
+  handleLikeCancel: () => void;
   data: any;
 }
 

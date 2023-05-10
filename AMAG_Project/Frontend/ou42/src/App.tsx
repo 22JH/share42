@@ -68,25 +68,26 @@ function App() {
                 path="/user/mypage/stats"
                 element={<UserMyPageStatistics />}
               />
-              <Route path="/user/chat" element={<UserChat />} />
-              <Route path="/user/chat/list" element={<UserChatList />} />
+              <Route path="/user/chat/:chatName" element={<UserChat />} />
+              <Route path="/user/chatlist" element={<UserChatList />} />
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
               <Route path="/user/payment" element={<UserPay />} />
             </Route>
           </Route>
 
           {/* 등록된 공유 상세 페이지 */}
-          <Route element={<SharePageNavBar/>}>
-          </Route>
+          <Route element={<SharePageNavBar />}></Route>
 
           {/* 공유 등록 페이지, 등록된 공유 상세 페이지*/}
-          <Route element={<SharePageNavBar/>}>
+          <Route element={<SharePageNavBar />}>
             <Route path="/user/share-reg" element={<UserShareReg />} />
-            <Route path="/user/share-category" element={<UserShareCategorySelect />} />
+            <Route
+              path="/user/share-category"
+              element={<UserShareCategorySelect />}
+            />
             <Route path="/user/share-post/:id" element={<UserSharePost />} />
           </Route>
 
-          
           <Route path="/user/report" element={<UserReport />} />
 
           <Route path="/user/mypage/stats" element={<UserMyPageStatistics />} />
@@ -94,7 +95,10 @@ function App() {
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
-            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
+            <Route
+              path="/user/community/:id"
+              element={<UserCommunityDetail />}
+            />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

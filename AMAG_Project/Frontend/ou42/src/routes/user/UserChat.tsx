@@ -2,9 +2,20 @@
 import { css } from "@emotion/react";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import MessageBox from "../../components/user/chat/MessageBox";
+import {
+  arrayUnion,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../..";
+import { useParams, useLocation } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 
 const container = css`
   width: 100%;
@@ -34,149 +45,82 @@ const container = css`
   }
 `;
 
-interface ws {
-  send: any;
-  onopen: any;
-  onclose?: any;
-  onmessage: any;
-  close?: any;
-}
-
-//////////////////// 임시데이터 ////////////
-const sender = "김지현";
-const receiver = "이주형";
-
-const tempData = [
-  { sender: "asdf", content: "asdfasdf", fff: ";;;" },
-  { sender: "asdf", content: "ㅇㄴㄹㄴ", fff: ";;;" },
-  {
-    sender: "김지현",
-    content: "ㅎㅇㅎqweqweqwe  qwr qwef q  wdfwq fㅇ",
-    fff: ";;;",
-  },
-  { sender: "asdf", content: "asdfasdf", fff: ";;;" },
-  { sender: "asdf", content: "ㄷㄷ", fff: ";;;" },
-  { sender: "asdf", content: "asdfasdf", fff: ";;;" },
-  {
-    sender: "김지현",
-    content: "ㅎㅇwef ewfwef wef wefwe f wefw efㅎㅇ",
-    fff: ";;;",
-  },
-  { sender: "asdf", content: "ㄷㄷ", fff: ";;;" },
-  { sender: "asdf", content: "asdfasdf", fff: ";;;" },
-  {
-    sender: "김지현",
-    content: "ㅎㅇwef ewfwef wef wefwe f wefw efㅎㅇ",
-    fff: ";;;",
-  },
-  {
-    sender: "asdf",
-    content: "asdfasdasdfasfasdfsadfadfaefwfwefwfewefsfasfasdff",
-    fff: ";;;",
-  },
-  { sender: "김지현", content: "ㅎㅇㅎㅇ", fff: ";;;" },
-  { sender: "asdf", content: "ㅋㅋㅋ", fff: ";;;" },
-];
-
 export default function UserChat() {
   const [msg, setMsg] = useState<string>("");
-  const [chkLog, setChkLog] = useState(false);
-  const [socketData, setSocketData] = useState();
-  // const [chatt, setChatt] = useState([]);
+  const [messages, setMessages] = useState([]);
 
-  const ws: any = useRef(null); //webSocket을 담는 변수,
-  //컴포넌트가 변경될 때 객체가 유지되어야하므로 'ref'로 저장
-
-  // const msgBox = chatt.map((item, idx) => (
-  //     <div key={idx} className={item.name === name ? 'me' : 'other'}>
-  //         <span><b>{item.name}</b></span> [ {item.date} ]<br/>
-  //         <span>{item.msg}</span>
-  //     </div>
-  // ));
-
-  // useEffect(() => {
-  //   if (socketData !== undefined) {
-  //     const tempData = chatt.concat(socketData);
-  //     console.log(tempData);
-  //     setChatt(tempData);
-  //   }
-  // }, [socketData]);
+  const { chatName }: any = useParams()!;
+  const loginObject = localStorage.getItem("loginInfo")!;
+  const { userId } = JSON.parse(loginObject);
+  const { state } = useLocation();
 
   useEffect(() => {
-    ws.current = new WebSocket("ws://192.168.100.86:8088/chat/user-1");
-
-    return () => ws.current.close();
+    const unSub = onSnapshot(doc(db, "chats", chatName), (doc: any) => {
+      doc.exists() && setMessages(doc.data().messages);
+    });
+    return () => {
+      unSub();
+    };
   }, []);
 
-  //webSocket
-  //webSocket
   const handleMsg = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setMsg(e.target.value);
   };
 
-  const webSocketLogin = useCallback(() => {
-    ws.current = new WebSocket("ws://192.168.100.86:8088/chat/user-1");
-
-    ws.current.onmessage = (message: any) => {
-      // const dataSet = JSON.parse(message.data);
-      console.log(message);
-      // setSocketData(dataSet);
-    };
-  }, []);
-
-  const send = useCallback(() => {
-    console.log("보냄");
-    if (!chkLog) {
-      webSocketLogin();
-      setChkLog(true);
+  const handleSend = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code === "Enter") {
+      e.preventDefault();
+      send();
     }
+  };
 
-    const data = {
-      sender, // 접속한 유저 이름
-      receiver, // 보내는 상대 이름
-      content: msg,
-      roomName: "user-1", // api 받아서 바꿔야함, 주소와 동일하게,
-    }; //전송 데이터(JSON)
-
-    const temp = JSON.stringify(data);
-
-    if (ws.current.readyState === 0) {
-      //readyState는 웹 소켓 연결 상태를 나타냄
-      ws.current.onopen = () => {
-        //webSocket이 맺어지고 난 후, 실행
-        console.log(ws.current.readyState);
-        ws.current.send(temp);
-      };
-    } else {
-      ws.current.send(temp);
-    }
+  const send = async () => {
+    await updateDoc(doc(db, "chats", chatName), {
+      messages: arrayUnion({
+        id: uuid(),
+        msg,
+        senderId: userId,
+        date: Timestamp.now(),
+      }),
+    });
 
     setMsg("");
-  }, []);
 
-  // const 끊기 = () => {
-  //   ws.current.close();
-  // };
+    await updateDoc(doc(db, "userChats", userId), {
+      [chatName + ".lastMessage"]: {
+        msg,
+      },
+      [chatName + ".date"]: serverTimestamp(),
+    });
+
+    await updateDoc(doc(db, "userChats", state), {
+      [chatName + ".lastMessage"]: {
+        msg,
+      },
+      [chatName + ".date"]: serverTimestamp(),
+    });
+  };
+
   return (
     <div css={container}>
       <div className="chatSection">
-        <MessageBox data={tempData} sender={sender} />
+        <MessageBox data={messages} />
       </div>
       <div className="sendMsg">
         <TextField
+          value={msg}
           size="small"
           placeholder="메세지를 입력해 주세요"
           onChange={handleMsg}
           className="sendField"
+          onKeyUp={handleSend}
         />
-        {/* <div className="sendZone"> */}
         <RiSendPlaneFill
           onClick={send}
           css={{ width: "10%", height: "23%", color: "tomato" }}
         />
-        {/* </div> */}
       </div>
       <BottomMenuBar />
     </div>

@@ -36,6 +36,7 @@ import UserChatList from "./routes/user/UserChatList";
 import UserCommunityDetail from "./routes/user/UserCommunityDetail";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
+import UserReturn from "./routes/userHome/UserReturn";
 
 const globalStyle = css`
   body {
@@ -86,6 +87,7 @@ function App() {
             <Route path="/user/share-post/:id" element={<UserSharePost />} />
           </Route>
 
+          <Route path="/user/return" element={<UserReturn />} />
           
           <Route path="/user/report" element={<UserReport />} />
 

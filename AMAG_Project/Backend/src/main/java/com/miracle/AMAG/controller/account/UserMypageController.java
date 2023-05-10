@@ -41,6 +41,8 @@ public class UserMypageController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Parameters({
+            @Parameter(name = "page", description = "페이지 번호",in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 내역 개수",in = ParameterIn.PATH),
             @Parameter(name = "type", description = "조회 타입(0: 회수 , 1: 보관, 2: 사용, 3: 반납)",in = ParameterIn.PATH)
     })
     public ResponseEntity<?> getUseList(@PathVariable("page") int page, @PathVariable("size") int size,
@@ -57,6 +59,10 @@ public class UserMypageController {
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호",in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 찜한 목록 개수",in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> getLikeList(@PathVariable("page") int page, @PathVariable("size") int size) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK, userMypageService.getLikeList(pageRequest));
@@ -70,8 +76,27 @@ public class UserMypageController {
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호",in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 작성한 글 개수",in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> getShareArticle(@PathVariable("page") int page, @PathVariable("size") int size) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK, userMypageService.getShareArticle(pageRequest));
+    }
+
+    @GetMapping("/profits/{year}")
+    @Operation(summary = "사용자가 얻은 수익 통계 조회", description = "사용자가 얻은 수익(현재는 결제 내역을 기준으로) 통계를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자가 얻은 수익(현재는 결제 내역을 기준으로) 통계 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자가 얻은 수익(현재는 결제 내역을 기준으로) 통계 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Parameters({
+            @Parameter(name = "year", description = "수익 년도",in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getProfits(@PathVariable("year") String year) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userMypageService.getPayment(year));
     }
 }

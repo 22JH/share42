@@ -4,6 +4,7 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.responseDTO.account.MypageArticleResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.account.MypageLikeResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
+import com.miracle.AMAG.mapping.account.MypagePaymentGetMapping;
 import com.miracle.AMAG.mapping.user.MetadataURIMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.ArticleLikeRepository;
@@ -47,6 +48,9 @@ public class UserMypageService {
 
     @Autowired
     private ShareArticleRepository shareArticleRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
 
     public List<MetadataURIMapping> getUseList(int type, Pageable pageable){
         String userId = SecurityUtil.getCurrentUserId();
@@ -126,5 +130,18 @@ public class UserMypageService {
             dto.setNickname((String) objects[9]);
             return dto;
         });
+    }
+
+    public List<MypagePaymentGetMapping> getPayment(String year){
+        String userId = SecurityUtil.getCurrentUserId();
+        if(userId.equals("anonymousUser")){
+            throw new NullPointerException("로그인된 아이디가 없습니다.");
+        }
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(userId);
+
+        List<MypagePaymentGetMapping> result = paymentRepository.getPayment(account, MypageUtils.MYPAGE_PAYMENT, year);
+
+        return result;
     }
 }

@@ -1,7 +1,7 @@
 package com.miracle.AMAG.repository.locker;
 
 import com.miracle.AMAG.entity.locker.LockerStation;
-import com.miracle.AMAG.mapping.locker.LockerListMapping;
+import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationGetListMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
 """)
     List<LockerStationGetListMapping> getNearLocker(@Param("lat") double lat, @Param("lng") double lng);
 
-    List<LockerListMapping> findBySido(@PathVariable("sido") String sido);
+    List<LockerStationListMapping> findBySido(@PathVariable("sido") String sido);
 
     @Query(value = """
             SELECT slj.USE_ACCOUNT AS 'useUserId', a.USER_ID AS 'useUser', a.NICKNAME AS 'useUserNickname', slj.REG_DT AS 'useDt', slj.LOCKER_ID AS 'lockerId', slj.NAME AS 'name', slj.CONTENT AS 'content', slj.CATEGORY AS 'category', slj.SHARE_ACCOUNT_ID AS 'shareUser', slj.SHARE_REG_DT AS 'shareRegDt', slj.IMG AS 'img', slj.SHARE_STATUS AS 'shareStatus'

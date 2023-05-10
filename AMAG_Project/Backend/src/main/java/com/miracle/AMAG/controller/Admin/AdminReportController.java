@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "관리자_신고글", description = "대여함 신고글 관리")
+@Tag(name = "Admin_Report", description = "관리자 대여함 신고글 관리")
 @RequestMapping("/api/admin/reports")
 @RequiredArgsConstructor
 @RestController

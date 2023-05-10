@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "관리자_사물함컨트롤", description = "로그 및 기기조작")
+@Tag(name = "Admin_LockerControll", description = "사물함 로그 조회 및 기기조작")
 @RequestMapping("/api/admin/lockers")
 @RequiredArgsConstructor
 @RestController
@@ -46,8 +46,8 @@ public class AdminLockerController {
 
     @GetMapping("/address/sido/{sido}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "지점별 사물함 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
-            @ApiResponse(responseCode = "500", description = "지점별 사물함 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "지역별 lockerStation 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "지역별 lockerStation 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
@@ -77,6 +77,26 @@ public class AdminLockerController {
                                         @PathVariable("size") int size){
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK,adminLockerService.getLogList(lockerStationId,pageRequest));
+    }
+
+    @GetMapping("{lockerStationId}/{page}/{size}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "지점별 사물함 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "지점별 사물함 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "신고내역 목록 조회", description = "해당 파라미터 조건들에 맞는 신고내역 목록을 조회합니다.")
+    @Parameters({
+            @Parameter(name = "lockerStationId", description = "지점id",in = ParameterIn.PATH),
+            @Parameter(name = "page", description = "글 페이지 번호",in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 글 수",in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getLockerList(@PathVariable("lockerStationId") int lockerStationId,
+                                        @PathVariable("page") int page,
+                                        @PathVariable("size") int size){
+        PageRequest pageRequest = PageRequest.of(page - 1,size);
+        return NormalResponse.toResponseEntity(HttpStatus.OK,adminLockerService.getLockerList(lockerStationId,pageRequest));
     }
 
 }

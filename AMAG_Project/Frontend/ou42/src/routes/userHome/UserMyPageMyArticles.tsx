@@ -3,24 +3,25 @@ import { css } from "@emotion/react";
 
 import { useEffect } from "react";
 import navStore from "../../store/navStore";
-import UserMyPageChart from "./../../components/user/mypage/UserMyPageChart";
+import UserMyPageChart from "../../components/user/mypage/UserMyPageChart";
+import BottomMenuBar from "../../components/BottomMenuBar";
 
 const container = css`
   width: 100vw;
   height: 85vh;
 `;
-function UserMyPageStatistics() {
+function UserMyPageMyArticles() {
   const { setPathTitle } = navStore();
 
   useEffect(() => {
-    setPathTitle("통계");
+    setPathTitle("내가 쓴 글");
   }, []);
 
   return (
     <div css={container}>
-      <UserMyPageChart />
+      <BottomMenuBar />
     </div>
   );
 }
 
-export default UserMyPageStatistics;
+export default UserMyPageMyArticles;

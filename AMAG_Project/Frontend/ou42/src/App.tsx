@@ -26,7 +26,7 @@ import UserMyPageUsage from "./routes/userHome/UserMyPageUsage";
 import UserNfc from "./routes/user/UserNfc";
 import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
-import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
+import UserMyPageMyArticles from "./routes/userHome/UserMyPageMyArticles";
 import UserCommunity from "./routes/user/UserCommunity";
 import CommunityNavBar from "./components/NavBar/CommunityNavBar";
 import UserCommunityReg from "./routes/user/UserCommunityReg";
@@ -62,8 +62,8 @@ function App() {
               <Route path="/user/mypage/share" element={<UserMyPageShare />} />
               <Route path="/user/mypage/like" element={<UserMyPageLike />} />
               <Route
-                path="/user/mypage/stats"
-                element={<UserMyPageStatistics />}
+                path="/user/mypage/articles"
+                element={<UserMyPageMyArticles />}
               />
               <Route path="/user/chat" element={<UserChat />} />
               <Route path="/user/chat/list" element={<UserChatList />} />
@@ -74,14 +74,14 @@ function App() {
               <Route path="/user/share-post" element={<UserSharePost />} />
             </Route>
           </Route>
-          {/* 유저 마이페이지 */}
-
-          <Route path="/user/mypage/stats" element={<UserMyPageStatistics />} />
 
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
-            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
+            <Route
+              path="/user/community/:id"
+              element={<UserCommunityDetail />}
+            />
           </Route>
 
           <Route path="/" element={<UserWelcome />} />

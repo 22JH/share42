@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import testObject from "../../../assets/testObject.jpg";
 import { AiOutlineHeart, AiOutlineEye } from "react-icons/ai";
+import { memo } from "react";
+
+import testObject from "../../../assets/testObject.jpg";
 
 const container = css`
   width: 100%;
@@ -96,4 +98,4 @@ function UserMyPageList() {
   );
 }
 
-export default UserMyPageList;
+export default memo(UserMyPageList);

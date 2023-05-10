@@ -8,4 +8,8 @@ public class MypageUtils {
     public static final int MYPAGE_BORROW = 2;
 
     public static final int MYPAGE_SHARE_RETURN = 3;
+    //결제
+    public static final boolean MYPAGE_PAYMENT = false;
+    //송금
+    public static final boolean MYPAGE_REMITTANCE = true;
 }

@@ -8,6 +8,7 @@ import axios from "axios";
 import UserCommunityBtns from "../../components/community/UserCommunityBtns";
 import UserCommunityPosts from "../../components/community/UserCommunityPosts";
 import UserCommunityBottomBar from "../../components/community/UserCommunityBottomBar";
+import { getTimeAgo } from "../../utils/getTimeAgo";
 
 export const UserCommunityBtnStyle = css`
   & > button {
@@ -37,7 +38,8 @@ const UserCommunity = () => {
   const { search } = communityStore();
   const divRef = useRef<HTMLDivElement | any>({});
   const queryClient = useQueryClient();
-  const accessToken = localStorage.getItem("token");
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
 
   const SORT_API = (sort: any, category: any) => {
     // eslint-disable-next-line max-len
@@ -59,7 +61,7 @@ const UserCommunity = () => {
           : SORT_API(sort, category),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const { content } = response.data.message;
@@ -101,33 +103,6 @@ const UserCommunity = () => {
       setCategory({ idx: 5, num: 0, title: "모든" });
     }
     queryClient.invalidateQueries("community-infinity-scroll");
-  };
-
-  // 시간 측정하기
-  const getTimeAgo = (timestamp: string) => {
-    const now = new Date().getTime();
-    const diff = now - new Date(timestamp).getTime();
-
-    const minute = 60 * 1000;
-    const hour = 60 * minute;
-    const day = 24 * hour;
-    const month = 30 * day;
-
-    if (diff < minute) {
-      return "방금 전";
-    } else if (diff < hour) {
-      return Math.floor(diff / minute) + "분 전";
-    } else if (diff < day) {
-      return Math.floor(diff / hour) + "시간 전";
-    } else if (diff < month) {
-      return Math.floor(diff / day) + "일 전";
-    } else {
-      const date = new Date(timestamp);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      return `${year}년 ${month}월 ${day}일`;
-    }
   };
 
   return (

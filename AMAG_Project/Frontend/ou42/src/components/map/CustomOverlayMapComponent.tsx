@@ -12,7 +12,6 @@ const CustomOverlayMapComponent = ({
   isOpen,
   isVisible,
   handleMarkerInfo,
-  setIsOpenMap,
 }: CustomOverlayMapComponentProps) => {
   
   return (
@@ -43,7 +42,6 @@ const CustomOverlayMapComponent = ({
           <MarkerShareInfoComponent
             marker={marker}
             handleMarkerInfo={handleMarkerInfo}
-            setIsOpenMap={setIsOpenMap}
           />
         </CustomOverlayMap>
       ) : null}

@@ -1,7 +1,9 @@
+import React from "react";
+
 export interface UserShareImgProps {
   preview: File | null;
-  handleFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemoveImage: (e: React.MouseEvent<HTMLDivElement>) => void;
+  setPreview: React.Dispatch<React.SetStateAction<File | null>>
+  formData: FormData;
 }
 
 export interface UserShareInputProps {
@@ -13,9 +15,7 @@ export interface UserShareInputProps {
 }
 
 export interface UserShareCategoryProps {
-  options: { value: string; category: string }[];
-  handleSelectCategory: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  selectValue: string
+  selectValue: any
 }
 
 export interface UserShareContentProps {

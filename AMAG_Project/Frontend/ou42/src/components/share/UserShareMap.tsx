@@ -1,10 +1,9 @@
 import MapComponent from "../map/MapComponent";
-import { UserShareMapProps } from "../map/type/MapType";
 
-const UserShareMap = ({ setIsOpenMap }: UserShareMapProps) => {
+const UserShareMap = () => {
   return (
     <>
-      <MapComponent setIsOpenMap={setIsOpenMap} />
+      <MapComponent />
     </>
   );
 };

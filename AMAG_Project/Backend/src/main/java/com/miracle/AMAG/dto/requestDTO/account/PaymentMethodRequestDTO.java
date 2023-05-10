@@ -22,7 +22,6 @@ public class PaymentMethodRequestDTO {
     private String number;
 
     @NotNull
-    @NotBlank
     @Schema(title = "사용자 계좌 정보 입력 방식", description = "0: 빌링키, 1: 계좌번호", name = "type")
     private int type;
 }

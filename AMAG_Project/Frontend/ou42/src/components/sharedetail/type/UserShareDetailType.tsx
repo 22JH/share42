@@ -10,12 +10,14 @@ export interface UserShareDetailCarouselProps {
   slideWidth: number;
   handleDotClick: (idx: number) => void;
   currentSlide: number;
+  data: any;
 }
 
 
 export interface UserShareDetailPostInfoProps {
   isLike: null | boolean;
   handleLikeRequest: () => void;
+  data: any;
 }
 
 export interface UserShareDetailRequestProps {
@@ -24,4 +26,10 @@ export interface UserShareDetailRequestProps {
   handleUseCancel: () => void;
   handleNFC: () => void;
   handleChating: () => void;
+  data: any;
+}
+
+export interface UserShareDetailContentProps {
+  data: any;
+  likeCount: number;
 }

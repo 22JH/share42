@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +51,7 @@ public class UserReturnController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 반납 신청취소", description = "공유 물품 반납 신청취소를 진행합니다.")
-    public ResponseEntity<?> cancelReturn(@PathVariable("share_article_id") int shareArticleId) {
+    public ResponseEntity<?> cancelReturn(@PathVariable("share_article_id") int shareArticleId) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.cancelReturn(shareArticleId));
     }
 }

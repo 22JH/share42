@@ -125,7 +125,7 @@ public class UserReturnService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String cancelReturn(int shareArticleId) {
+    public String cancelReturn(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -144,8 +144,35 @@ public class UserReturnService {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 
+        LocalDateTime curTime = LocalDateTime.now();
+        shareArticle.setShareStatus(ShareArticleUtils.SHARING);
+        shareArticle.setUptDt(curTime);
 
-        
+        ShareReturn shareReturn = new ShareReturn();
+        BeanUtils.copyProperties(returnRecord, shareReturn);
+        shareReturn.setId(0);
+        shareReturn.setRegDt(curTime);
+        shareReturn.setReturnType(ShareReturnUtils.RETURN_CANCEL);
+
+        Locker locker = returnRecord.getLocker();
+        locker.setShareArticle(null);
+
+        ShareReturnDTO shareReturnDTO = new ShareReturnDTO();
+        BeanUtils.copyProperties(shareReturn, shareReturnDTO);
+        shareReturnDTO.setLocker(locker.getId());
+        shareReturnDTO.setAccount(account.getId());
+        shareReturnDTO.setShareArticle(shareArticle.getId());
+
+        // 블록체인 관련 항목
+        String alias = "rc0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(shareReturnDTO);
+        klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
+        shareReturn.setContractHash(alias);
+        shareReturn.setMetadataUri(metadataUri);
+
+        shareReturnRepository.save(shareReturn);
+        shareArticleRepository.save(shareArticle);
+        lockerRepository.save(locker);
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 }

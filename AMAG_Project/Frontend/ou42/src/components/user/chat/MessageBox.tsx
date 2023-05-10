@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useEffect, useRef } from "react";
 import profile from "../../../assets/testObject.jpg";
 
 interface PropType {
@@ -68,15 +69,28 @@ const senderContent = (len: number) => css`
   margin-right: 10px;
 `;
 
-export default function MessageBox({ data, sender }: PropType) {
-  console.log(data);
+export default function MessageBox({ data }: any) {
+  function getStringByte(str: string): number {
+    let byte = 0;
+    for (let i = 0; i < str.length; i++) {
+      byte += str.charCodeAt(i) > 127 ? 3 : 1.4;
+    }
+    return byte / 3;
+  }
+  const loginObject = localStorage.getItem("loginInfo")!;
+  const { userId } = JSON.parse(loginObject);
+
+  const ref = useRef<any>();
+  useEffect(() => {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  }, [data]);
   return (
     <div css={container}>
       {data?.map((ele: any, idx: number) =>
-        ele?.sender === sender ? (
+        ele?.senderId === userId ? (
           <div key={idx} className="senderMsg">
-            <div css={senderContent(ele?.content.length)}>
-              <div>{ele?.content}</div>
+            <div css={senderContent(getStringByte(ele?.msg))}>
+              <div>{ele?.msg}</div>
             </div>
           </div>
         ) : (
@@ -84,12 +98,13 @@ export default function MessageBox({ data, sender }: PropType) {
             <div className="imgBox">
               <img src={profile} alt="profile" className="profile" />
             </div>
-            <div css={receiverContent(ele?.content.length)}>
-              <div>{ele?.content}</div>
+            <div css={receiverContent(getStringByte(ele?.msg))}>
+              <div>{ele?.msg}</div>
             </div>
           </div>
         )
       )}
+      <div ref={ref} />
     </div>
   );
 }

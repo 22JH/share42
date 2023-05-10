@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 
 import { Area } from "../../routes/admin/AdminLog";
 import { useLocation } from "react-router-dom";
-import { AxiosResponse } from "axios";
+import { useQueryClient } from "react-query";
+import axios, { AxiosResponse } from "axios";
 import { memo } from "react";
 
 import Btn from "./../UI/Btn";
@@ -36,31 +37,50 @@ const container = (pathName: string) => css`
   }
 `;
 
+interface Sido {
+  sido: string;
+}
+
+interface Point {
+  id: number;
+  name: string;
+}
+
 interface Props {
-  regionData?: AxiosResponse<any, any>;
-  pointData?: AxiosResponse<any, any>;
+  regionData?: Sido[];
+  pointData?: Point[];
   numberData?: AxiosResponse<any, any>;
   listData?: AxiosResponse<any, any>;
   setAreaInfo: React.Dispatch<React.SetStateAction<Area>>;
   areaInfo: Area;
 }
 
+const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA4OTI5fQ.i9pqfxX2qI7jYeokz9jdasPTstrHHrliSOtRRQXFLo9FNH-39gsrKdktP6kMtOXWSSJ2lTzUJwFPtcN8ShVh0g`;
+
 function AdminSelectBox(props: Props) {
   const { regionData, pointData, numberData, setAreaInfo, areaInfo } = props;
+  const queryClient = useQueryClient();
 
   const location = useLocation();
   const pathName = location.pathname;
 
-  const options = [
-    { value: "서울", text: "서울" },
-    { value: "대구", text: "대구" },
-    { value: "대전", text: "대전" },
-  ];
-
   // 지역 선택 함수
   const clickArea = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
+
+    // 지점 API 함수
+    const pointAPI = () => {
+      return axios({
+        method: "get",
+        url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido/${value}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    };
+
     if (areaInfo?.region !== value) {
+      queryClient.prefetchQuery(["admin-point"], pointAPI);
       setAreaInfo!((info) => {
         return { ...info, region: value };
       });
@@ -97,21 +117,30 @@ function AdminSelectBox(props: Props) {
       <p>지역선택</p>
       <select onClick={clickArea}>
         <option value="">지역을 선택해주세요</option>
-        {options.map((option, index) => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
+        {regionData?.map((data: Sido, index: number) => {
+          const { sido } = data;
+          return (
+            <option key={sido} value={sido}>
+              {sido}
+            </option>
+          );
+        })}
       </select>
 
       <p>지점선택</p>
       <select onClick={clickBranch}>
         <option value="">지점을 선택해주세요</option>
-        {options.map((option, index) => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
+        {pointData?.length
+          ? pointData?.map((data: Point, index: number) => {
+              const { id, name } = data;
+              console.log(name);
+              return (
+                <option key={id} value={name}>
+                  {name}
+                </option>
+              );
+            })
+          : null}
       </select>
 
       {pathName === "/admin/operation" ? (
@@ -119,11 +148,11 @@ function AdminSelectBox(props: Props) {
           <p>번호선택</p>
           <select onClick={clickNumber}>
             <option value="">번호를 선택해주세요</option>
-            {options.map((option, index) => (
+            {/* {options.map((option, index) => (
               <option key={option.value} value={option.value}>
                 {option.text}
               </option>
-            ))}
+            ))} */}
           </select>
           <Btn
             width={100}

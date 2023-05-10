@@ -8,14 +8,9 @@ import {
   useState,
 } from "react";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
-import {
-  useQuery,
-  useQueryClient,
-  useQueryErrorResetBoundary,
-} from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 import AdminLogContents from "../../components/admin/log/AdminLogContents";
-import * as userHomeStyle from "../../components/user/UserHomeStyle";
 import AdminSelectBox from "../../components/admin/AdminSelectBox";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import ErrorBoundary from "../../components/ErrorBoundary";
@@ -23,6 +18,7 @@ import AdminNav from "./../../components/admin/AdminNav";
 import Loading from "./../../components/Loading";
 
 import axios from "axios";
+import { ErrorMessage } from "../../components/ErrorMessage";
 
 export interface Area {
   region: string;
@@ -30,19 +26,16 @@ export interface Area {
   number: string;
 }
 
+const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA4OTI5fQ.i9pqfxX2qI7jYeokz9jdasPTstrHHrliSOtRRQXFLo9FNH-39gsrKdktP6kMtOXWSSJ2lTzUJwFPtcN8ShVh0g`;
+
 // 지역 API 함수
 const rigionAPI = () => {
   return axios({
     method: "get",
-    url: `https://jsonplaceholder.typicode.com/todos/1`,
-  });
-};
-
-// 지점 API 함수
-const pointAPI = () => {
-  return axios({
-    method: "get",
-    url: `https://jsonplaceholder.typicode.com/todos/1`,
+    url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido`,
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+    },
   });
 };
 
@@ -59,18 +52,38 @@ function AdminLogFetcher({
   // 지역 호출 query
   const { data: regionData } = useQuery(["admin-region"], rigionAPI, {
     select: (data) => {
-      return data.data;
+      return data.data.message;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["admin-point"], () => {
+        return [];
+      });
     },
   });
+
+  // 지점 API 함수
+  const pointAPI = () => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido/${areaInfo.region}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
 
   // 지점 호출 query
   const { data: pointData } = useQuery(["admin-point"], pointAPI, {
     enabled: !!areaInfo.region,
+    select: (data) => {
+      if (data.data) {
+        return data.data.message;
+      }
+    },
   });
 
   useEffect(() => {
     queryClient.prefetchQuery(["admin-region"], rigionAPI);
-    queryClient.prefetchQuery(["admin-point"], pointAPI);
   }, [areaInfo]);
 
   return cloneElement(children, { regionData, pointData });
@@ -80,7 +93,11 @@ function AdminLogFetcher({
 const listAPI = () => {
   return axios({
     method: "get",
+    // url: `http://www.share42-together.com:8088/api/admin/lockers/log/{lockerStationId}/{page}/{size}`,
     url: `https://jsonplaceholder.typicode.com/todos/1`,
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+    },
   });
 };
 
@@ -93,6 +110,7 @@ function AdminLogListFetcher({
   areaInfo: Area;
 }) {
   const queryClient = useQueryClient();
+  console.log(areaInfo);
 
   const { data: listData } = useQuery(["admin-list"], listAPI, {
     enabled: !!areaInfo.point,
@@ -104,30 +122,6 @@ function AdminLogListFetcher({
 
   return cloneElement(children, { listData });
 }
-
-// 에러 메세지 컴포넌트
-const ErrorMessage = () => {
-  const { reset } = useQueryErrorResetBoundary();
-
-  const queryClient = useQueryClient();
-  const refetch = () => {
-    return queryClient.refetchQueries(["admin-region"]);
-  };
-
-  const reTry = () => {
-    reset();
-    refetch();
-  };
-
-  return (
-    <div css={userHomeStyle.errorMsgStyle}>
-      <p>잠시 후 다시 시도해주세요</p>
-      <p>요청을 처리하는데</p>
-      <p>실패했습니다.</p>
-      <button onClick={reTry}>다시시도</button>
-    </div>
-  );
-};
 
 function AdminLog() {
   const [areaInfo, setAreaInfo] = useState<Area>({

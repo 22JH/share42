@@ -7,12 +7,10 @@ import {
   useInfiniteQuery,
   InfiniteQueryObserverResult,
   FetchNextPageOptions,
-  useQueryErrorResetBoundary,
   useQueryClient,
 } from "react-query";
 import axios, { AxiosError } from "axios";
 
-import * as userHomeStyle from "../../user/UserHomeStyle";
 import testObject from "../../../assets/testObject.jpg";
 import AdminModalContent from "../AdminModalContent";
 import adminStore from "../../../store/adminStore";
@@ -20,6 +18,7 @@ import pinkBox from "../../../assets/pinkBox.png";
 import ErrorBoundary from "../../ErrorBoundary";
 import * as FxJS from "../../../custom/FxJS";
 import Loading from "../../Loading";
+import { ErrorMessage } from "../../ErrorMessage";
 
 export const contentStyle = css`
   width: 100%;
@@ -78,18 +77,18 @@ const emptyBox = css`
   }
 `;
 
-const dialog = css`
+export const dialog = css`
   border: 0;
   border-radius: 20px;
   animation-name: show;
   animation-duration: 0.5s;
   outline: none;
 
-  background-color: #2e2e2e;
+  background-color: #fffbfb;
 
   &::backdrop {
-    background-color: black;
-    opacity: 0.4;
+    background-color: #969696;
+    opacity: 0.5;
   }
 
   @keyframes show {
@@ -133,7 +132,7 @@ function AdminReportFatcher(props: {
   const { category } = adminStore();
   const queryClient = useQueryClient();
 
-  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNjI0MzU5fQ.NjkkC-OrCQ7TkwieSjGmloyGIK9JXkaFfAb7FdZCmHmgaCtyWxQSEXMmtyi73ZdxCnywlva5SSly2xyrouHyYQ`;
+  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA0NDE5fQ.PFE9LDgl1MysEiOxFWZxsBC1D7xvZsCSiGSd7iOWy7Hcf-jUlJVoSdexkeZ8zy1EpTTfnRBMgXonLH3e_aWkaA`;
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["admin-report", category],
@@ -180,6 +179,7 @@ function AdminReportFatcher(props: {
       }
     );
   }, [category]);
+
   return cloneElement(children, { data, hasNextPage, fetchNextPage });
 }
 
@@ -261,29 +261,6 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
         </div>
       )}
     </>
-  );
-}
-
-// 에러시 생성되는 컴포넌트
-function ErrorMessage() {
-  const { reset } = useQueryErrorResetBoundary();
-
-  const queryClient = useQueryClient();
-  const refetch = () => {
-    return queryClient.refetchQueries(["admin-report"]);
-  };
-
-  const reTry = () => {
-    reset();
-    refetch();
-  };
-  return (
-    <div css={userHomeStyle.errorMsgStyle}>
-      <p>잠시 후 다시 시도해주세요</p>
-      <p>요청을 처리하는데</p>
-      <p>실패했습니다.</p>
-      <button onClick={reTry}>다시시도</button>
-    </div>
   );
 }
 

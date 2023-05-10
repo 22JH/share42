@@ -8,8 +8,9 @@ import { Page } from "./report/AdminReportContent";
 
 const container = css`
   width: 70vw;
-  height: 60vh;
+  height: 53vh;
   overflow: auto;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -17,7 +18,8 @@ const container = css`
   .icon {
     position: absolute;
     right: 5%;
-    color: white;
+    /* color: #ff4f4f; */
+    color: #d81b60;
   }
 
   .img {
@@ -26,11 +28,10 @@ const container = css`
     align-items: center;
 
     img {
-      width: 68vw;
+      width: 70vw;
       height: 30vh;
       border-radius: 10px;
-      margin-top: 13%;
-      border: 2px solid white;
+      margin-top: 14%;
     }
   }
 
@@ -39,38 +40,42 @@ const container = css`
       font-size: 1.4rem;
       margin-bottom: 0;
       font-weight: 900;
-      margin-top: 10%;
-      color: white;
+      margin-top: 5%;
+      color: #d81b60;
     }
     p:nth-of-type(2) {
       margin-top: 1%;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       margin-bottom: 2%;
-      color: #a0a0a0;
+      margin-left: 1%;
+      color: #555555;
     }
     p:nth-of-type(3) {
       margin-top: 1%;
-      font-size: 0.8rem;
-      margin-bottom: 2%;
-      color: #a0a0a0;
+      font-size: 0.7rem;
+      margin-bottom: 5%;
+      margin-left: 1%;
+      color: #a8a8a8;
     }
   }
 
   hr {
-    border: 1px #e4e4e4 solid;
+    border: 1px #e4e4e4af solid;
   }
 
   .content {
     p:nth-of-type(1) {
-      margin-top: 2%;
+      margin-top: 5%;
       margin-bottom: 2%;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       color: #a8a8a8;
+      margin-left: 1%;
     }
     p:nth-of-type(2) {
       margin-top: 2%;
       font-size: 0.9rem;
-      color: white;
+      color: #000000;
+      margin-left: 1%;
     }
   }
 `;
@@ -99,7 +104,7 @@ function AdminModalContent({
       {/* x 아이콘 */}
       <div className="icon">
         <IoIosCloseCircleOutline
-          size={25}
+          size={27}
           onClick={() => dialogRef.current?.close()}
         />
       </div>

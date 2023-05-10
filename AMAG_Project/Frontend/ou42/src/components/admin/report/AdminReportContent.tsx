@@ -19,6 +19,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import * as FxJS from "../../../custom/FxJS";
 import Loading from "../../Loading";
 import { ErrorMessage } from "../../ErrorMessage";
+import { useGetUserToken } from "../../../hooks/useGetToken";
 
 export const contentStyle = css`
   width: 100%;
@@ -131,8 +132,7 @@ function AdminReportFatcher(props: {
   const { children } = props;
   const { category } = adminStore();
   const queryClient = useQueryClient();
-
-  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA0NDE5fQ.PFE9LDgl1MysEiOxFWZxsBC1D7xvZsCSiGSd7iOWy7Hcf-jUlJVoSdexkeZ8zy1EpTTfnRBMgXonLH3e_aWkaA`;
+  const TOKEN = useGetUserToken();
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["admin-report", category],
@@ -147,7 +147,9 @@ function AdminReportFatcher(props: {
     },
     {
       getNextPageParam: (lastPage, allPage) => {
-        return allPage.length + 1;
+        if (allPage[0].data.message.totalPages > allPage.length) {
+          return allPage.length + 1;
+        }
       },
       select: (data) => {
         const newPages = FxJS.pipe(

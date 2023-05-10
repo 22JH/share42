@@ -8,36 +8,24 @@ import {
   useState,
 } from "react";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
-import { useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import axios, { AxiosResponse } from "axios";
 
 import AdminLogContents from "../../components/admin/log/AdminLogContents";
 import AdminSelectBox from "../../components/admin/AdminSelectBox";
+import { ErrorMessage } from "../../components/ErrorMessage";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import ErrorBoundary from "../../components/ErrorBoundary";
+import { useGetUserToken } from "../../hooks/useGetToken";
 import AdminNav from "./../../components/admin/AdminNav";
 import Loading from "./../../components/Loading";
-
-import axios from "axios";
-import { ErrorMessage } from "../../components/ErrorMessage";
+import { L, pipe, takeAll } from "../../custom/FxJS";
 
 export interface Area {
   region: string;
   point: string;
   number: string;
 }
-
-const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA4OTI5fQ.i9pqfxX2qI7jYeokz9jdasPTstrHHrliSOtRRQXFLo9FNH-39gsrKdktP6kMtOXWSSJ2lTzUJwFPtcN8ShVh0g`;
-
-// 지역 API 함수
-const rigionAPI = () => {
-  return axios({
-    method: "get",
-    url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido`,
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  });
-};
 
 // 지점 정보 Fetcher 컴포넌트
 function AdminLogFetcher({
@@ -48,16 +36,23 @@ function AdminLogFetcher({
   areaInfo: Area;
 }) {
   const queryClient = useQueryClient();
+  const TOKEN = useGetUserToken();
+
+  // 지역 API 함수
+  const rigionAPI = () => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
 
   // 지역 호출 query
   const { data: regionData } = useQuery(["admin-region"], rigionAPI, {
     select: (data) => {
       return data.data.message;
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["admin-point"], () => {
-        return [];
-      });
     },
   });
 
@@ -89,18 +84,6 @@ function AdminLogFetcher({
   return cloneElement(children, { regionData, pointData });
 }
 
-// 리스트 요청 API 함수
-const listAPI = () => {
-  return axios({
-    method: "get",
-    // url: `http://www.share42-together.com:8088/api/admin/lockers/log/{lockerStationId}/{page}/{size}`,
-    url: `https://jsonplaceholder.typicode.com/todos/1`,
-    headers: {
-      Authorization: `Bearer ${TOKEN}`,
-    },
-  });
-};
-
 // list fetcher 컴포넌트
 function AdminLogListFetcher({
   children,
@@ -109,18 +92,47 @@ function AdminLogListFetcher({
   children: PropsWithChildren<ReactJSXElement>;
   areaInfo: Area;
 }) {
-  const queryClient = useQueryClient();
-  console.log(areaInfo);
+  const TOKEN = useGetUserToken();
+  const SIZE = 5;
 
-  const { data: listData } = useQuery(["admin-list"], listAPI, {
+  // 리스트 요청 API 함수
+  const listAPI = ({ pageParam = 1 }) => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/admin/lockers/log/${areaInfo.point}/${pageParam}/${SIZE}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
+
+  const {
+    data: listData,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(["admin-list"], listAPI, {
     enabled: !!areaInfo.point,
+    select: (data) => {
+      const newPages = pipe(L.map, L.flatten, takeAll);
+      const mapFnc = (d: any) => d.data.message.content;
+
+      return {
+        pages: newPages(mapFnc, data.pages),
+        pageParams: data.pageParams,
+      };
+    },
+    getNextPageParam: (lastPage, allPage) => {
+      if (allPage[0].data.message.totalPages > allPage.length) {
+        return allPage.length + 1;
+      }
+    },
   });
 
-  useEffect(() => {
-    queryClient.prefetchQuery(["admin-list"], listAPI);
-  }, [areaInfo]);
-
-  return cloneElement(children, { listData });
+  return cloneElement(children, {
+    listData: listData?.pages,
+    fetchNextPage,
+    hasNextPage,
+  });
 }
 
 function AdminLog() {

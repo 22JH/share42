@@ -2,7 +2,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   useInfiniteQuery,
@@ -51,7 +51,9 @@ function UserHomeList() {
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
-        return allPage.length + 1;
+        if (allPage[0].data.message.totalPages > allPage.length) {
+          return allPage.length + 1;
+        }
       },
       useErrorBoundary: true,
       suspense: true,

@@ -8,6 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import { memo } from "react";
 
 import Btn from "./../UI/Btn";
+import { useGetUserToken } from "../../hooks/useGetToken";
 
 const container = (pathName: string) => css`
   width: 90%;
@@ -55,11 +56,10 @@ interface Props {
   areaInfo: Area;
 }
 
-const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNzA4OTI5fQ.i9pqfxX2qI7jYeokz9jdasPTstrHHrliSOtRRQXFLo9FNH-39gsrKdktP6kMtOXWSSJ2lTzUJwFPtcN8ShVh0g`;
-
 function AdminSelectBox(props: Props) {
   const { regionData, pointData, numberData, setAreaInfo, areaInfo } = props;
   const queryClient = useQueryClient();
+  const TOKEN = useGetUserToken();
 
   const location = useLocation();
   const pathName = location.pathname;
@@ -79,7 +79,7 @@ function AdminSelectBox(props: Props) {
       });
     };
 
-    if (areaInfo?.region !== value) {
+    if (areaInfo?.region !== value && value) {
       queryClient.prefetchQuery(["admin-point"], pointAPI);
       setAreaInfo!((info) => {
         return { ...info, region: value };
@@ -90,7 +90,21 @@ function AdminSelectBox(props: Props) {
   // 지점 선택 함수
   const clickBranch = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (areaInfo?.point !== value) {
+    const SIZE = 8;
+
+    // 리스트 요청 API 함수
+    const listAPI = ({ pageParam = 1 }) => {
+      return axios({
+        method: "get",
+        url: `http://www.share42-together.com:8088/api/admin/lockers/log/${value}/${pageParam}/${SIZE}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    };
+
+    if (areaInfo?.point !== value && value) {
+      queryClient.prefetchInfiniteQuery(["admin-list"], listAPI);
       setAreaInfo!((info) => {
         return { ...info, point: value };
       });
@@ -100,7 +114,7 @@ function AdminSelectBox(props: Props) {
   // 번호 선택 함수
   const clickNumber = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (areaInfo?.number !== value) {
+    if (areaInfo?.number !== value && value) {
       setAreaInfo!((info) => {
         return { ...info, number: value };
       });
@@ -130,17 +144,14 @@ function AdminSelectBox(props: Props) {
       <p>지점선택</p>
       <select onClick={clickBranch}>
         <option value="">지점을 선택해주세요</option>
-        {pointData?.length
-          ? pointData?.map((data: Point, index: number) => {
-              const { id, name } = data;
-              console.log(name);
-              return (
-                <option key={id} value={name}>
-                  {name}
-                </option>
-              );
-            })
-          : null}
+        {pointData?.map((data: Point, index: number) => {
+          const { id, name } = data;
+          return (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          );
+        })}
       </select>
 
       {pathName === "/admin/operation" ? (

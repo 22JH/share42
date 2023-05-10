@@ -31,4 +31,6 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
     List<LockerGetListMapping> findAllByLockerStation_IdAndShareArticleNotNull(@Param("lockerStationId") int lockerStationId, Pageable pageable);
 
     Long countByLockerStation_Id(@Param("lockerStationId") int lockerStationId);
+
+//    List<LogListMapping> findAllByLockerStation_Id(@PathVariable("LockerStationId") int LockerStationId);
 }

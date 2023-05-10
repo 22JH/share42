@@ -7,6 +7,7 @@ import com.miracle.AMAG.mapping.admin.ReportListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.user.ReportRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,8 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class AdminReportService {
     @Autowired
     private ReportRepository reportRepository;

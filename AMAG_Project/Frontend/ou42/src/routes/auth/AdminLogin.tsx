@@ -58,7 +58,7 @@ const container = css`
   }
 `;
 
-export default function Login() {
+export default function AdminLogin() {
   const [id, setId] = useState<string>("");
   const [pd, setPd] = useState<string>("");
 
@@ -99,11 +99,11 @@ export default function Login() {
           token: res.data.message.token.accessToken,
           expire: Date.now() + 1800000,
           userId: id,
-          type: "user",
+          type: "admin",
         };
         localStorage.setItem("loginInfo", JSON.stringify(obj));
 
-        navigate("/home");
+        navigate("/admin/home");
       })
       .catch((err) => Alert("error", err.response.data.message));
   };
@@ -149,9 +149,7 @@ export default function Login() {
           color={"white"}
           onClick={handleLogin}
         />
-        <div className="signUp" onClick={() => navigate("/signup")}>
-          회원가입
-        </div>
+        ADMIN
       </div>
       <Circle />
     </div>

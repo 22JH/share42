@@ -1,9 +1,13 @@
 import { Bootpay } from "@bootpay/client-js";
 import { useEffect } from "react";
-import { Swal } from "sweetalert2";
+import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
+import { useGetUserToken } from "../../hooks/useGetToken";
+
+const URL = "http://k8d102.p.ssafy.io:8088/api/user/info/pay-method";
 
 export default function UserPay() {
+  const headers = { Authorization: `Bearer ${useGetUserToken()}` };
   const navigate = useNavigate();
   useEffect(() => {
     Bootpay.requestSubscription({
@@ -24,11 +28,22 @@ export default function UserPay() {
     }).then(
       function (response) {
         if (response.event === "done") {
-          Swal.fire({
-            icon: "success",
-            title: "카드가 등록되었습니다.",
-            didclose: () => navigate(""),
-          });
+          const options = {
+            headers,
+            body: {
+              receiptId: response?.data?.receipt_id,
+              type: 0,
+            },
+          };
+          console.log(options);
+          fetch(URL, {
+            method: "PATCH",
+            ...options,
+          })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+          console.log(response);
+          // Alert("success", "카드가 등록되었습니다.", navigate("/"));
         }
       },
       function (error) {

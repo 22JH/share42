@@ -34,6 +34,8 @@ import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
 import UserChatList from "./routes/user/UserChatList";
 import UserCommunityDetail from "./routes/user/UserCommunityDetail";
+import AdminLogin from "./routes/auth/AdminLogin";
+import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 
 const globalStyle = css`
   body {
@@ -81,12 +83,18 @@ function App() {
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
-            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
+            <Route
+              path="/user/community/:id"
+              element={<UserCommunityDetail />}
+            />
           </Route>
 
+          <Route element={<LoginRaouterGuard />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+          </Route>
           <Route path="/" element={<UserWelcome />} />
           <Route path="/start" element={<UserBeforeMain />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />

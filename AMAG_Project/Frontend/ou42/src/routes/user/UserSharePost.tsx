@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import driver1 from "../../assets/testObject.jpg";
@@ -147,19 +147,17 @@ const UserSharePost = () => {
 
     if (!chats.exists()) {
       await setDoc(doc(db, "chats", chatName), { message: [] });
-      console.log("1");
-      const res = await updateDoc(doc(db, "userChats", "ssafy1233"), {
+      const res = await updateDoc(doc(db, "userChats", userId), {
         [chatName + ".userInfo"]: {
           id: temp_reg_user_id,
           /// 프로필 받아와야함
           profile: "",
         },
-        // [chatName + ".date"]: serverTimestamp(),
+        [chatName + ".date"]: serverTimestamp(),
       });
-      console.log(res);
     }
 
-    // navigate("/user/chat/userId");
+    navigate(`/user/chat/${chatName}`);
   };
 
   // NFC 화면으로

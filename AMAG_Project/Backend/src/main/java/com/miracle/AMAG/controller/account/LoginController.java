@@ -41,7 +41,13 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    @Operation(description = "로그아웃")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "로그인 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "로그아웃 시도",description = "로그아웃을 시도합니다.")
     public ResponseEntity<?> logout(RequestEntity<?> httpMessage) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, loginService.logout(httpMessage));
     }

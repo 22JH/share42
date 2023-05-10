@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "관리자_사물함컨트롤", description = "로그 및 기기조작")
+@Tag(name = "Admin_LockerControll", description = "사물함 로그 조회 및 기기조작")
 @RequestMapping("/api/admin/lockers")
 @RequiredArgsConstructor
 @RestController

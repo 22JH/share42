@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
 import { useGetUserToken } from "../../hooks/useGetToken";
+import axios from "axios";
 
 const URL = "http://k8d102.p.ssafy.io:8088/api/user/info/pay-method";
 
 export default function UserPay() {
-  const headers = { Authorization: `Bearer ${useGetUserToken()}` };
+  const token = useGetUserToken();
   const navigate = useNavigate();
   useEffect(() => {
     Bootpay.requestSubscription({
@@ -28,22 +29,28 @@ export default function UserPay() {
     }).then(
       function (response) {
         if (response.event === "done") {
-          const options = {
-            headers,
-            body: {
-              receiptId: response?.data?.receipt_id,
-              type: 0,
-            },
-          };
-          console.log(options);
-          fetch(URL, {
-            method: "PATCH",
-            ...options,
-          })
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
+          axios
+            .patch(
+              URL,
+              {
+                receiptId: response?.data?.receipt_id,
+                type: 0,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json;charset=UTF-8",
+                  accept: "application/json;charset=UTF-8",
+                },
+              }
+            )
+            .then(() => {
+              Alert("success", "카드가 등록되었습니다.", navigate("/home"));
+            })
+            .catch((error) => {
+              console.error(error);
+            });
           console.log(response);
-          // Alert("success", "카드가 등록되었습니다.", navigate("/"));
         }
       },
       function (error) {
@@ -52,5 +59,5 @@ export default function UserPay() {
     );
   }, []);
 
-  return <>asd</>;
+  return <></>;
 }

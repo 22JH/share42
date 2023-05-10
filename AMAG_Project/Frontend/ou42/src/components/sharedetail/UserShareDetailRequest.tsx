@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { UserShareDetailRequestProps } from "./type/UserShareDetailType";
 
 const UserShareDetailRequest = ({
@@ -6,7 +7,10 @@ const UserShareDetailRequest = ({
   handleUseCancel,
   handleNFC,
   handleChating,
+  data
 }: UserShareDetailRequestProps) => {
+  console.log(data)
+
   return (
     <div
       style={{
@@ -26,14 +30,14 @@ const UserShareDetailRequest = ({
         }}
       >
         {/* toLocaleString() */}
-        <span>{`200원`}</span>
+        <span>{`${Number(data?.price).toLocaleString()}원`}</span>
         <span
           style={{
             color: "#adadad",
             fontWeight: "500",
           }}
         >
-          구미 인동
+          {data?.accountSigungu} {data?.accountDong}
         </span>
       </div>
       <div>

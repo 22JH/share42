@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import HomeNavBar from "./NavBar/HomeNavBar";
-import { useShareDataStore } from "./map/store/useShareDataStore";
 
 export default function NavBar() {
   const pathName = window.location.pathname;

@@ -28,7 +28,8 @@ const UserCommunityCommentList = ({
   comment,
   refetch,
 }: UserCommunityCommentListProps) => {
-  const accessToken = localStorage.getItem('token')
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
 
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -64,7 +65,7 @@ const UserCommunityCommentList = ({
       },
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -83,7 +84,7 @@ const UserCommunityCommentList = ({
       )}`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 

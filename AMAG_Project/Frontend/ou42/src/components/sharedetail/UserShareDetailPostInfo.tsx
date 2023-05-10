@@ -2,12 +2,14 @@
 
 import { FaHeart } from "react-icons/fa";
 import ProfilePic from "../../assets/ProfilePic.svg";
+import { getTimeAgo } from "../../utils/getTimeAgo";
 import { FaHeartStyle } from "./style/UserShareDetailStyle";
 import { UserShareDetailPostInfoProps } from "./type/UserShareDetailType";
 
 const UserShareDetailPostInfo = ({
   isLike,
   handleLikeRequest,
+  data,
 }: UserShareDetailPostInfoProps) => {
   return (
     <div
@@ -16,7 +18,7 @@ const UserShareDetailPostInfo = ({
         alignItems: "center",
         justifyContent: "space-between",
         width: "90vw",
-        borderBottom: '1px solid #adadad'
+        borderBottom: "1px solid #adadad",
       }}
     >
       <div
@@ -42,8 +44,13 @@ const UserShareDetailPostInfo = ({
             marginLeft: "3vw",
           }}
         >
-          <span style={{ fontSize: "1.1rem", fontWeight: "900" }}>닉네임</span>
-          <span style={{ color: "#ADADAD" }}>공구·인동 9분전</span>
+          <span style={{ fontSize: "1.1rem", fontWeight: "900" }}>
+            {data?.accountNickname}
+          </span>
+          <span style={{ color: "#ADADAD" }}>
+            {data?.category} · {data?.accountSigungu} {data?.accountDong}{" "}
+            {getTimeAgo(data?.uptDt)}
+          </span>
         </div>
       </div>
       <div onClick={handleLikeRequest}>

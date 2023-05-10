@@ -119,6 +119,9 @@ public class UserReturnService {
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 
+        locker.setShareArticle(shareArticle);
+        lockerRepository.save(locker);
+
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
@@ -142,7 +145,7 @@ public class UserReturnService {
         }
 
 
+        
         return BoardUtils.BOARD_CRUD_SUCCESS;
-
     }
 }

@@ -53,4 +53,19 @@ public class ShareReturn {
 
     @Column(name="METADATA_URI",length = 200)
     private String metadataUri;
+
+    @Override
+    public String toString() {
+        return "ShareReturn{" +
+                "id=" + id +
+                ", locker=" + locker +
+                ", account=" + account +
+                ", shareArticle=" + shareArticle +
+                ", img='" + img + '\'' +
+                ", regDt=" + regDt +
+                ", returnType=" + returnType +
+                ", contractHash='" + contractHash + '\'' +
+                ", metadataUri='" + metadataUri + '\'' +
+                '}';
+    }
 }

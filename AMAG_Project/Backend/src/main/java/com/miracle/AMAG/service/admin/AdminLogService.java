@@ -34,7 +34,7 @@ public class AdminLogService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Page<AdminLogListDTO> getLogList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable){
+    public Page<AdminLogListDTO> getLogList(int lockerStationId, Pageable pageable){
         Page<Object[]> logList = lockerStationRepository.geLogList(lockerStationId,pageable);
         String loginId = SecurityUtil.getCurrentUserId();
         Account account = accountRepository.findByUserId(loginId);
@@ -78,14 +78,14 @@ public class AdminLogService {
     }
 
     public List<StationUsageListMapping> getStationUsageList(String sido){
-//        String loginId = SecurityUtil.getCurrentUserId();
-//        Account account = accountRepository.findByUserId(loginId);
-//        if(account == null){
-//            throw new NullPointerException("로그인 정보가 없습니다");
-//        }
-//        if (!account.getRole().value().equals("ROLE_ADMIN")){
-//            throw new RuntimeException("권한이 없습니다");
-//        }
+        String loginId = SecurityUtil.getCurrentUserId();
+        Account account = accountRepository.findByUserId(loginId);
+        if(account == null){
+            throw new NullPointerException("로그인 정보가 없습니다");
+        }
+        if (!account.getRole().value().equals("ROLE_ADMIN")){
+            throw new RuntimeException("권한이 없습니다");
+        }
 
         List<StationUsageListMapping> result = lockerStationRepository.getStationUsageList(sido);
         return result;

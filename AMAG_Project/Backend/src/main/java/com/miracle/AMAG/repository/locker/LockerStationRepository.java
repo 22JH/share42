@@ -30,7 +30,7 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
 """)
     List<LockerStationGetListMapping> getNearLocker(@Param("lat") double lat, @Param("lng") double lng);
 
-    List<LockerStationListMapping> findBySido(@PathVariable("sido") String sido);
+    List<LockerStationListMapping> findBySido(@Param("sido") String sido);
 
     @Query(value = """
             SELECT slj.USE_ACCOUNT AS 'useUserId', a.USER_ID AS 'useUser', a.NICKNAME AS 'useUserNickname', slj.REG_DT AS 'useDt', slj.LOCKER_ID AS 'lockerId', slj.NAME AS 'name', slj.CONTENT AS 'content', slj.CATEGORY AS 'category', slj.SHARE_ACCOUNT_ID AS 'shareUser', slj.SHARE_REG_DT AS 'shareRegDt', slj.IMG AS 'img', slj.SHARE_STATUS AS 'shareStatus'
@@ -90,7 +90,7 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
             ON S.ID = LJ.RETURN_SHARE_ARTICLE_ID) AS SLJ
             ON A.ID = SLJ.USE_ACCOUNT;
             """, nativeQuery = true)
-    Page<Object[]> geLogList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable);
+    Page<Object[]> geLogList(@Param("lockerStationId") int lockerStationId, Pageable pageable);
 
     Page<ReportLockerStationGetListMapping> findAllBy(Pageable pageable);
 

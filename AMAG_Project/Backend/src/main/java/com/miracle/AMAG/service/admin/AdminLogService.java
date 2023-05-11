@@ -7,7 +7,6 @@ import com.miracle.AMAG.mapping.admin.SidoUsageListMapping;
 import com.miracle.AMAG.mapping.admin.StationUsageListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerStationRepository;
-import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -27,9 +25,6 @@ import java.util.List;
 public class AdminLogService {
     @Autowired
     private LockerStationRepository lockerStationRepository;
-
-    @Autowired
-    private ShareArticleRepository shareArticleRepository;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -73,7 +68,7 @@ public class AdminLogService {
             throw new RuntimeException("권한이 없습니다");
         }
 
-        List<SidoUsageListMapping> result = shareArticleRepository.getSidoLogList();
+        List<SidoUsageListMapping> result = lockerStationRepository.getSidoLogList();
         return result;
     }
 

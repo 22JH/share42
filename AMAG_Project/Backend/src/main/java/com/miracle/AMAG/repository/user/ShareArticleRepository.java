@@ -28,18 +28,6 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
     @Query("update ShareArticle s set s.status = :status where s.id = :id")
     void updateStatus(@Param("id") int id, @Param("status") boolean status);
 
-    @Query(value = """
-    SELECT SA.S_SIDO AS 'sido', COUNT(*) AS 'count'
-    FROM (
-    SELECT S.SIDO AS S_SIDO, A.SIDO AS A_SIDO
-    FROM SHARE_ARTICLE AS S
-    INNER JOIN ADDRESS AS A
-    ON A.SIDO = S.SIDO
-    GROUP BY S.ID) AS SA
-    GROUP BY SA.S_SIDO
-    """,nativeQuery = true)
-    List<SidoUsageListMapping> getSidoLogList();
-
 	@Query(value = """
             SELECT likeArticleData.ID as 'id', likeArticleData.NAME as 'name', likeArticleData.SHARE_PRICE as 'sharePrice', likeArticleData.IMG as 'img', likeArticleData.UPT_DT as 'uptDt', likeArticleData.SHARE_STATUS as 'shareStatus', likeArticleData.HITS as 'hits', likeArticleData.likeCount as 'likeCount', ac.USER_ID as 'userId', ac.NICKNAME as 'nickname'
                 FROM

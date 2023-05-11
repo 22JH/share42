@@ -25,6 +25,8 @@ import { useGetUserToken } from "../../hooks/useGetToken";
 import { L, pipe, takeAll } from "./../../custom/FxJS";
 import DropDown from "../../components/UI/DropDown";
 import Loading from "../../components/Loading";
+import pinkBox from "../../assets/pinkBox.png";
+import homeStore from "../../store/homeStore";
 
 interface Props {
   fetchNextPage: any;
@@ -74,6 +76,7 @@ function UserHomeFetcher({
     latitude: 0,
     longitude: 0,
   });
+  const { search, setSearch } = homeStore();
   const TOKEN = useGetUserToken();
   const queryClient = useQueryClient();
 
@@ -106,6 +109,7 @@ function UserHomeFetcher({
               orderStandard: sortNum,
               sigungu: data[0],
               dong: data[1],
+              query: search,
             },
             headers: {
               Authorization: `Bearer ${TOKEN}`,
@@ -129,6 +133,7 @@ function UserHomeFetcher({
         orderStandard: sortNum,
         sigungu: address?.length ? address[0] : "",
         dong: address?.length ? address[1] : "",
+        query: search,
       },
       headers: {
         Authorization: `Bearer ${TOKEN}`,
@@ -171,6 +176,7 @@ function UserHomeFetcher({
             orderStandard: sortNum,
             sigungu: address[0],
             dong: address[1],
+            query: search,
           },
           headers: {
             Authorization: `Bearer ${TOKEN}`,
@@ -238,7 +244,7 @@ function UserHomeList(props: Partial<Props>) {
 
   // data가 변경될 떄마다 새로운 요소를 감시한다.
   useEffect(() => {
-    if (divRef?.current && data) {
+    if (divRef?.current && data?.pages?.length) {
       const lastIndex = data?.pages?.length - 1;
       intersection.observe(divRef?.current[lastIndex]);
     }
@@ -255,93 +261,104 @@ function UserHomeList(props: Partial<Props>) {
 
   return (
     <>
-      {data?.pages.map((data: Data, index: number) => {
-        const { category, content, hits, img, likeCount, sharePrice, uptDt } =
-          data;
-        const date = new Date();
-        let time = "";
+      {data?.pages.length ? (
+        data?.pages.map((data: Data, index: number) => {
+          const { category, content, hits, img, likeCount, sharePrice, uptDt } =
+            data;
+          const date = new Date();
+          let time = "";
 
-        const YEAR = date.getFullYear();
-        const MONTH = date.getMonth() + 1;
-        const DAY = date.getDate();
-        const HOUR = date.getHours();
-        const MINUTES = date.getMinutes();
+          const YEAR = date.getFullYear();
+          const MONTH = date.getMonth() + 1;
+          const DAY = date.getDate();
+          const HOUR = date.getHours();
+          const MINUTES = date.getMinutes();
 
-        const [uptYear, uptTime] = uptDt.split(".")[0].split("T");
+          const [uptYear, uptTime] = uptDt.split(".")[0].split("T");
 
-        const UPTYEAR = +uptYear.split("-")[0];
-        const UPTMONTH = +uptYear.split("-")[1];
-        const UPTDAY = +uptYear.split("-")[2];
-        const UPTHOUR = +uptTime.split(":")[0];
-        const UPTMINUTES = +uptTime.split(":")[1];
+          const UPTYEAR = +uptYear.split("-")[0];
+          const UPTMONTH = +uptYear.split("-")[1];
+          const UPTDAY = +uptYear.split("-")[2];
+          const UPTHOUR = +uptTime.split(":")[0];
+          const UPTMINUTES = +uptTime.split(":")[1];
 
-        if (UPTYEAR < YEAR) {
-          time = `${YEAR - UPTYEAR}년전 `;
-        } else {
-          if (UPTMONTH < MONTH) {
-            time = `${MONTH - UPTMONTH}달전`;
+          if (UPTYEAR < YEAR) {
+            time = `${YEAR - UPTYEAR}년전 `;
           } else {
-            if (UPTDAY < DAY) {
-              time = `${DAY - UPTDAY}일전`;
+            if (UPTMONTH < MONTH) {
+              time = `${MONTH - UPTMONTH}달전`;
             } else {
-              if (UPTHOUR < HOUR) {
-                time = `${HOUR - UPTHOUR}시간전`;
+              if (UPTDAY < DAY) {
+                time = `${DAY - UPTDAY}일전`;
               } else {
-                if (UPTMINUTES < MINUTES) {
-                  time = `${MINUTES - UPTMINUTES}분전`;
+                if (UPTHOUR < HOUR) {
+                  time = `${HOUR - UPTHOUR}시간전`;
                 } else {
-                  time = `방금전`;
+                  if (UPTMINUTES < MINUTES) {
+                    time = `${MINUTES - UPTMINUTES}분전`;
+                  } else {
+                    time = `방금전`;
+                  }
                 }
               }
             }
           }
-        }
 
-        return (
-          <div
-            className="item"
-            key={index}
-            ref={(ref) => {
-              return (divRef.current[index] = ref);
-            }}
-          >
-            {isLike ? (
-              <div className="img-icon">
-                <AiTwotoneHeart className="redHeart" size="30" onClick={like} />
-              </div>
-            ) : (
-              <div className="img-icon">
-                <AiOutlineHeart
-                  className="blankHeart"
-                  style={{ fill: "black" }}
-                  size="30"
-                  onClick={like}
-                />
-              </div>
-            )}
-            <img src={`${ImgUrl}${img}`} alt="test" className="img" />
+          return (
+            <div
+              className="item"
+              key={index}
+              ref={(ref) => {
+                return (divRef.current[index] = ref);
+              }}
+            >
+              {isLike ? (
+                <div className="img-icon">
+                  <AiTwotoneHeart
+                    className="redHeart"
+                    size="30"
+                    onClick={like}
+                  />
+                </div>
+              ) : (
+                <div className="img-icon">
+                  <AiOutlineHeart
+                    className="blankHeart"
+                    style={{ fill: "black" }}
+                    size="30"
+                    onClick={like}
+                  />
+                </div>
+              )}
+              <img src={`${ImgUrl}${img}`} alt="test" className="img" />
 
-            <p>{`${sharePrice.toLocaleString()}원`}</p>
-            <p>{`${
-              content.length >= 10 ? `${content.slice(0, 10)}...` : content
-            }`}</p>
-            {/* <p>서울 · 2분전</p> */}
-            <p>{`${category} · ${time}`}</p>
+              <p>{`${sharePrice.toLocaleString()}원`}</p>
+              <p>{`${
+                content.length >= 10 ? `${content.slice(0, 10)}...` : content
+              }`}</p>
+              {/* <p>서울 · 2분전</p> */}
+              <p>{`${category} · ${time}`}</p>
 
-            <div className="icon">
-              <span className="eye">
-                <AiOutlineEye />
-                <span>{hits}</span>
-              </span>
+              <div className="icon">
+                <span className="eye">
+                  <AiOutlineEye />
+                  <span>{hits}</span>
+                </span>
 
-              <div className="heart">
-                <AiOutlineHeart />
-                <span>{likeCount ?? 0}</span>
+                <div className="heart">
+                  <AiOutlineHeart />
+                  <span>{likeCount ?? 0}</span>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <div css={userHomeStyle.img}>
+          <p>빈 리스트 입니다</p>
+          <img src={pinkBox} alt="blank" />
+        </div>
+      )}
     </>
   );
 }
@@ -352,7 +369,6 @@ const category = ["최신순", "가격순", "조회수"];
 function UserHome() {
   const [value, setValue] = useState<string>("");
   const [sortNum, setSortNum] = useState<number>(0);
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (value === "최신순") {
@@ -363,8 +379,6 @@ function UserHome() {
       setSortNum(2);
     }
   }, [value]);
-
-  console.log(sortNum);
 
   return (
     <>

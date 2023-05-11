@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 import { SlBell } from "react-icons/sl";
 
 import homeStore from "../../store/homeStore";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const homeNavStyle = css`
   width: 100vw;
@@ -85,16 +85,24 @@ const homeNavStyle = css`
   }
 `;
 export default function HomeNavBar() {
-  const { setSearch, search } = homeStore();
+  const { setSearch } = homeStore();
+  const [input, setInput] = useState<string>("");
+
   const inputRef = useRef<HTMLInputElement | null>(null);
-  console.log(search);
-  const searchItem = () => {
-    console.log("검색");
+  const searchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearch(input);
+      (inputRef?.current as any).value = "";
+    }
+  };
+  const searchClick = () => {
+    setSearch(input);
+
     (inputRef?.current as any).value = "";
   };
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearch(value);
+    setInput(value);
   };
   return (
     <>
@@ -141,13 +149,13 @@ export default function HomeNavBar() {
               placeholder="관심있는 상품을 검색해보세요"
               autoComplete="false"
               onChange={searchInput}
-              onKeyUp={searchItem}
+              onKeyUp={searchKeyDown}
               ref={inputRef}
             />
             <BsSearch
               size={20}
               style={{ fill: "#FFABAB" }}
-              onClick={searchItem}
+              onClick={searchClick}
             />
           </div>
         </div>

@@ -238,6 +238,7 @@ public class UserShareArticleService {
             dto.setLikeCount((Long) objects[9]);
             dto.setUserId((String) objects[10]);
             dto.setNickname((String) objects[11]);
+            dto.setLikeCheck((Integer) objects[12]);
             return dto;
         });
     }

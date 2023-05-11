@@ -22,7 +22,7 @@ pipeline {
         REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
         REACT_CONTAINER_NAME = 'react-server'
 
-        NGINX_PICTURE_PATH = '/usr/share/nginx/images'
+        NGINX_PICTURE_PATH = '/usr/share/nginx/html/images/'
     }
 
     stages {
@@ -73,7 +73,7 @@ pipeline {
                 echo 'Building Docker image...'
                 dir("${env.SPRING_ROOT_PATH}") {
                     script {
-                        def dockerImage = docker.build("--no-cache -t ${env.SPRING_IMAGE_NAME} .")
+                        def dockerImage = docker.build("${env.SPRING_IMAGE_NAME}")
                     }
                 }
             }
@@ -97,7 +97,7 @@ pipeline {
                 dir(path: "${env.REACT_ROOT_PATH}") {
                     script {
                         docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
-                            def dockerImage = docker.build("--no-cache -t ${env.REACT_IMAGE_NAME} .")
+                            def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
                         }
                     }
                 }

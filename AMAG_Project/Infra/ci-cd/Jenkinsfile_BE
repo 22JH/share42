@@ -64,7 +64,7 @@ pipeline {
                 echo 'Building Docker image...'
                 dir("${env.SPRING_ROOT_PATH}") {
                     script {
-                        def dockerImage = docker.build("--no-cache -t ${env.SPRING_IMAGE_NAME} .")
+                        def dockerImage = docker.build("${env.SPRING_IMAGE_NAME}")
                     }
                 }
             }

@@ -20,4 +20,10 @@ public class ShareArticleUtils {
     // 회수
     public static final byte COLLECT_COMPLEATE = 5;
 
+    public static final int SEARCH_TYPE_NEW = 0;
+
+    public static final int SEARCH_TYPE_PRICE = 1;
+
+    public static final int SEARCH_TYPE_HITS = 2;
+
 }

@@ -34,6 +34,8 @@ import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
 import UserChatList from "./routes/user/UserChatList";
 import UserCommunityDetail from "./routes/user/UserCommunityDetail";
+import AdminLogin from "./routes/auth/AdminLogin";
+import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
 
@@ -101,9 +103,12 @@ function App() {
             />
           </Route>
 
+          <Route element={<LoginRaouterGuard />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+          </Route>
           <Route path="/" element={<UserWelcome />} />
           <Route path="/start" element={<UserBeforeMain />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />

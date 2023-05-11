@@ -3,6 +3,7 @@ package com.miracle.AMAG.service.user;
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
+import com.miracle.AMAG.dto.responseDTO.user.ShareArticleResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.ArticleLike;
 import com.miracle.AMAG.entity.locker.Locker;
@@ -24,8 +25,11 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -196,5 +200,33 @@ public class UserShareArticleService {
         articleLikeRepository.save(registedArticleLike);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public Page<ShareArticleResponseDTO> getShareArticleList(Pageable pageable, String sigungu, String dong, String category, int orderStandard, String query){
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(loginId);
+
+        Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+                query, orderStandard,pageable);
+
+        return result.map(objects -> {
+            ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+            dto.setId((int) objects[0]);
+            dto.setCategory((String) objects[1]);
+            dto.setName((String) objects[2]);
+            dto.setContent((String) objects[3]);
+            dto.setSharePrice((int) objects[4]);
+            dto.setImg((String) objects[5]);
+            dto.setUptDt((Timestamp) objects[6]);
+            dto.setShareStatus((byte) objects[7]);
+            dto.setHits((int) objects[8]);
+            dto.setLikeCount((Long) objects[9]);
+            dto.setUserId((String) objects[10]);
+            dto.setNickname((String) objects[11]);
+            return dto;
+        });
     }
 }

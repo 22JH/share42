@@ -3,6 +3,7 @@ package com.miracle.AMAG.repository.locker;
 import com.miracle.AMAG.entity.locker.LockerStation;
 import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationGetListMapping;
+import com.miracle.AMAG.mapping.locker.ReportLockerStationGetListMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,4 +90,6 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
             ON A.ID = SLJ.USE_ACCOUNT;
             """, nativeQuery = true)
     Page<Object[]> geLogList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable);
+
+    Page<ReportLockerStationGetListMapping> findAllBy(Pageable pageable);
 }

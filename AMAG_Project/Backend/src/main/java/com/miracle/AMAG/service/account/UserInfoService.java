@@ -64,27 +64,19 @@ public class UserInfoService {
     }
 
     public String insertPayMethod(PaymentMethodRequestDTO paymentMethodRequestDTO){
-        if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getReceiptId().equals("")&& paymentMethodRequestDTO.getReceiptId() == null){
-            throw new RuntimeException();
-        }
-        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.ACCOUNT_NUMBER && paymentMethodRequestDTO.getNumber().equals("")&& paymentMethodRequestDTO.getNumber()== null){
-            throw new RuntimeException();
-        }
-
         String userId = SecurityUtil.getCurrentUserId();
         if(userId.equals("anonymousUser")){
             throw new NullPointerException("로그인된 아이디가 없습니다.");
         }
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(userId);
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
+        PaymentMethod data = paymentMethodRepository.findByAccount(account);
+        PaymentMethod result = new PaymentMethod();
         if(paymentMethodRequestDTO.getType()==PayMethodUtils.BILLING_KEY){
             if(data == null){
-               data = new PaymentMethod();
-               data.setAccount(account);
-               data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
-
-               paymentMethodRepository.save(data);
+                result.setAccount(account);
+                result.setBillingKey(paymentMethodRequestDTO.getReceiptId());
+                paymentMethodRepository.save(result);
             }
             else {
                 data.setBillingKey(paymentMethodRequestDTO.getReceiptId());
@@ -93,11 +85,9 @@ public class UserInfoService {
         }
         else if(paymentMethodRequestDTO.getType()==PayMethodUtils.ACCOUNT_NUMBER){
             if(data == null){
-                data = new PaymentMethod();
-                data.setAccount(account);
-                data.setNumber(paymentMethodRequestDTO.getNumber());
-
-                paymentMethodRepository.save(data);
+                result.setAccount(account);
+                result.setNumber(paymentMethodRequestDTO.getNumber());
+                paymentMethodRepository.save(result);
             }
             else {
                 data.setNumber(paymentMethodRequestDTO.getNumber());
@@ -107,25 +97,6 @@ public class UserInfoService {
         else{
             throw new RuntimeException();
         }
-        return BoardUtils.BOARD_CRUD_SUCCESS;
-    }
-
-    public String deleteAccountNumber(){
-        String userId = SecurityUtil.getCurrentUserId();
-        if(userId.equals("anonymousUser")){
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
-        //로그인된 아이디로 테이블 id column 가져오기
-        Account account = accountRepository.findByUserId(userId);
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
-
-        if(data == null || data.getNumber() == null){
-            throw new RuntimeException();
-        }
-        else{
-            paymentMethodRepository.deleteNumber(data.getId());
-        }
-
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 

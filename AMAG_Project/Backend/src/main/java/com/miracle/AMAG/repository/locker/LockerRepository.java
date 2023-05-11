@@ -4,6 +4,7 @@ import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.mapping.locker.LockerGetListMapping;
 import com.miracle.AMAG.mapping.locker.LockerListMapping;
+import com.miracle.AMAG.mapping.locker.ReportLockerGetListMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,5 +37,11 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
     Long countByLockerStation_Id(@Param("lockerStationId") int lockerStationId);
 
     Page<LockerListMapping> findByLockerStation_Id(@Param("lockerStationId") int lockerStationId, Pageable pageable);
+
+    @Modifying
+    @Query("update Locker l set l.error = :error where l.id = :id")
+    void updateError(@Param("error") boolean error, @Param("id") int id);
+
+    Page<ReportLockerGetListMapping> findAllByLockerStation_Id(@Param("lockerStationId") int lockerStationId, Pageable pageable);
 
 }

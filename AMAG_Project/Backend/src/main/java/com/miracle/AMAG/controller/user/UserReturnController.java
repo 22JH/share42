@@ -6,6 +6,9 @@ import com.miracle.AMAG.util.network.CUDResponse;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,6 +54,9 @@ public class UserReturnController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 반납 신청취소", description = "공유 물품 반납 신청취소를 진행합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "반납 취소할 물품 글 번호", in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> cancelReturn(@PathVariable("share_article_id") int shareArticleId) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.cancelReturn(shareArticleId));
     }
@@ -63,6 +69,9 @@ public class UserReturnController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 반납", description = "공유 물품 반납을 진행합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "반납할 공유 글 번호", in = ParameterIn.PATH)
+    })
     public ResponseEntity<?> returnProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(shareArticleId));
     }

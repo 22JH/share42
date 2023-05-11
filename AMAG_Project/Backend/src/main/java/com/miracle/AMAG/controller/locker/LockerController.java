@@ -41,7 +41,7 @@ public class LockerController {
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
-    @Operation(summary = "대여함 정보 조회", description = "근처에 존재하는 대여함 정보를 조회합니다.")
+    @Operation(summary = "근처 대여함 정보 조회", description = "근처에 존재하는 대여함 정보를 조회합니다.")
     @Parameters({
             @Parameter(name = "lat", description = "현재 위치의 위도", in = ParameterIn.PATH),
             @Parameter(name = "lng", description = "현재 위치의 경도", in = ParameterIn.PATH)
@@ -67,5 +67,41 @@ public class LockerController {
                                              @PathVariable("lockerLocationId") int id) {
         PageRequest pageRequest = BoardUtils.pageRequestInit(page, size, "id" , BoardUtils.ORDER_BY_DESC);
         return NormalResponse.toResponseEntity(HttpStatus.OK, lockerService.getLockerDetail(id,pageRequest));
+    }
+
+    @GetMapping("/locker-stations/{page}/{size}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "대여함 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "대여함 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유함 목록 조회", description = "공유함 목록 정보를 조회합니다.")
+    @Parameters({
+            @Parameter(name = "page", description = "공유함 목록 페이지 번호", in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 공유함 수", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getLockerStationList(@PathVariable("page") int page, @PathVariable("size") int size){
+        PageRequest pageRequest = BoardUtils.pageRequestInit(page, size, "id" , BoardUtils.ORDER_BY_DESC);
+        return NormalResponse.toResponseEntity(HttpStatus.OK, lockerService.getLockerStationList(pageRequest));
+    }
+
+    @GetMapping("/{page}/{size}/{lockerLocationId}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유함 칸 목록 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "공유함 칸 목록 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유함 칸 목록 조회", description = "공유함 Id에 해당하는 대여함 칸들의 정보를 조회합니다.")
+    @Parameters({
+            @Parameter(name = "page", description = "공유함 칸 페이지 번호", in = ParameterIn.PATH),
+            @Parameter(name = "size", description = "페이지 당 공유함 칸 수", in = ParameterIn.PATH),
+            @Parameter(name = "lockerLocationId", description = "공유함 번호", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getLockerList(@PathVariable("page") int page, @PathVariable("size") int size,
+                                             @PathVariable("lockerLocationId") int id) {
+        PageRequest pageRequest = BoardUtils.pageRequestInit(page, size, "id" , BoardUtils.ORDER_BY_DESC);
+        return NormalResponse.toResponseEntity(HttpStatus.OK, lockerService.getLockerList(id,pageRequest));
     }
 }

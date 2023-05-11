@@ -2,12 +2,15 @@ package com.miracle.AMAG.service.locker;
 
 import com.miracle.AMAG.mapping.locker.LockerGetListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationGetListMapping;
+import com.miracle.AMAG.mapping.locker.ReportLockerGetListMapping;
+import com.miracle.AMAG.mapping.locker.ReportLockerStationGetListMapping;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.locker.LockerStationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -44,4 +47,14 @@ public class LockerService {
         return result;
     }
 
+    public Page<ReportLockerStationGetListMapping> getLockerStationList(Pageable pageable){
+
+        return lockerStationRepository.findAllBy(pageable);
+    }
+
+
+    public Page<ReportLockerGetListMapping> getLockerList(int id, Pageable pageable){
+
+        return lockerRepository.findAllByLockerStation_Id(id,pageable);
+    }
 }

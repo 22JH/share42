@@ -67,9 +67,9 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
 
 
     @Query(value = """
-SELECT saAlData.ID as 'id', saAlData.CATEGORY as 'category', saAlData.NAME as 'name', saAlData.CONTENT as 'content', saAlData.PRICE as 'price', saAlData.IMG as 'img', saAlData.UPT_DT as 'uptDt', saAlData.SHARE_STATUS as 'shareStatus', saAlData.HITS as 'hits', saAlData.likeCount as 'likeCount', aData.USER_ID as 'userId', aData.NICKNAME as 'nickname'
+SELECT saAlData.ID as 'id', saAlData.CATEGORY as 'category', saAlData.NAME as 'name', saAlData.CONTENT as 'content', saAlData.SHARE_PRICE as 'sharePrice', saAlData.IMG as 'img', saAlData.UPT_DT as 'uptDt', saAlData.SHARE_STATUS as 'shareStatus', saAlData.HITS as 'hits', saAlData.likeCount as 'likeCount', aData.USER_ID as 'userId', aData.NICKNAME as 'nickname'
 FROM
-	(SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
+	(SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
 	FROM
 		(SELECT *
 		FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
@@ -99,7 +99,7 @@ ON saAlData.ACCOUNT_ID = aData.ID
 ORDER BY
 CASE
 	WHEN :orderStandard = 0 THEN saAlData.UPT_DT
-	WHEN :orderStandard = 1 THEN saAlData.PRICE
+	WHEN :orderStandard = 1 THEN saAlData.SHARE_PRICE
 	WHEN :orderStandard = 2 THEN saAlData.HITS
 	ELSE saAlData.UPT_DT
 END
@@ -107,7 +107,7 @@ DESC;
 """, countQuery = """
 SELECT COUNT(*)
 FROM
-	(SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
+	(SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
 	FROM
 		(SELECT *
 		FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s

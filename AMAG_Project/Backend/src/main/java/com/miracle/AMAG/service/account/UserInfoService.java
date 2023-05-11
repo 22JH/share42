@@ -50,11 +50,15 @@ public class UserInfoService {
         int id = accountRepository.findByUserId(userId).getId();
 
         String result = "";
+        PaymentMethod paymentMethod = paymentMethodRepository.findByAccount_Id(id);
+        if(paymentMethod == null){
+            throw new RuntimeException("등록된 정보가 없습니다.");
+        }
         if(type==PayMethodUtils.BILLING_KEY){
-            result = paymentMethodRepository.findByAccount_Id(id).getBillingKey();
+            result = paymentMethod.getBillingKey();
         }
         else if(type==PayMethodUtils.ACCOUNT_NUMBER){
-            result = paymentMethodRepository.findByAccount_Id(id).getNumber();
+            result = paymentMethod.getNumber();
         }
         return result;
     }
@@ -133,14 +137,16 @@ public class UserInfoService {
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(userId);
         PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
-
-        if(type == PayMethodUtils.BILLING_KEY && data.getBillingKey() == null){
+        if(data == null){
             return PayMethodUtils.CHECK_FAIL;
         }
-        else if(type == PayMethodUtils.ACCOUNT_NUMBER && data.getNumber() == null){
+        if(type == PayMethodUtils.BILLING_KEY && (data.getBillingKey() == null || data.getBillingKey().isEmpty()||data.getBillingKey().isBlank())){
             return PayMethodUtils.CHECK_FAIL;
         }
-        else if(type == PayMethodUtils.ACCOUNT_DATA && (data.getNumber() == null || data.getBillingKey() == null)){
+        else if(type == PayMethodUtils.ACCOUNT_NUMBER && (data.getNumber() == null || data.getNumber().isEmpty()||data.getNumber().isBlank())){
+            return PayMethodUtils.CHECK_FAIL;
+        }
+        else if(type == PayMethodUtils.ACCOUNT_DATA && (data.getNumber() == null || data.getBillingKey() == null || data.getBillingKey().isEmpty()||data.getBillingKey().isBlank() || data.getNumber().isEmpty()||data.getNumber().isBlank())){
             return PayMethodUtils.CHECK_FAIL;
         }
         else {

@@ -50,4 +50,16 @@ public class AdminLogController {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK,adminLogService.getLogList(lockerStationId,pageRequest));
     }
+
+    @GetMapping("/sido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "시도 사용량 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "시도 사용량 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "시도 사용량 조회",description = "시도 사용량을 조회합니다.")
+    public ResponseEntity<?> getUsageList(){
+        return NormalResponse.toResponseEntity(HttpStatus.OK,adminLogService.getUsageList());
+    }
 }

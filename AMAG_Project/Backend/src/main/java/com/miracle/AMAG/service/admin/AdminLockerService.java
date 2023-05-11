@@ -32,9 +32,6 @@ public class AdminLockerService {
         return lockerStationRepository.findBySido(sido);
     }
 
-
-
-
     public Page<LockerListMapping> getLockerList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable){
         return lockerRepository.findByLockerStation_Id(lockerStationId, pageable);
     }

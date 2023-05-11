@@ -1,25 +1,56 @@
 /* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
-import { Suspense, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import {
-  useInfiniteQuery,
-  useQueryClient,
-  useQueryErrorResetBoundary,
-} from "react-query";
+  cloneElement,
+  memo,
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import axios from "axios";
 
+import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
 import UserHomeSpeedDial from "../../components/user/UserHomeSpeedDial";
 import * as userHomeStyle from "../../components/user/UserHomeStyle";
+import { ErrorMessage } from "../../components/ErrorMessage";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import BottomMenuBar from "../../components/BottomMenuBar";
+import { useGetUserToken } from "../../hooks/useGetToken";
 import { L, pipe, takeAll } from "./../../custom/FxJS";
 import DropDown from "../../components/UI/DropDown";
 import Loading from "../../components/Loading";
 
-import testObject from "../../assets/testObject.jpg";
-import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
+interface Props {
+  fetchNextPage: any;
+  data: any;
+  hasNextPage: boolean;
+}
+
+interface Location {
+  latitude: number;
+  longitude: number;
+}
+
+interface Data {
+  category: string;
+  content: string;
+  hits: number;
+  id: number;
+  img: string;
+  likeCount: null | number;
+  name: string;
+  nickname: string;
+  sharePrice: number;
+  shareStatus: number;
+  uptDt: string;
+  userId: string;
+}
 
 // intersaction 옵션
 const intersectionOptions = {
@@ -29,23 +60,83 @@ const intersectionOptions = {
 };
 
 // API_URL
-const API_URL = `https://jsonplaceholder.typicode.com/comments?postId=`;
-
-// infinityquery 함수
-const getListFnc = ({ pageParam = 1 }) => {
-  return axios({
-    method: "get",
-    url: `${API_URL}${pageParam}`,
-  });
-};
+const API_URL = `http://www.share42-together.com:8088/api/user/share/share-articles/search`;
 
 // 데이터 fetch 컴포넌트
-function UserHomeList() {
-  const [isLike, setIslike] = useState<boolean>(false);
-  const divRef = useRef<HTMLDivElement | any>({});
-  const { setBranchChoice } = useBranchChoiceStore();
+function UserHomeFetcher({
+  children,
+  sortNum,
+}: {
+  children: React.PropsWithChildren<ReactJSXElement>;
+  sortNum: number;
+}) {
+  const [location, setLocation] = useState<Location>({
+    latitude: 0,
+    longitude: 0,
+  });
+  const TOKEN = useGetUserToken();
+  const queryClient = useQueryClient();
 
-  // 공유글 데이터 불러오는 query
+  // 현재 위치를 받는 API 함수
+  const locationAPI = () => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/common/address/reverse-geo/${location.latitude}/${location.longitude}`,
+    });
+  };
+
+  // 현재 위치 받는 query
+  const { data: address } = useQuery(["get-current-location"], locationAPI, {
+    select: (data) => {
+      if (data.data.message) {
+        const { region_2depth_name, region_3depth_name } = data.data.message;
+        return [region_2depth_name, region_3depth_name];
+      }
+    },
+    onSuccess: (data) => {
+      if (data?.length) {
+        // infinityquery 함수
+        const getListFnc = ({ pageParam = 1 }) => {
+          return axios({
+            method: "get",
+            url: `${API_URL}`,
+            params: {
+              page: pageParam,
+              size: 8,
+              orderStandard: sortNum,
+              sigungu: data[0],
+              dong: data[1],
+            },
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+            },
+          });
+        };
+
+        queryClient.prefetchInfiniteQuery(["get-object-list"], getListFnc);
+      }
+    },
+  });
+
+  // infinityquery 함수
+  const getListFnc = ({ pageParam = 1 }) => {
+    return axios({
+      method: "get",
+      url: `${API_URL}`,
+      params: {
+        page: pageParam,
+        size: 8,
+        orderStandard: sortNum,
+        sigungu: address?.length ? address[0] : "",
+        dong: address?.length ? address[1] : "",
+      },
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
+
+  // 공유글 데이터 불러오는 infinity query
   const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
     ["get-object-list"],
     getListFnc,
@@ -55,22 +146,83 @@ function UserHomeList() {
           return allPage.length + 1;
         }
       },
-      useErrorBoundary: true,
-      suspense: true,
-      retry: 0,
       select: (data) => {
-        const newData = pipe(
-          L.map((arr: any) => arr.data),
-          L.flatten,
-          takeAll
-        );
+        const newData = pipe(L.map, L.flatten, takeAll);
+
         return {
-          pages: newData(data.pages),
+          pages: newData((arr: any) => arr.data.message.content, data.pages),
           pageParams: data.pageParams,
         };
       },
+      enabled: !!address?.length,
     }
   );
+
+  useEffect(() => {
+    if (location.latitude && location.longitude && address) {
+      // infinityquery 함수
+      const getListFnc = ({ pageParam = 1 }) => {
+        return axios({
+          method: "get",
+          url: `${API_URL}`,
+          params: {
+            page: pageParam,
+            size: 8,
+            orderStandard: sortNum,
+            sigungu: address[0],
+            dong: address[1],
+          },
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+      };
+
+      queryClient.prefetchInfiniteQuery(["get-object-list"], getListFnc);
+    }
+  }, [sortNum]);
+
+  // 현재 좌표를 받음
+  useLayoutEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (props) => {
+          const API = () => {
+            return axios({
+              method: "get",
+              url: `http://www.share42-together.com:8088/api/common/address/reverse-geo/${props.coords.latitude}/${props.coords.longitude}`,
+            });
+          };
+
+          queryClient.prefetchQuery(["get-current-location"], API);
+          setLocation((location) => {
+            return {
+              latitude: props.coords.latitude,
+              longitude: props.coords.longitude,
+            };
+          });
+        },
+        null,
+        {
+          enableHighAccuracy: false,
+          maximumAge: 0,
+          timeout: Infinity,
+        }
+      );
+    }
+  }, []);
+
+  return cloneElement(children, { fetchNextPage, data, hasNextPage });
+}
+
+// 컨텐츠를 보여주는 컴포넌트
+function UserHomeList(props: Partial<Props>) {
+  const [isLike, setIslike] = useState<boolean>(false);
+  const divRef = useRef<HTMLDivElement | any>({});
+  const { setBranchChoice } = useBranchChoiceStore();
+  const ImgUrl = process.env.REACT_APP_IMAGE_URL;
+
+  const { fetchNextPage, data, hasNextPage } = props;
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -103,7 +255,48 @@ function UserHomeList() {
 
   return (
     <>
-      {data?.pages.map((data, index) => {
+      {data?.pages.map((data: Data, index: number) => {
+        const { category, content, hits, img, likeCount, sharePrice, uptDt } =
+          data;
+        const date = new Date();
+        let time = "";
+
+        const YEAR = date.getFullYear();
+        const MONTH = date.getMonth() + 1;
+        const DAY = date.getDate();
+        const HOUR = date.getHours();
+        const MINUTES = date.getMinutes();
+
+        const [uptYear, uptTime] = uptDt.split(".")[0].split("T");
+
+        const UPTYEAR = +uptYear.split("-")[0];
+        const UPTMONTH = +uptYear.split("-")[1];
+        const UPTDAY = +uptYear.split("-")[2];
+        const UPTHOUR = +uptTime.split(":")[0];
+        const UPTMINUTES = +uptTime.split(":")[1];
+
+        if (UPTYEAR < YEAR) {
+          time = `${YEAR - UPTYEAR}년전 `;
+        } else {
+          if (UPTMONTH < MONTH) {
+            time = `${MONTH - UPTMONTH}달전`;
+          } else {
+            if (UPTDAY < DAY) {
+              time = `${DAY - UPTDAY}일전`;
+            } else {
+              if (UPTHOUR < HOUR) {
+                time = `${HOUR - UPTHOUR}시간전`;
+              } else {
+                if (UPTMINUTES < MINUTES) {
+                  time = `${MINUTES - UPTMINUTES}분전`;
+                } else {
+                  time = `방금전`;
+                }
+              }
+            }
+          }
+        }
+
         return (
           <div
             className="item"
@@ -119,27 +312,31 @@ function UserHomeList() {
             ) : (
               <div className="img-icon">
                 <AiOutlineHeart
-                  style={{ fill: "white" }}
+                  className="blankHeart"
+                  style={{ fill: "black" }}
                   size="30"
                   onClick={like}
                 />
               </div>
             )}
-            <img src={testObject} alt="test" className="img" />
+            <img src={`${ImgUrl}${img}`} alt="test" className="img" />
 
-            <p>5,000,000원</p>
-            <p>드라이버 공유합니다.</p>
-            <p>서울 · 2분전</p>
+            <p>{`${sharePrice.toLocaleString()}원`}</p>
+            <p>{`${
+              content.length >= 10 ? `${content.slice(0, 10)}...` : content
+            }`}</p>
+            {/* <p>서울 · 2분전</p> */}
+            <p>{`${category} · ${time}`}</p>
 
             <div className="icon">
               <span className="eye">
                 <AiOutlineEye />
-                <span>12</span>
+                <span>{hits}</span>
               </span>
 
               <div className="heart">
                 <AiOutlineHeart />
-                <span>12</span>
+                <span>{likeCount ?? 0}</span>
               </div>
             </div>
           </div>
@@ -149,41 +346,32 @@ function UserHomeList() {
   );
 }
 
-// 에러 메세지 컴포넌트
-const ErrorMsg = () => {
-  const { reset } = useQueryErrorResetBoundary();
-
-  const queryClient = useQueryClient();
-  const refetch = () => {
-    return queryClient.refetchQueries(["get-object-list"]);
-  };
-
-  const reTry = () => {
-    reset();
-    refetch();
-  };
-
-  return (
-    <div css={userHomeStyle.errorMsgStyle}>
-      <p>잠시 후 다시 시도해주세요</p>
-      <p>요청을 처리하는데</p>
-      <p>실패했습니다.</p>
-      <button onClick={reTry}>다시시도</button>
-    </div>
-  );
-};
-
 // 상위 컴포넌트
-const 임시 = ["1", "2", "3"];
+const category = ["최신순", "가격순", "조회수"];
 
 function UserHome() {
   const [value, setValue] = useState<string>("");
+  const [sortNum, setSortNum] = useState<number>(0);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (value === "최신순") {
+      setSortNum(0);
+    } else if (value === "가격순") {
+      setSortNum(1);
+    } else if (value === "조회수") {
+      setSortNum(2);
+    }
+  }, [value]);
+
+  console.log(sortNum);
+
   return (
     <>
       <div css={userHomeStyle.content(value)} id="scrollArea">
         {/* 드롭다운 */}
         <div className="sort-bar">
-          <DropDown data={임시} setValue={setValue} content={"최신순"} />
+          <DropDown data={category} setValue={setValue} content={"최신순"} />
         </div>
         {/* 스피드 다이얼 */}
         <div className="speed-dial">
@@ -191,9 +379,11 @@ function UserHome() {
         </div>
         {/* 컨텐츠 */}
         <div className="container">
-          <ErrorBoundary fallback={ErrorMsg}>
+          <ErrorBoundary fallback={ErrorMessage}>
             <Suspense fallback={<Loading />}>
-              <UserHomeList />
+              <MemoUserHomeFetcher sortNum={sortNum}>
+                <MemoUserHomeList />
+              </MemoUserHomeFetcher>
             </Suspense>
           </ErrorBoundary>
         </div>
@@ -202,5 +392,8 @@ function UserHome() {
     </>
   );
 }
+
+const MemoUserHomeList = memo(UserHomeList);
+const MemoUserHomeFetcher = memo(UserHomeFetcher);
 
 export default UserHome;

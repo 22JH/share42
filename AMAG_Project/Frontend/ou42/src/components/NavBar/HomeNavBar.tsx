@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { SlBell } from "react-icons/sl";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { SlBell } from "react-icons/sl";
+
+import homeStore from "../../store/homeStore";
+import { useRef } from "react";
 
 const homeNavStyle = css`
   width: 100vw;
@@ -82,8 +85,16 @@ const homeNavStyle = css`
   }
 `;
 export default function HomeNavBar() {
+  const { setSearch, search } = homeStore();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  console.log(search);
   const searchItem = () => {
     console.log("검색");
+    (inputRef?.current as any).value = "";
+  };
+  const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
   };
   return (
     <>
@@ -129,6 +140,9 @@ export default function HomeNavBar() {
               type="text"
               placeholder="관심있는 상품을 검색해보세요"
               autoComplete="false"
+              onChange={searchInput}
+              onKeyUp={searchItem}
+              ref={inputRef}
             />
             <BsSearch
               size={20}

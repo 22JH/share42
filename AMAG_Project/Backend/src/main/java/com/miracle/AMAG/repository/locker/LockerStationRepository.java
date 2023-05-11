@@ -58,7 +58,8 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
                 ON R.LOCKER_ID = L.ID
                 WHERE L.LOCKER_STATION_ID = :lockerStationId) AS LJ
             ON S.ID = LJ.RETURN_SHARE_ARTICLE_ID) AS SLJ
-            ON A.ID = SLJ.USE_ACCOUNT;
+            ON A.ID = SLJ.USE_ACCOUNT
+            ORDER BY useDt DESC, shareRegDt DESC
             """, countQuery = """
             SELECT COUNT(*)\s
             FROM ACCOUNT AS a

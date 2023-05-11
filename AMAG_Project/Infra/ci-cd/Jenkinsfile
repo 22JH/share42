@@ -22,6 +22,7 @@ pipeline {
         REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
         REACT_CONTAINER_NAME = 'react-server'
 
+        NGINX_PICTURE_PATH = '/usr/share/nginx/images'
     }
 
     stages {
@@ -110,7 +111,7 @@ pipeline {
                     docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
-                    dockerImage.run("-p 80:80 --name ${env.REACT_CONTAINER_NAME} --hostname ${REACT_CONTAINER_NAME}")
+                    dockerImage.run("-p 80:80 -v ${env.SPRING_PICTURE_PATH}:${env.NGINX_PICTURE_PATH} --name ${env.REACT_CONTAINER_NAME} --hostname ${REACT_CONTAINER_NAME}")
                 }
             }
         }

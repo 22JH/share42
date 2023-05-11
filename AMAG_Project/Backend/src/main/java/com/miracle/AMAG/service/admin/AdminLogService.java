@@ -71,7 +71,7 @@ public class AdminLogService {
         if (!account.getRole().value().equals("ROLE_ADMIN")){
             throw new RuntimeException("권한이 없습니다");
         }
-        
+
         List<LogListMapping> result = shareArticleRepository.getSidoLogList();
         return result;
     }

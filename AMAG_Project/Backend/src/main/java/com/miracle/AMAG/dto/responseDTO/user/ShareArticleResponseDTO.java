@@ -26,7 +26,7 @@ public class ShareArticleResponseDTO {
     private String content;
 
     @Schema(title = "글 대여 가격", description = "공유 물품 글의 대여 가격입니다.")
-    private int price;
+    private int sharePrice;
 
     @Schema(title = "글 등록 이미지", description = "공유 물품 글의 등록 이미지입니다.")
     private String img;

@@ -218,7 +218,7 @@ public class UserShareArticleService {
             dto.setCategory((String) objects[1]);
             dto.setName((String) objects[2]);
             dto.setContent((String) objects[3]);
-            dto.setPrice((int) objects[4]);
+            dto.setSharePrice((int) objects[4]);
             dto.setImg((String) objects[5]);
             dto.setUptDt((Timestamp) objects[6]);
             dto.setShareStatus((byte) objects[7]);

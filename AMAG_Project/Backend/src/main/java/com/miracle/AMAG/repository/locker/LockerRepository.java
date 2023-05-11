@@ -37,4 +37,8 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
 
     Page<LockerListMapping> findByLockerStation_Id(@Param("lockerStationId") int lockerStationId, Pageable pageable);
 
+    @Modifying
+    @Query("update Locker l set l.error = :error where l.id = :id")
+    void updateError(@Param("error") boolean error, @Param("id") int id);
+
 }

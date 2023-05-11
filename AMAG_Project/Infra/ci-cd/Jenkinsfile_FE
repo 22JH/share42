@@ -56,7 +56,7 @@ pipeline {
                 dir(path: "${env.REACT_ROOT_PATH}") {
                     script {
                         docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
-                            def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
+                            def dockerImage = docker.build("--no-cache -t ${env.REACT_IMAGE_NAME} .")
                         }
                     }
                 }

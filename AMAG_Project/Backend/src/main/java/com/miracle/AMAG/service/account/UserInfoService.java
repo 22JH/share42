@@ -100,25 +100,6 @@ public class UserInfoService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String deleteAccountNumber(){
-        String userId = SecurityUtil.getCurrentUserId();
-        if(userId.equals("anonymousUser")){
-            throw new NullPointerException("로그인된 아이디가 없습니다.");
-        }
-        //로그인된 아이디로 테이블 id column 가져오기
-        Account account = accountRepository.findByUserId(userId);
-        PaymentMethod data = paymentMethodRepository.findByAccount_Id(account.getId());
-
-        if(data == null || data.getNumber() == null){
-            throw new RuntimeException();
-        }
-        else{
-            paymentMethodRepository.deleteNumber(data.getId());
-        }
-
-        return BoardUtils.BOARD_CRUD_SUCCESS;
-    }
-
     public String getPayMethodDataCheck(int type){
         String userId = SecurityUtil.getCurrentUserId();
         if(userId.equals("anonymousUser")){

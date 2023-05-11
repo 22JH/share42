@@ -58,18 +58,6 @@ public class UserInfoController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userInfoService.insertPayMethod(paymentMethodRequestDTO));
     }
 
-    @DeleteMapping("/pay-method/account-number")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "사용자 계좌 번호 삭제 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
-            @ApiResponse(responseCode = "500", description = "사용자 계좌 번호 삭제 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
-    @Operation(summary = "사용자 계좌 번호 삭제", description = "사용자 계좌 번호를 삭제합니다.")
-    public ResponseEntity<?> DeleteAccountNumber() {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userInfoService.deleteAccountNumber());
-    }
-
     @GetMapping("/pay-method/check/{type}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 계좌 관련 정보 체크 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),

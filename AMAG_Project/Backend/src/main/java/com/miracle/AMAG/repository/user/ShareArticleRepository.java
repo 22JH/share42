@@ -1,7 +1,7 @@
 package com.miracle.AMAG.repository.user;
 
 import com.miracle.AMAG.entity.user.ShareArticle;
-import com.miracle.AMAG.mapping.admin.LogListMapping;
+import com.miracle.AMAG.mapping.admin.SidoUsageListMapping;
 import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
     GROUP BY S.ID) AS SA
     GROUP BY SA.S_SIDO
     """,nativeQuery = true)
-    List<LogListMapping> getSidoLogList();
+    List<SidoUsageListMapping> getSidoLogList();
 
 	@Query(value = """
             SELECT likeArticleData.ID as 'id', likeArticleData.NAME as 'name', likeArticleData.SHARE_PRICE as 'sharePrice', likeArticleData.IMG as 'img', likeArticleData.UPT_DT as 'uptDt', likeArticleData.SHARE_STATUS as 'shareStatus', likeArticleData.HITS as 'hits', likeArticleData.likeCount as 'likeCount', ac.USER_ID as 'userId', ac.NICKNAME as 'nickname'

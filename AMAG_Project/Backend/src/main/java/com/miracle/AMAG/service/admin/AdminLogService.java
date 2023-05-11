@@ -3,7 +3,8 @@ package com.miracle.AMAG.service.admin;
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.responseDTO.admin.AdminLogListDTO;
 import com.miracle.AMAG.entity.account.Account;
-import com.miracle.AMAG.mapping.admin.LogListMapping;
+import com.miracle.AMAG.mapping.admin.SidoUsageListMapping;
+import com.miracle.AMAG.mapping.admin.StationUsageListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerStationRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
@@ -62,7 +63,7 @@ public class AdminLogService {
         });
     }
 
-    public List<LogListMapping> getUsageList(){
+    public List<SidoUsageListMapping> getSidoUsageList(){
         String loginId = SecurityUtil.getCurrentUserId();
         Account account = accountRepository.findByUserId(loginId);
         if(account == null){
@@ -72,7 +73,21 @@ public class AdminLogService {
             throw new RuntimeException("권한이 없습니다");
         }
 
-        List<LogListMapping> result = shareArticleRepository.getSidoLogList();
+        List<SidoUsageListMapping> result = shareArticleRepository.getSidoLogList();
+        return result;
+    }
+
+    public List<StationUsageListMapping> getStationUsageList(String sido){
+//        String loginId = SecurityUtil.getCurrentUserId();
+//        Account account = accountRepository.findByUserId(loginId);
+//        if(account == null){
+//            throw new NullPointerException("로그인 정보가 없습니다");
+//        }
+//        if (!account.getRole().value().equals("ROLE_ADMIN")){
+//            throw new RuntimeException("권한이 없습니다");
+//        }
+
+        List<StationUsageListMapping> result = lockerStationRepository.getStationUsageList(sido);
         return result;
     }
 }

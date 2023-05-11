@@ -1,6 +1,7 @@
 package com.miracle.AMAG.repository.locker;
 
 import com.miracle.AMAG.entity.locker.LockerStation;
+import com.miracle.AMAG.mapping.admin.StationUsageListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationGetListMapping;
 import com.miracle.AMAG.mapping.locker.ReportLockerStationGetListMapping;
@@ -92,4 +93,30 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
     Page<Object[]> geLogList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable);
 
     Page<ReportLockerStationGetListMapping> findAllBy(Pageable pageable);
+
+    @Query(value = """
+    SELECT COUNT(*) AS 'count', KL.SIDO AS 'sido', KL.LOCKER_STATION AS 'lockerStation'
+    FROM(
+    SELECT LS.SIDO AS SIDO, L.LOCKER_STATION_ID AS LOCKER_STATION
+    FROM(
+    SELECT K.ID, K.LOCKER_ID AS LOCKER_ID, K.SHARE_ARTICLE_ID
+    FROM KEEP AS K
+    UNION ALL
+    SELECT B.ID, B.LOCKER_ID, B.SHARE_ARTICLE_ID
+    FROM BORROW AS B
+    UNION ALL
+    SELECT C.ID, C.LOCKER_ID, C.SHARE_ARTICLE_ID
+    FROM COLLECT AS C
+    UNION ALL
+    SELECT S.ID, S.LOCKER_ID, S.SHARE_ARTICLE_ID
+    FROM SHARE_RETURN AS S) AS UA
+    LEFT JOIN LOCKER AS L
+    ON UA.LOCKER_ID = L.ID
+    LEFT JOIN LOCKER_STATION AS LS
+    ON L.LOCKER_STATION_ID = LS.ID
+    ) AS KL
+    WHERE KL.SIDO = :sido
+    GROUP BY LOCKER_STATION
+    """, nativeQuery = true)
+    List<StationUsageListMapping> getStationUsageList(@Param("sido") String sido);
 }

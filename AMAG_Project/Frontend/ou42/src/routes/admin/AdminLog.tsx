@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 
 import {
   cloneElement,
@@ -9,7 +10,7 @@ import {
 } from "react";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 import AdminLogContents from "../../components/admin/log/AdminLogContents";
 import AdminSelectBox from "../../components/admin/AdminSelectBox";
@@ -19,7 +20,12 @@ import ErrorBoundary from "../../components/ErrorBoundary";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import AdminNav from "./../../components/admin/AdminNav";
 import Loading from "./../../components/Loading";
-import { L, pipe, takeAll } from "../../custom/FxJS";
+import { go, L, pipe, takeAll } from "../../custom/FxJS";
+
+const container = css`
+  width: 100vw;
+  height: 90vh;
+`;
 
 export interface Area {
   region: string;
@@ -99,7 +105,7 @@ function AdminLogListFetcher({
   const listAPI = ({ pageParam = 1 }) => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/lockers/log/${areaInfo.point}/${pageParam}/${SIZE}`,
+      url: `http://www.share42-together.com:8088/api/admin/log/${areaInfo.point}/${pageParam}/${SIZE}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -113,11 +119,11 @@ function AdminLogListFetcher({
   } = useInfiniteQuery(["admin-list"], listAPI, {
     enabled: !!areaInfo.point,
     select: (data) => {
-      const newPages = pipe(L.map, L.flatten, takeAll);
+      const newData = pipe(L.map, L.flatten, takeAll);
       const mapFnc = (d: any) => d.data.message.content;
 
       return {
-        pages: newPages(mapFnc, data.pages),
+        pages: newData(mapFnc, data.pages),
         pageParams: data.pageParams,
       };
     },
@@ -126,6 +132,7 @@ function AdminLogListFetcher({
         return allPage.length + 1;
       }
     },
+    refetchOnMount: true,
   });
 
   return cloneElement(children, {
@@ -143,7 +150,7 @@ function AdminLog() {
   });
 
   return (
-    <>
+    <div css={container}>
       {/* 네브바 */}
       <AdminNav />
 
@@ -163,7 +170,7 @@ function AdminLog() {
 
       {/* 하단 네브바 */}
       <BottomMenuBar />
-    </>
+    </div>
   );
 }
 

@@ -1,27 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
-import { cloneElement, memo, Suspense, useEffect, useRef } from "react";
 import {
   useInfiniteQuery,
   InfiniteQueryObserverResult,
   FetchNextPageOptions,
   useQueryClient,
 } from "react-query";
+import { cloneElement, memo, Suspense, useEffect, useRef } from "react";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import axios, { AxiosError } from "axios";
 
+import { useGetUserToken } from "../../../hooks/useGetToken";
 import testObject from "../../../assets/testObject.jpg";
 import AdminModalContent from "../AdminModalContent";
 import adminStore from "../../../store/adminStore";
 import pinkBox from "../../../assets/pinkBox.png";
+import { ErrorMessage } from "../../ErrorMessage";
 import ErrorBoundary from "../../ErrorBoundary";
 import * as FxJS from "../../../custom/FxJS";
 import Loading from "../../Loading";
-import { ErrorMessage } from "../../ErrorMessage";
-import { useGetUserToken } from "../../../hooks/useGetToken";
 
-export const contentStyle = css`
+export const contentStyle = (length: number | undefined) => css`
   width: 100%;
   border-bottom: 1px solid #dddddd;
   height: 15vh;
@@ -59,6 +59,10 @@ export const contentStyle = css`
       margin: 5% 0 0 0;
       color: #bababa;
     }
+  }
+
+  &:nth-of-type(${length}) {
+    padding-bottom: 20%;
   }
 `;
 
@@ -189,7 +193,11 @@ function AdminReportFatcher(props: {
 function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
   const { pages } = data;
   const divRef = useRef<HTMLDivElement | any>({});
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef = useRef<HTMLDialogElement | any>({});
+
+  const ImgUrl = process.env.REACT_APP_IMAGE_URL;
+
+  const LENGTH = pages.length;
 
   const intersetion = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
@@ -222,6 +230,7 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
             regDt,
             content,
             title,
+            img,
           } = page;
 
           const date = regDt.split("T")[0];
@@ -232,15 +241,15 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
             >
               {/* 목록 LIST */}
               <div
-                css={contentStyle}
+                css={contentStyle(LENGTH)}
                 ref={(ref) => {
                   return (divRef.current[index] = ref);
                 }}
                 onClick={() => {
-                  dialogRef?.current?.showModal();
+                  dialogRef?.current[index].showModal();
                 }}
               >
-                <img src={testObject} alt="test" className="img" />
+                <img src={`${ImgUrl}${img}`} alt="test" className="img" />
                 <div className="text">
                   <p>{title}</p>
                   <p>{content}</p>
@@ -250,15 +259,22 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
               </div>
 
               {/* modal */}
-              <dialog ref={dialogRef} css={dialog}>
-                <AdminModalContent dialogRef={dialogRef} data={page} />
+              <dialog
+                ref={(ref) => (dialogRef.current[index] = ref)}
+                css={dialog}
+              >
+                <AdminModalContent
+                  dialogRef={dialogRef}
+                  data={page}
+                  index={index}
+                />
               </dialog>
             </div>
           );
         })
       ) : (
         <div css={emptyBox}>
-          <p>리스트가 없어요</p>
+          <p>빈 리스트 입니다</p>
           <img src={pinkBox} alt="빈 리스트" />
         </div>
       )}

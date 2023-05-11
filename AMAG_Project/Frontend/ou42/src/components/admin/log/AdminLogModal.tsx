@@ -3,11 +3,11 @@ import { css } from "@emotion/react";
 
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
-import { Page } from "./report/AdminReportContent";
+import { Data } from "./AdminLogContents";
 
 const container = css`
   width: 70vw;
-  height: 53vh;
+  height: 55vh;
   overflow: auto;
 
   &::-webkit-scrollbar {
@@ -36,11 +36,10 @@ const container = css`
 
   .title {
     p:nth-of-type(1) {
-      font-size: 1.1rem;
-      margin-bottom: 0;
+      font-size: 1.2rem;
+      margin-bottom: 1%;
       font-weight: 900;
       margin-top: 5%;
-      color: #d81b60;
     }
     p:nth-of-type(2) {
       margin-top: 1%;
@@ -50,6 +49,13 @@ const container = css`
       color: #555555;
     }
     p:nth-of-type(3) {
+      margin-top: 1%;
+      font-size: 0.7rem;
+      margin-bottom: 2%;
+      margin-left: 1%;
+      color: #a8a8a8;
+    }
+    p:nth-of-type(4) {
       margin-top: 1%;
       font-size: 0.7rem;
       margin-bottom: 5%;
@@ -67,7 +73,8 @@ const container = css`
       margin-top: 5%;
       margin-bottom: 2%;
       font-size: 0.7rem;
-      color: #a8a8a8;
+      font-weight: 600;
+      color: #b2b1b1;
       margin-left: 1%;
     }
     p:nth-of-type(2) {
@@ -79,28 +86,58 @@ const container = css`
   }
 `;
 
-function AdminModalContent({
+function AdminLogModal({
   dialogRef,
   data,
   index,
 }: {
   dialogRef: React.RefObject<HTMLDialogElement>;
-  data: Page;
+  data: Data;
   index: number;
 }) {
   const {
-    accountNickname: nickName,
+    category,
     content,
-    lockerLockerStationDong: dong,
-    lockerLockerStationSido: sido,
-    lockerLockerStationSigungu: sigugun,
-    regDt: date,
     img,
-    title,
+    lockerId,
+    name,
+    shareRegDt,
+    shareStatus,
+    shareUser,
+    useDt,
+    useUser,
+    useUserId,
+    useUserNickname: nickName,
   } = data;
+  let color;
+
+  const [regDate, regTime] = shareRegDt.split(".")[0].split("T");
+  const [useDate, useTime] = useDt.split(".")[0].split("T");
   const ImgUrl = process.env.REACT_APP_IMAGE_URL;
 
-  const [DATE, time] = date.split("T");
+  switch (shareStatus) {
+    case 0:
+      color = "#00ff44";
+      break;
+    case 1:
+      color = "#00f7ff";
+      break;
+    case 2:
+      color = "#c9c9c9";
+      break;
+    case 3:
+      color = "#ff2f00";
+      break;
+    case 4:
+      color = "#0073ff";
+      break;
+    case 5:
+      color = "#c9c9c9";
+      break;
+    default:
+      color = "#c9c9c9";
+      break;
+  }
 
   return (
     <div css={container}>
@@ -108,7 +145,9 @@ function AdminModalContent({
       <div className="icon">
         <IoIosCloseCircleOutline
           size={27}
-          onClick={() => (dialogRef.current as any)[index].close()}
+          onClick={() => {
+            (dialogRef.current as any)[index].close();
+          }}
         />
       </div>
 
@@ -120,13 +159,29 @@ function AdminModalContent({
       {/* 내용 */}
       <div className="box">
         <div className="title">
-          <p>{title}</p>
-          <p>{nickName}</p>
-          <p>{`${DATE} · ${time}`}</p>
+          <p>
+            {`${lockerId}번 · `}
+            <span style={{ color: `${color}` }}>
+              {shareStatus === 0
+                ? "수납대기"
+                : shareStatus === 1
+                ? "공유대기"
+                : shareStatus === 2
+                ? "공유중"
+                : shareStatus === 3
+                ? "반납대기"
+                : shareStatus === 4
+                ? "회수대기"
+                : "회수"}
+            </span>
+          </p>
+          <p>{`사용자 : ${nickName}`}</p>
+          <p>{`등록일 : ${regDate.replaceAll("-", ".")} · ${regTime}`}</p>
+          <p>{`최근 사용 : ${useDate.replaceAll("-", ".")} · ${useTime}`}</p>
         </div>
         <hr />
         <div className="content">
-          <p>{`${sigugun} ${sido} ${dong} `}</p>
+          <p>{`${name} · ${category}`}</p>
           <p>{content}</p>
         </div>
       </div>
@@ -134,4 +189,4 @@ function AdminModalContent({
   );
 }
 
-export default AdminModalContent;
+export default AdminLogModal;

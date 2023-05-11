@@ -68,4 +68,7 @@ public interface ArticleLikeRepository extends JpaRepository<ArticleLike,Integer
             	sadata.ID = likedata.SHARE_ARTICLE_ID;
             """, nativeQuery = true)
     Page<Object[]> getMypageLike(@Param("account") int account, @Param("status") boolean status, Pageable pageable);
+
+    ArticleLike findByAccountAndShareArticle_IdAndStatus(@Param("account") Account account, @Param("shareArticleId") int shareArticleId,
+                                             @Param("status") boolean status);
 }

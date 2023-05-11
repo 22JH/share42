@@ -128,6 +128,11 @@ public class UserShareArticleService {
 
 
     public Map<String, Object> getShareArticle(int shareArticleId) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        //로그인된 아이디로 테이블 id column 가져오기
+        Account account = accountRepository.findByUserId(loginId);
 
         shareArticleRepository.updateHitUP(shareArticleId);
 
@@ -135,12 +140,19 @@ public class UserShareArticleService {
         long likeCount = articleLikeRepository.countByShareArticle_Id(shareArticleId);
         List<ShareReturnGetImgMapping> srgim = shareReturnRepository.findAllByShareArticle_IdAndReturnType(shareArticleId, ShareReturnUtils.RETURN);
         KeepGetImgMapping kgim = keepRepository.findByShareArticle_Id(shareArticleId);
+        ArticleLike like = articleLikeRepository.findByAccountAndShareArticle_IdAndStatus(account, shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
 
         Map<String, Object> result = new HashMap<>();
         result.put("article", sagm);
         result.put("likeCount", likeCount);
         result.put("keepImg", kgim);
         result.put("returnImg", srgim);
+        if(like!=null){
+            result.put("likeCheck", true);
+        }
+        else{
+            result.put("likeCheck", false);
+        }
 
         return result;
     }

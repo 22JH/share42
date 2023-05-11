@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 public interface CommunityDetailDataMapping {
 
+    String getAccountUserId();
+
     String getAccountNickname();
 
     String getAccountSigungu();

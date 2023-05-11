@@ -48,4 +48,7 @@ public class ShareArticleResponseDTO {
 
     @Schema(title = "글 작성자 닉네임", description = "공유 물품 글을 작성한 사용자의 닉네임입니다.")
     private String nickname;
+
+    @Schema(title = "사용자 해당 글 찜 여부", description = "사용자가 해당 글을 찜한 여부입니다.")
+    private Integer likeCheck;
 }

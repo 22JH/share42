@@ -82,74 +82,82 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
 
 
     @Query(value = """
-    SELECT saAlData.ID as 'id', saAlData.CATEGORY as 'category', saAlData.NAME as 'name', saAlData.CONTENT as 'content', saAlData.SHARE_PRICE as 'sharePrice', saAlData.IMG as 'img', saAlData.UPT_DT as 'uptDt', saAlData.SHARE_STATUS as 'shareStatus', saAlData.HITS as 'hits', saAlData.likeCount as 'likeCount', aData.USER_ID as 'userId', aData.NICKNAME as 'nickname'
-    FROM
-        (SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
-        FROM
-            (SELECT *
-            FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
-            WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
-            And\s
-            CASE
-                WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
-                ELSE sa.CATEGORY = :category
-            END
-            And
-            CASE\s
-                WHEN :query IS NULL THEN sa.CONTENT IS NOT NULL AND sa.NAME IS NOT NULL
-                ELSE (sa.NAME LIKE CONCAT('%', :query, '%') OR sa.CONTENT LIKE CONCAT('%', :query, '%'))
-            END) as saData
-        LEFT JOIN
-            (SELECT al.SHARE_ARTICLE_ID, COUNT(*) as likeCount\s
-            FROM SHARE42_TOGETHER.ARTICLE_LIKE al
-            WHERE al.STATUS = :status
-            GROUP BY al.SHARE_ARTICLE_ID
-            ) as alData
-        ON saData.ID = alData.SHARE_ARTICLE_ID) as saAlData
-    LEFT JOIN\s
-        (SELECT a.ID, a.USER_ID, a.NICKNAME
-        FROM SHARE42_TOGETHER.ACCOUNT a
-        WHERE a.ID = :accountId) as aData
-    ON saAlData.ACCOUNT_ID = aData.ID
-    ORDER BY
-    CASE
-        WHEN :orderStandard = 0 THEN saAlData.UPT_DT
-        WHEN :orderStandard = 1 THEN saAlData.SHARE_PRICE
-        WHEN :orderStandard = 2 THEN saAlData.HITS
-        ELSE saAlData.UPT_DT
-    END
-    DESC;
-    """, countQuery = """
-    SELECT COUNT(*)
-    FROM
-        (SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
-        FROM
-            (SELECT *
-            FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
-            WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
-            And\s
-            CASE
-                WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
-                ELSE sa.CATEGORY = :category
-            END
-            And
-            CASE\s
-                WHEN :query IS NULL THEN sa.CONTENT IS NOT NULL AND sa.NAME IS NOT NULL
-                ELSE (sa.NAME LIKE CONCAT('%', :query, '%') OR sa.CONTENT LIKE CONCAT('%', :query, '%'))
-            END) as saData
-        LEFT JOIN
-            (SELECT al.SHARE_ARTICLE_ID, COUNT(*) as likeCount\s
-            FROM SHARE42_TOGETHER.ARTICLE_LIKE al
-            WHERE al.STATUS = :status
-            GROUP BY al.SHARE_ARTICLE_ID
-            ) as alData
-        ON saData.ID = alData.SHARE_ARTICLE_ID) as saAlData
-    LEFT JOIN\s
-        (SELECT a.ID, a.USER_ID, a.NICKNAME
-        FROM SHARE42_TOGETHER.ACCOUNT a
-        WHERE a.ID = :accountId) as aData
-    ON saAlData.ACCOUNT_ID = aData.ID;
-    """, nativeQuery = true)
+                       SELECT resultData.id as 'id', resultData.category as 'category', resultData.name as 'name', resultData.content as 'content', resultData.sharePrice as 'sharePrice', resultData.img as 'img', resultData.uptDt as 'uptDt', resultData.shareStatus as 'shareStatus', resultData.hits as 'hits', resultData.likeCount as 'likeCount', resultData.userId as 'userId', resultData.nickname as 'nickname', likeCheck.likeCheck as 'likeCheck'\s
+                             FROM
+                             	(SELECT saAlData.ID as 'id', saAlData.CATEGORY as 'category', saAlData.NAME as 'name', saAlData.CONTENT as 'content', saAlData.SHARE_PRICE as 'sharePrice', saAlData.IMG as 'img', saAlData.UPT_DT as 'uptDt', saAlData.SHARE_STATUS as 'shareStatus', saAlData.HITS as 'hits', saAlData.likeCount as 'likeCount', aData.USER_ID as 'userId', aData.NICKNAME as 'nickname'
+                             	FROM
+                                     (SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
+                                     FROM
+                                         (SELECT *
+                                         FROM SHARE42_TOGETHER.SHARE_ARTICLE sa
+                                         WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
+                                         And
+                                         CASE
+                                             WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
+                                             ELSE sa.CATEGORY = :category
+                                         END
+                                         And
+                                         CASE
+                                             WHEN :query IS NULL THEN sa.CONTENT IS NOT NULL AND sa.NAME IS NOT NULL
+                                             ELSE (sa.NAME LIKE CONCAT('%', :query, '%') OR sa.CONTENT LIKE CONCAT('%', :query, '%'))
+                                         END) as saData
+                                     LEFT JOIN
+                                         (SELECT al.SHARE_ARTICLE_ID, COUNT(*) as likeCount
+                                         FROM SHARE42_TOGETHER.ARTICLE_LIKE al
+                                         WHERE al.STATUS = :status
+                                         GROUP BY al.SHARE_ARTICLE_ID
+                                         ) as alData
+                                     ON saData.ID = alData.SHARE_ARTICLE_ID) as saAlData
+                                 LEFT JOIN
+                                     (SELECT a.ID, a.USER_ID, a.NICKNAME
+                                     FROM SHARE42_TOGETHER.ACCOUNT a
+                                     WHERE a.ID = :accountId) as aData
+                                 ON saAlData.ACCOUNT_ID = aData.ID ) as resultData
+                             LEFT JOIN
+                             	(SELECT al2.SHARE_ARTICLE_ID, IF(COUNT(*) < 1 OR COUNT(*) IS NULL, false, true) as likeCheck
+                             	FROM ARTICLE_LIKE al2
+                             	WHERE al2.ACCOUNT_ID = :accountId AND al2.STATUS = :status
+                             	GROUP BY al2.SHARE_ARTICLE_ID) as likeCheck
+                             ON resultData.id = likeCheck.SHARE_ARTICLE_ID
+                             ORDER BY
+                             CASE
+                             	WHEN :orderStandard = 0 THEN resultData.uptDt
+                                 WHEN :orderStandard = 1 THEN resultData.sharePrice
+                                 WHEN :orderStandard = 2 THEN resultData.hits
+                                 ELSE resultData.uptDt
+                             END
+                             DESC;
+            """, countQuery = """
+SELECT COUNT(*)
+FROM
+	(SELECT saData.ID, saData.ACCOUNT_ID ,saData.CATEGORY, saData.NAME, saData.CONTENT, saData.SHARE_PRICE, saData.IMG, saData.UPT_DT, saData.SHARE_STATUS, saData.HITS, alData.likeCount
+	FROM
+		(SELECT *
+		FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
+		WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
+		And\s
+		CASE
+			WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
+			ELSE sa.CATEGORY = :category
+		END
+		And
+		CASE\s
+			WHEN :query IS NULL THEN sa.CONTENT IS NOT NULL AND sa.NAME IS NOT NULL
+			ELSE (sa.NAME LIKE CONCAT('%', :query, '%') OR sa.CONTENT LIKE CONCAT('%', :query, '%'))
+		END) as saData
+	LEFT JOIN
+		(SELECT al.SHARE_ARTICLE_ID, COUNT(*) as likeCount\s
+		FROM SHARE42_TOGETHER.ARTICLE_LIKE al
+		WHERE al.STATUS = :status
+		GROUP BY al.SHARE_ARTICLE_ID
+		) as alData
+	ON saData.ID = alData.SHARE_ARTICLE_ID) as saAlData
+LEFT JOIN\s
+	(SELECT a.ID, a.USER_ID, a.NICKNAME
+	FROM SHARE42_TOGETHER.ACCOUNT a
+	WHERE a.ID = :accountId) as aData
+ON saAlData.ACCOUNT_ID = aData.ID;
+""", nativeQuery = true)
     Page<Object[]> getShareArticleList(@Param("accountId") int accountId, @Param("status") boolean status, @Param("sigungu") String sigungu,
                                        @Param("dong") String dong, @Param("category") String category, @Param("query") String query,
                                        @Param("orderStandard") int orderStandard, Pageable pageable);

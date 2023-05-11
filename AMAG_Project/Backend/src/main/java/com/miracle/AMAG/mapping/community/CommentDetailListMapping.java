@@ -6,6 +6,8 @@ public interface CommentDetailListMapping {
 
     int getId();
 
+    String getAccountUserId();
+
     String getAccountNickname();
 
     String getAccountImg();

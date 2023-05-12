@@ -138,15 +138,19 @@ public class UserShareArticleService {
 
         ShareArticleGetMapping sagm = shareArticleRepository.findByIdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
         long likeCount = articleLikeRepository.countByShareArticle_IdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
-        List<ShareReturnGetImgMapping> srgim = shareReturnRepository.findAllByShareArticle_IdAndReturnType(shareArticleId, ShareReturnUtils.RETURN);
-        KeepGetImgMapping kgim = keepRepository.findByShareArticle_Id(shareArticleId);
+        ShareReturnGetImgMapping srgimReturn = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN);
+        ShareReturnGetImgMapping srgimReturnApply = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN_APPLY);
+        KeepGetImgMapping kgim = keepRepository.findTopByShareArticle_IdOrderByRegDtDesc(shareArticleId);
         ArticleLike like = articleLikeRepository.findByAccountAndShareArticle_IdAndStatus(account, shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
+        List<ShareReturnGetImgMapping> returnImg = new ArrayList<>();
+        returnImg.add(srgimReturnApply);
+        returnImg.add(srgimReturn);
 
         Map<String, Object> result = new HashMap<>();
         result.put("article", sagm);
         result.put("likeCount", likeCount);
         result.put("keepImg", kgim);
-        result.put("returnImg", srgim);
+        result.put("returnImg", returnImg);
         if(like!=null){
             result.put("likeCheck", true);
         }
@@ -222,6 +226,7 @@ public class UserShareArticleService {
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
         Map<String, Object> resultData = new HashMap<>();
+
         Map<String, Double> scoreMap = CFRecommendation(loginId);
         List<String> keys = new ArrayList<>();
         for (String item : scoreMap.keySet()) {

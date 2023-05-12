@@ -113,14 +113,14 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
               marginTop: "-10px",
             }}
           >
-            {pathname.includes("admin") ||
-              (pathname.includes("user") && markerInfo && (
+            {(pathname.includes("admin/map") ||
+              pathname.includes("user/map")) && markerInfo && (
                 <MapButtonComponent
                   status={markerInfo.shareArticleShareStatus}
                   text={statusName}
                   articleId={markerInfo.shareArticleId}
                 />
-              ))}
+              )}
           </div>
         </div>
       </div>

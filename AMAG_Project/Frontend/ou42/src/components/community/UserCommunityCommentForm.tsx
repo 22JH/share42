@@ -22,7 +22,7 @@ const UserCommunityCommentForm = ({
   handleSubmit,
   handleCommentInput,
   id,
-  comment
+  comment,
 }: UserCommunityCommentFormProps) => {
   return (
     <>

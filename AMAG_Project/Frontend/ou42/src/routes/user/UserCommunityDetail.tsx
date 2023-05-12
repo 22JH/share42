@@ -87,6 +87,7 @@ const UserCommunityDetail = () => {
 
     if (response.data.status === 200) {
       setPostComment("");
+      setComment("");
       refetch();
     }
   };
@@ -110,7 +111,7 @@ const UserCommunityDetail = () => {
         handleSubmit={handleSubmit}
         handleCommentInput={handleCommentInput}
         id={id}
-        comment={postcomment}
+        comment={comment}
       />
     </>
   );

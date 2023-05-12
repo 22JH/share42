@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { UserShareDetailCarouselProps } from "./type/UserShareDetailType";
 
 const UserShareDetailCarousel = ({
@@ -5,12 +6,31 @@ const UserShareDetailCarousel = ({
   handleTouchStart,
   handleTouchMove,
   handleTouchEnd,
-  slides,
   slideWidth,
   handleDotClick,
   currentSlide,
-  data
+  data,
+  keepImg,
+  returnImg
 }: UserShareDetailCarouselProps) => {
+  const [carouselImg, setCarouselImg] = useState<any[]>([]);
+  
+  useEffect(() => {
+    let lst = []
+    if (data?.img) {
+      lst.push(`${process.env.REACT_APP_IMAGE_URL}${data.img}`)
+    }
+    if (keepImg) {
+      console.log(keepImg)
+      lst.push(`${process.env.REACT_APP_IMAGE_URL}${keepImg}`)
+    }
+    else if (returnImg.length > 0) {
+      for (let i = 0; i < returnImg.length; i++) {
+        lst.push(`${process.env.REACT_APP_IMAGE_URL}${returnImg[i].img}`)
+      }
+    }
+    setCarouselImg(lst)
+  }, [data?.img, keepImg, returnImg])
 
   return (
     <>
@@ -26,25 +46,15 @@ const UserShareDetailCarousel = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {slides.map((slide, idx) => (
-          <div key={slide.id} style={{ width: slideWidth }}>
+        {carouselImg ? carouselImg?.map((slide, idx) => (
+          <div key={idx} style={{ width: slideWidth }}>
             <img
-              src={slide.image}
+              src={slide}
               alt={`${idx} Slide`}
               style={{ width: slideWidth, height: slideWidth }}
             />
           </div>
-        ))}
-        {/* 이거 data 받아서 쓰는거 */}
-        {/*
-          <div style={{ width: slideWidth }}>
-            <img
-              src={data.img}
-              alt={data.img}
-              style={{ width: slideWidth, height: slideWidth }}
-            />
-          </div>
-        */}
+        )) : null}
       </div>
       <div
         style={{
@@ -54,9 +64,9 @@ const UserShareDetailCarousel = ({
           marginTop: "-5vh",
         }}
       >
-        {slides.map((slide, idx) => (
+        {carouselImg ? carouselImg?.map((slide, idx) => (
           <button
-            key={slide.id}
+            key={idx}
             onClick={() => handleDotClick(idx)}
             style={{
               padding: "0",
@@ -67,7 +77,7 @@ const UserShareDetailCarousel = ({
               backgroundColor: currentSlide === idx ? "lightGray" : "white",
             }}
           ></button>
-        ))}
+        )): null}
       </div>
     </>
   );

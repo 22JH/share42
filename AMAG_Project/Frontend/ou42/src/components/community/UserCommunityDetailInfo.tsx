@@ -1,9 +1,14 @@
+import axios from "axios";
 import { FaEye } from "react-icons/fa";
+import { useMutation } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import swal from "sweetalert";
 
 export interface UserCommunityDetailInfoProps {
   data: {
     communityDetail: {
       accountNickname: string;
+      accountUserId: string;
       accountSigungu: string;
       accountDong: string;
       uptDt: string;
@@ -18,6 +23,42 @@ const UserCommunityDetailInfo = ({
   data,
   getTimeAgo,
 }: UserCommunityDetailInfoProps) => {
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+  const { userId } = loginObject ? JSON.parse(loginObject) : null;
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { mutate: communityDelete } = useMutation(() =>
+    axios
+      .delete(
+        `http://www.share42-together.com:8088/api/user/community/posts/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.status);
+        if (res.data.status === 200) {
+          swal("삭제 완료", "게시물 삭제가 완료되었습니다.", "success");
+        } else {
+          swal("삭제 실패", "게시물 삭제가 실패되었습니다.", "error");
+        }
+      })
+      .then((status) => navigate(`/user/community`))
+      .catch((e) => {
+        console.log(e);
+        swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+      })
+  );
+
+  const handleDelete = () => {
+    communityDelete();
+  };
+
   return (
     <div
       style={{
@@ -43,7 +84,43 @@ const UserCommunityDetailInfo = ({
             fontWeight: "900",
           }}
         >
-          {data?.communityDetail?.accountNickname}
+          <span>{data?.communityDetail?.accountNickname}</span>
+          {userId === data?.communityDetail?.accountUserId ? (
+            <>
+              <span
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "900",
+                  color: "#7a7a7a",
+                  marginLeft: "8vw",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  navigate("/user/community/reg", {
+                    state: {
+                      data,
+                      editStatus: true,
+                      id,
+                    },
+                  });
+                }}
+              >
+                수정
+              </span>
+              <span
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "900",
+                  color: "#7a7a7a",
+                  marginLeft: "2vw",
+                  cursor: "pointer",
+                }}
+                onClick={handleDelete}
+              >
+                삭제
+              </span>
+            </>
+          ) : null}
         </span>
         <span>
           {data?.communityDetail?.accountSigungu +

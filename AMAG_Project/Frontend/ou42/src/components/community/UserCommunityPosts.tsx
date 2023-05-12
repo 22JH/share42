@@ -25,7 +25,8 @@ const UserCommunityPosts = ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        marginBottom: "7vh"
+        marginBottom: "7vh",
+        marginTop: "11vh"
       }}
     >
       {data?.map((item: any, index: number) => {

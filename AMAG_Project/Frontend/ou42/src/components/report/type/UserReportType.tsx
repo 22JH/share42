@@ -7,11 +7,22 @@ export interface UserReportAreaProps {
 
 export interface UserReportCategoryProps {
   handleSelectCategory: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: {
+  options?: {
     value: string;
     category: string;
   }[];
+  stationLst?: {
+    address: string;
+    id: number;
+    name: string;
+  }[];
+  lockerLst?: {
+    id: number;
+    lockerNumber: number;
+  }[]
   category: string;
+  title: string;
+  typeSelect?: number;
 }
 
 export interface UserReportFileProps {

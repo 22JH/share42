@@ -30,6 +30,10 @@ const UserCommunityCommentList = ({
 }: UserCommunityCommentListProps) => {
   const loginObject = localStorage.getItem("loginInfo");
   const { token } = loginObject ? JSON.parse(loginObject) : null;
+  const { userId } = loginObject ? JSON.parse(loginObject) : null;
+
+  // console.log(userId)
+  // console.log(data.commentDetailList.content[0].accountUserId)
 
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -131,6 +135,7 @@ const UserCommunityCommentList = ({
                 fontWeight: "900",
               }}
             >
+              {/* {item?.accountUserId} */}
               <img
                 style={{
                   width: "3rem",
@@ -149,33 +154,34 @@ const UserCommunityCommentList = ({
               >
                 {item?.accountNickname}
               </span>
-              {/* */}
-              <span
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  marginRight: "0.5rem",
-                  cursor: "pointer",
-                  color: "#adadad",
-                  fontSize: "0.8rem",
-                }}
-                onClick={() => handleEditComment(item?.id, item?.content)}
-              >
-                수정
-              </span>
-              <span
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  marginRight: "0.5rem",
-                  cursor: "pointer",
-                  color: "#adadad",
-                  fontSize: "0.8rem",
-                }}
-                onClick={(e) => handleCommentDelete(e, item?.id)}
-              >
-                삭제
-              </span>
+              {item?.accountUserId === userId ? <>
+                <span
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    marginRight: "0.5rem",
+                    cursor: "pointer",
+                    color: "#adadad",
+                    fontSize: "0.8rem",
+                  }}
+                  onClick={() => handleEditComment(item?.id, item?.content)}
+                >
+                  수정
+                </span>
+                <span
+                  style={{
+                    display: "block",
+                    textAlign: "center",
+                    marginRight: "0.5rem",
+                    cursor: "pointer",
+                    color: "#adadad",
+                    fontSize: "0.8rem",
+                  }}
+                  onClick={(e) => handleCommentDelete(e, item?.id)}
+                >
+                  삭제
+                </span>
+              </> : null}
             </div>
             <div
               style={{

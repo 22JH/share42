@@ -9,12 +9,31 @@ function UserHomeSpeedDial() {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ height: 320, transform: "translateZ(0px)", flexGrow: 1 }}>
+    <Box
+      sx={{
+        height: 320,
+        flexGrow: 1,
+      }}
+    >
       <SpeedDial
         ariaLabel="SpeedDial openIcon example"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon openIcon={<EditIcon />} />}
-        onClick={() => navigate('/user/share-category')}
+        sx={{
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+        }}
+        icon={
+          <SpeedDialIcon sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '50%',
+            backgroundColor: '#FFABAB',
+          }}/>
+        }
+        onClick={() => navigate("/user/share-category")}
       ></SpeedDial>
     </Box>
   );

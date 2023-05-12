@@ -4,21 +4,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import driver1 from "../../assets/testObject.jpg";
-import driver2 from "../../assets/driver1.jpg";
-import driver3 from "../../assets/driver2.jpg";
-import driver4 from "../../assets/driver3.jpg";
-
 import UserShareDetailCarousel from "../../components/sharedetail/UserShareDetailCarousel";
 import UserShareDetailPostInfo from "../../components/sharedetail/UserShareDetailPostInfo";
 import UserShareDetailContent from "../../components/sharedetail/UserShareDetailContent";
 import UserShareDetailRequest from "../../components/sharedetail/UserShareDetailRequest";
 import axios from "axios";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
+import swal from "sweetalert";
 
 const SHARE_DETAIL_API = (id: any) => {
   // eslint-disable-next-line max-len
   return `http://www.share42-together.com:8088/api/user/share/share-articles/${id}`;
+};
+
+const BORROW_API = (id: any) => {
+  // eslint-disable-next-line max-len
+  return `http://www.share42-together.com:8088/api/user/share/borrow/${id}`;
+};
+
+const BORROW_DELETE_API = (id: any) => {
+  // eslint-disable-next-line max-len
+  return `http://www.share42-together.com:8088/api/user/share/borrow/cancel/${id}`;
 };
 
 const UserSharePost = () => {
@@ -31,17 +37,13 @@ const UserSharePost = () => {
   const slideRef = useRef<HTMLDivElement>(null);
   const [currentTouchStart, setCurrentTouchStart] = useState(0);
   const [slideOffset, setSlideOffset] = useState(0);
-  const [isLike, setIsLike] = useState<null | boolean>(null);
-  const [useRequest, setUseRequest] = useState<null | boolean>(true);
+  const [isLike, setIsLike] = useState<boolean>(false);
+  const [userRequest, setUserRequest] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(0);
-  const navigate = useNavigate();
+  const [keepImg, setKeepImg] = useState<undefined | string>(undefined);
+  const [returnImg, setReturnImg] = useState<any[]>([]);
 
-  const slides = [
-    { id: 0, image: driver1 },
-    { id: 1, image: driver2 },
-    { id: 2, image: driver3 },
-    { id: 3, image: driver4 },
-  ];
+  const navigate = useNavigate();
 
   // 점 클릭하면 넘어가게 일단 기능 구현
   const handleDotClick = (idx: number) => {
@@ -98,44 +100,71 @@ const UserSharePost = () => {
     }
   };
 
-  // 찜하기
-  const handleLikeRequest = () => {
-    setIsLike(!isLike);
-  };
-
-  // 찜취소
-  const handleLikeCancel = () => {
-    setIsLike(!isLike);
-    console.log(id)
-  };
-
   // 사용신청 하기
-  const handleUseRequest = () => {
-    setUseRequest(false);
-    // useQuery 또는 api 요청
+  const handleUseRequest = async (id: string | undefined) => {
+    try {
+      const res = await axios({
+        method: "POST",
+        url: BORROW_API(id),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res?.data?.status === 200) {
+        swal("신청 성공", "사용 신청이 완료되었습니다.", "success");
+        refetch();
+        return res.data;
+      } else {
+        swal("신청 실패", "사용 신청이 실패되었습니다.", "error");
+        refetch();
+      }
+    } catch (e) {
+      console.log(e);
+      swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+    }
   };
 
   // 사용취소 하기
-  const handleUseCancel = () => {
-    setUseRequest(true);
-    // useQuery 또는 api 요청
+  const handleUseCancel = async (id: string | undefined) => {
+    try {
+      const res = await axios({
+        method: "POST",
+        url: BORROW_DELETE_API(id),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.data.status === 200) {
+        swal("취소 성공", "사용 취소가 완료되었습니다.", "success");
+        refetch();
+        return res.data;
+      } else {
+        swal("취소 실패", "사용 취소가 실패되었습니다.", "error");
+        refetch();
+      }
+    } catch (e) {
+      console.log(e);
+      swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+    }
   };
 
   // 채팅하기 화면으로
   const handleChating = () => {
     // 채팅화면으로 가기
-    navigate("/user/chat/userId");
+    navigate("/user/chat/list");
   };
 
   // NFC 화면으로
   const handleNFC = () => {
     // NFC 화면으로 가기
-    navigate("/");
+    navigate("/user/nfc");
   };
 
   // 상세조회 페이지 데이터 가져오기
-  const { data } = useQuery(
-    ['getShareDetail', id],
+  const { data, refetch } = useQuery(
+    ["getShareDetail", id],
     async () => {
       try {
         const res = await axios({
@@ -143,11 +172,16 @@ const UserSharePost = () => {
           url: SHARE_DETAIL_API(id),
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setLikeCount(res.data.message.likeCount);
-        return res.data.message.article;
+        if (res?.data?.status === 200) {
+          setKeepImg(res.data.message.keepImg)
+          setReturnImg(res.data.message.returnImg)
+          setIsLike(res.data.message.likeCheck)
+          setLikeCount(res.data.message.likeCount);
+          return res.data.message.article;
+        }
       } catch (e) {
         console.log(e);
       }
@@ -155,7 +189,16 @@ const UserSharePost = () => {
     {
       suspense: false,
     }
-  )
+  );
+
+  // 사용 신청 상태 저장
+  useEffect(() => {
+    if (data && data.shareStatus === 2) {
+      setUserRequest(true);
+    } else if (data && data.shareStatus === 1) {
+      setUserRequest(false);
+    }
+  }, [data?.shareStatus, data]);
 
   return (
     <>
@@ -164,11 +207,12 @@ const UserSharePost = () => {
         handleTouchStart={handleTouchStart}
         handleTouchMove={handleTouchMove}
         handleTouchEnd={handleTouchEnd}
-        slides={slides}
         slideWidth={slideWidth}
         handleDotClick={handleDotClick}
         currentSlide={currentSlide}
         data={data}
+        keepImg={keepImg}
+        returnImg={returnImg}
       />
       <div
         style={{
@@ -178,15 +222,10 @@ const UserSharePost = () => {
           marginTop: "2.5vh",
         }}
       >
-        <UserShareDetailPostInfo
-          handleLikeRequest={handleLikeRequest}
-          handleLikeCancel={handleLikeCancel}
-          isLike={isLike}
-          data={data}
-        />
-        <UserShareDetailContent data={data} likeCount={likeCount}/>
+        <UserShareDetailPostInfo isLike={isLike} data={data} setIsLike={setIsLike}/>
+        <UserShareDetailContent data={data} likeCount={likeCount} />
         <UserShareDetailRequest
-          useRequest={useRequest}
+          useRequest={userRequest}
           handleUseRequest={handleUseRequest}
           handleUseCancel={handleUseCancel}
           handleNFC={handleNFC}

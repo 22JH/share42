@@ -3,28 +3,24 @@ export interface UserShareDetailCarouselProps {
   handleTouchStart: (e: React.TouchEvent) => void;
   handleTouchMove: (e: React.TouchEvent) => void;
   handleTouchEnd: () => void;
-  slides: {
-    id: number;
-    image: string;
-  }[];
   slideWidth: number;
   handleDotClick: (idx: number) => void;
   currentSlide: number;
   data: any;
+  keepImg: undefined | string;
+  returnImg: any[]
 }
-
 
 export interface UserShareDetailPostInfoProps {
   isLike: null | boolean;
-  handleLikeRequest: () => void;
-  handleLikeCancel: () => void;
   data: any;
+  setIsLike: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface UserShareDetailRequestProps {
   useRequest: null | boolean;
-  handleUseRequest: () => void;
-  handleUseCancel: () => void;
+  handleUseRequest: (id: string | undefined) => void;
+  handleUseCancel: (id: string | undefined) => void;
   handleNFC: () => void;
   handleChating: () => void;
   data: any;

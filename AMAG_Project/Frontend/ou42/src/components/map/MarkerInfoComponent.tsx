@@ -28,7 +28,9 @@ const MarkerInfoComponent = ({
   };
 
   const handleReturnNavigate = () => {
-    navigate("/user/return")
+    navigate("/user/return", {
+      state : id
+    })
   }
 
   return (

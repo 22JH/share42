@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { UserShareDetailRequestProps } from "./type/UserShareDetailType";
 
 const UserShareDetailRequest = ({
@@ -7,9 +8,9 @@ const UserShareDetailRequest = ({
   handleUseCancel,
   handleNFC,
   handleChating,
-  data
+  data,
 }: UserShareDetailRequestProps) => {
-  console.log(data)
+  const { id } = useParams();
 
   return (
     <div
@@ -30,7 +31,7 @@ const UserShareDetailRequest = ({
         }}
       >
         {/* toLocaleString() */}
-        <span>{`${Number(data?.price).toLocaleString()}원`}</span>
+        <span>{`${Number(data?.sharePrice).toLocaleString()}원`}</span>
         <span
           style={{
             color: "#adadad",
@@ -42,20 +43,6 @@ const UserShareDetailRequest = ({
       </div>
       <div>
         {useRequest ? (
-          <button
-            style={{
-              color: "#ffffff",
-              backgroundColor: "#FFABAB",
-              border: "none",
-              borderRadius: "5px",
-              boxShadow: "2px 2px 5px #00000051",
-              padding: "1.4vh 4vw",
-            }}
-            onClick={handleUseRequest}
-          >
-            사용신청
-          </button>
-        ) : (
           <>
             <button
               style={{
@@ -66,14 +53,14 @@ const UserShareDetailRequest = ({
                 boxShadow: "2px 2px 5px #00000051",
                 padding: "1.4vh 4vw",
               }}
-              onClick={handleUseCancel}
+              onClick={() => handleUseCancel(id)}
             >
               사용취소
             </button>
             <div
               style={{
-                position: "absolute",
-                bottom: "5vh",
+                position: "fixed",
+                bottom: "12vh",
                 right: "8vw",
                 width: "5rem",
                 height: "5rem",
@@ -89,6 +76,20 @@ const UserShareDetailRequest = ({
               NFC
             </div>
           </>
+        ) : (
+          <button
+            style={{
+              color: "#ffffff",
+              backgroundColor: "#FFABAB",
+              border: "none",
+              borderRadius: "5px",
+              boxShadow: "2px 2px 5px #00000051",
+              padding: "1.4vh 4vw",
+            }}
+            onClick={() => handleUseRequest(id)}
+          >
+            사용신청
+          </button>
         )}
         <button
           style={{

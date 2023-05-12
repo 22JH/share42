@@ -74,9 +74,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      })
-      setMarkersData(response.data.message)
-    }
+      });
+      setMarkersData(response.data.message);
+    };
     fetchData();
   }, []);
 

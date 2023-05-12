@@ -78,7 +78,7 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
                                      FROM
                                          (SELECT *
                                          FROM SHARE42_TOGETHER.SHARE_ARTICLE sa
-                                         WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
+                                         WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID != :accountId
                                          And
                                          CASE
                                              WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
@@ -122,7 +122,7 @@ FROM
 	FROM
 		(SELECT *
 		FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
-		WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID = :accountId
+		WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID != :accountId
 		And\s
 		CASE
 			WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
@@ -157,7 +157,7 @@ ON saAlData.ACCOUNT_ID = aData.ID;
             LOCKER_STATION ls
             ON sa.ADDRESS = ls.ADDRESS
             WHERE sa.STATUS = :status And sa.SHARE_STATUS < :shareStatus And (sa.CATEGORY = :category1 OR sa.CATEGORY = :category2) AND sa.SIGUNGU = :sigungu AND sa.DONG = :dong
-            ORDER BY ABS(ls.LAT-:lat) ASC , ABS(ls.LNG-:lng) ASC, sa.HITS DESC
+            ORDER BY ABS(ls.LAT-:lat) ASC , ABS(ls.LNG-:lng) ASC, sa.HITS DESC LIMIT 2;
             """, nativeQuery = true)
     List<Object[]> getCFRecommendation(@Param("status") boolean status, @Param("shareStatus") byte shareStatus,
                                                            @Param("category1") String category1, @Param("category2") String category2,

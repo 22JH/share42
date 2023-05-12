@@ -1,6 +1,6 @@
 package com.miracle.AMAG.mapping.admin;
 
-public interface LogListMapping {
+public interface SidoUsageListMapping {
     String getSido();
 
     int getCount();

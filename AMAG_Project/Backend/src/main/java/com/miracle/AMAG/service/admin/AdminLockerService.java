@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -28,11 +27,11 @@ public class AdminLockerService {
     private LockerRepository lockerRepository;
 
 
-    public List<LockerStationListMapping> getLockerStationList(@PathVariable("sido") String sido){
+    public List<LockerStationListMapping> getLockerStationList(String sido){
         return lockerStationRepository.findBySido(sido);
     }
 
-    public Page<LockerListMapping> getLockerList(@PathVariable("lockerStationId") int lockerStationId, Pageable pageable){
+    public Page<LockerListMapping> getLockerList(int lockerStationId, Pageable pageable){
         return lockerRepository.findByLockerStation_Id(lockerStationId, pageable);
     }
 }

@@ -60,6 +60,21 @@ public class AdminLogController {
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "시도 사용량 조회",description = "시도 사용량을 조회합니다.")
     public ResponseEntity<?> getUsageList(){
-        return NormalResponse.toResponseEntity(HttpStatus.OK,adminLogService.getUsageList());
+        return NormalResponse.toResponseEntity(HttpStatus.OK,adminLogService.getSidoUsageList());
+    }
+
+    @GetMapping("sido/{sido}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "지점별 사물함 사용량 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "지점별 사물함 사용량 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "지점별 사물함 사용량 조회",description = "지점별 사물함 사용량을 조회합니다.")
+    @Parameters({
+            @Parameter(name = "sido", description = "지역",in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getStationUsageList(@PathVariable("sido") String sido){
+        return NormalResponse.toResponseEntity(HttpStatus.OK,adminLogService.getStationUsageList(sido));
     }
 }

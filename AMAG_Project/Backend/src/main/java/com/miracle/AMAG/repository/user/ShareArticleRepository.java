@@ -1,7 +1,7 @@
 package com.miracle.AMAG.repository.user;
 
 import com.miracle.AMAG.entity.user.ShareArticle;
-import com.miracle.AMAG.mapping.admin.LogListMapping;
+import com.miracle.AMAG.mapping.admin.SidoUsageListMapping;
 import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
@@ -27,18 +27,6 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
     @Modifying
     @Query("update ShareArticle s set s.status = :status where s.id = :id")
     void updateStatus(@Param("id") int id, @Param("status") boolean status);
-
-    @Query(value = """
-    SELECT SA.S_SIDO AS 'sido', COUNT(*) AS 'count'
-    FROM (
-    SELECT S.SIDO AS S_SIDO, A.SIDO AS A_SIDO
-    FROM SHARE_ARTICLE AS S
-    INNER JOIN ADDRESS AS A
-    ON A.SIDO = S.SIDO
-    GROUP BY S.ID) AS SA
-    GROUP BY SA.S_SIDO
-    """,nativeQuery = true)
-    List<LogListMapping> getSidoLogList();
 
 	@Query(value = """
             SELECT likeArticleData.ID as 'id', likeArticleData.NAME as 'name', likeArticleData.SHARE_PRICE as 'sharePrice', likeArticleData.IMG as 'img', likeArticleData.UPT_DT as 'uptDt', likeArticleData.SHARE_STATUS as 'shareStatus', likeArticleData.HITS as 'hits', likeArticleData.likeCount as 'likeCount', ac.USER_ID as 'userId', ac.NICKNAME as 'nickname'

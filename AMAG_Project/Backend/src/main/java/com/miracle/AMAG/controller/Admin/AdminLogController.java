@@ -33,12 +33,12 @@ public class AdminLogController {
 
     @GetMapping("/{lockerStationId}/{page}/{size}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "지점별 사물함 로그 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
-            @ApiResponse(responseCode = "500", description = "지점별 사물함 로그 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "지점별 전체 사용 로그 조회 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "지점별 전체 사용 로그 조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
-    @Operation(summary = "지점별 사물함 목록 조회",description = "지점별 사물함 로그를 조회합니다.")
+    @Operation(summary = "지점별 전체 사용 로그 조회",description = "지점별 전체 사용 로그를 조회합니다.")
     @Parameters({
             @Parameter(name = "lockerStationId", description = "지점번호",in = ParameterIn.PATH),
             @Parameter(name = "page", description = "페이지",in = ParameterIn.PATH),

@@ -31,8 +31,8 @@ public class AdminLockerService {
         return lockerStationRepository.findBySido(sido);
     }
 
-    public Page<LockerListMapping> getLockerList(int lockerStationId, Pageable pageable){
-        return lockerRepository.findByLockerStation_Id(lockerStationId, pageable);
+    public List<LockerListMapping> getLockerList(int lockerStationId){
+        return lockerRepository.findByLockerStation_IdOrderByLockerNumber(lockerStationId);
     }
 
     public String  adminCollectProduct(int shareArticleId){

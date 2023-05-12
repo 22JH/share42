@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,4 +35,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     void updateByUserId(@Param("userId") String userId, @Param("nickname") String nickname, @Param("sido") String sido,
                         @Param("sigungu") String sigungu, @Param("dong") String dong, @Param("address") String address,
                         @Param("img") String img);
+
+    List<Account> findByRole(@Param("role") Role role);
 }

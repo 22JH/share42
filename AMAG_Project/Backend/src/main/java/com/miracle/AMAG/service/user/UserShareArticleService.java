@@ -18,6 +18,7 @@ import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.repository.user.ShareReturnRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.Role;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import com.miracle.AMAG.util.common.ShareReturnUtils;
 import jakarta.transaction.Transactional;
@@ -214,7 +215,7 @@ public class UserShareArticleService {
     }
 
     public Map<String, Object> getShareArticleList(Pageable pageable, String sigungu, String dong, String category, int orderStandard,
-                                                             String query, double lat, double lng){
+                                            String query, double lat, double lng){
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -229,7 +230,6 @@ public class UserShareArticleService {
         List<Object[]> sagim = new ArrayList<>();
         if(keys.size()>=2){
             sagim =shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(1), sigungu, dong, lat, lng);
-
         }
         else if(keys.size()==1){
             sagim = shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(0), sigungu, dong, lat, lng);
@@ -237,6 +237,24 @@ public class UserShareArticleService {
 
         Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
                 query, orderStandard,pageable);
+
+        result.map(objects -> {
+            ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+            dto.setId((int) objects[0]);
+            dto.setCategory((String) objects[1]);
+            dto.setName((String) objects[2]);
+            dto.setContent((String) objects[3]);
+            dto.setSharePrice((int) objects[4]);
+            dto.setImg((String) objects[5]);
+            dto.setUptDt((Timestamp) objects[6]);
+            dto.setShareStatus((byte) objects[7]);
+            dto.setHits((int) objects[8]);
+            dto.setLikeCount((Long) objects[9]);
+            dto.setUserId((String) objects[10]);
+            dto.setNickname((String) objects[11]);
+            dto.setLikeCheck((Integer) objects[12]);
+            return dto;
+        });
 
         Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
             ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
@@ -256,8 +274,30 @@ public class UserShareArticleService {
             return dto;
         });
 
+        List<ShareArticleResponseDTO> resultRecmmendation = new ArrayList<>();
+       if(sagim.size()==1){
+            for(int i=0;i<resultResponse.getSize();i++){
+                if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0]){
+                    resultRecmmendation.add(resultResponse.getContent().get(i));
+                    break;
+                }
+            }
+        }
+        else if(sagim.size()==2){
+            int forCount = 0;
+            for(int i=0;i<resultResponse.getSize();i++){
+                if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0] || resultResponse.getContent().get(i).getId()==(int)sagim.get(1)[0]){
+                    resultRecmmendation.add(resultResponse.getContent().get(i));
+                    forCount++;
+                }
+                if(forCount==2){
+                    break;
+                }
+            }
+        }
+
         resultData.put("article", resultResponse);
-        resultData.put("CFRecommendation", sagim);
+        resultData.put("CFRecommendation", resultRecmmendation);
 
         return resultData;
     }
@@ -278,6 +318,17 @@ public class UserShareArticleService {
             } else {
                 List<String> itemList = new ArrayList<>();
                 itemList.add(item);
+                userHistoryMap.put(userId, itemList);
+            }
+        }
+
+        List<Account> account = accountRepository.findByRole(Role.ROLE_USER);
+
+        for (int i=0;i<account.size();i++) {
+            String userId = account.get(i).getUserId();
+            if (!userHistoryMap.containsKey(userId)) {
+                List<String> itemList = new ArrayList<>();
+                itemList.add("없음");
                 userHistoryMap.put(userId, itemList);
             }
         }

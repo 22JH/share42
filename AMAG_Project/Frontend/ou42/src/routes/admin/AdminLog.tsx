@@ -20,7 +20,7 @@ import ErrorBoundary from "../../components/ErrorBoundary";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import AdminNav from "./../../components/admin/AdminNav";
 import Loading from "./../../components/Loading";
-import { go, L, pipe, takeAll } from "../../custom/FxJS";
+import { L, pipe, takeAll } from "../../custom/FxJS";
 
 const container = css`
   width: 100vw;

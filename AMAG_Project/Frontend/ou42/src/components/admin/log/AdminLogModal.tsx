@@ -109,34 +109,37 @@ function AdminLogModal({
     useUserId,
     useUserNickname: nickName,
   } = data;
+
   let color;
 
-  const [regDate, regTime] = shareRegDt.split(".")[0].split("T");
-  const [useDate, useTime] = useDt.split(".")[0].split("T");
+  const [regDate, regTime] = shareRegDt?.split(".")[0].split("T");
+  const [useDate, useTime] = useDt?.split(".")[0].split("T");
   const ImgUrl = process.env.REACT_APP_IMAGE_URL;
 
-  switch (shareStatus) {
-    case 0:
-      color = "#00ff44";
-      break;
-    case 1:
-      color = "#00f7ff";
-      break;
-    case 2:
-      color = "#c9c9c9";
-      break;
-    case 3:
-      color = "#ff2f00";
-      break;
-    case 4:
-      color = "#0073ff";
-      break;
-    case 5:
-      color = "#c9c9c9";
-      break;
-    default:
-      color = "#c9c9c9";
-      break;
+  if (shareStatus) {
+    switch (shareStatus) {
+      case 0:
+        color = "#00ff44";
+        break;
+      case 1:
+        color = "#00f7ff";
+        break;
+      case 2:
+        color = "#c9c9c9";
+        break;
+      case 3:
+        color = "#ff2f00";
+        break;
+      case 4:
+        color = "#0073ff";
+        break;
+      case 5:
+        color = "#c9c9c9";
+        break;
+      default:
+        color = "#c9c9c9";
+        break;
+    }
   }
 
   return (
@@ -176,8 +179,8 @@ function AdminLogModal({
             </span>
           </p>
           <p>{`사용자 : ${nickName}`}</p>
-          <p>{`등록일 : ${regDate.replaceAll("-", ".")} · ${regTime}`}</p>
-          <p>{`최근 사용 : ${useDate.replaceAll("-", ".")} · ${useTime}`}</p>
+          <p>{`등록일 : ${regDate?.replaceAll("-", ".")} · ${regTime}`}</p>
+          <p>{`최근 사용 : ${useDate?.replaceAll("-", ".")} · ${useTime}`}</p>
         </div>
         <hr />
         <div className="content">

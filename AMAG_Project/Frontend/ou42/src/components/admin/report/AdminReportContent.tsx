@@ -12,7 +12,6 @@ import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import axios, { AxiosError } from "axios";
 
 import { useGetUserToken } from "../../../hooks/useGetToken";
-import testObject from "../../../assets/testObject.jpg";
 import AdminModalContent from "../AdminModalContent";
 import adminStore from "../../../store/adminStore";
 import pinkBox from "../../../assets/pinkBox.png";
@@ -62,7 +61,7 @@ export const contentStyle = (length: number | undefined) => css`
   }
 
   &:nth-of-type(${length}) {
-    padding-bottom: 20%;
+    margin-bottom: 20%;
   }
 `;
 

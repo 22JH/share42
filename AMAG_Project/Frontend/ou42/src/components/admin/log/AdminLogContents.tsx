@@ -98,7 +98,7 @@ function AdminLogContents(props: Props) {
             useUserNickname: nickName,
           } = data;
 
-          const date = shareRegDt.split("T")[0].replaceAll("-", ".");
+          const date = shareRegDt?.split("T")[0].replaceAll("-", ".");
 
           return (
             <div key={`${data} / ${index}`}>
@@ -113,7 +113,11 @@ function AdminLogContents(props: Props) {
                 <img src={`${ImgUrl}${img}`} alt="test" className="img" />
                 <div className="text">
                   <p>{name}</p>
-                  <p>{content}</p>
+                  <p>
+                    {content?.length > 15
+                      ? `${content.slice(0, 15)}...`
+                      : content}
+                  </p>
                   <p>{`${nickName} · ${date}`}</p>
                   <p>{`${category} · ${lockerId}번`}</p>
                 </div>

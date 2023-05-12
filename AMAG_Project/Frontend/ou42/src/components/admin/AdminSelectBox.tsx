@@ -96,7 +96,7 @@ function AdminSelectBox(props: Props) {
     const listAPI = ({ pageParam = 1 }) => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/lockers/log/${value}/${pageParam}/${SIZE}`,
+        url: `http://www.share42-together.com:8088/api/admin/log/${value}/${pageParam}/${SIZE}`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },

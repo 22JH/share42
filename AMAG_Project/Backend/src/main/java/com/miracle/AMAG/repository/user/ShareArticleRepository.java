@@ -1,7 +1,7 @@
 package com.miracle.AMAG.repository.user;
 
+import com.miracle.AMAG.dto.responseDTO.user.ShareArticleGetIdResponseDTO;
 import com.miracle.AMAG.entity.user.ShareArticle;
-import com.miracle.AMAG.mapping.admin.SidoUsageListMapping;
 import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
@@ -149,5 +149,19 @@ ON saAlData.ACCOUNT_ID = aData.ID;
     Page<Object[]> getShareArticleList(@Param("accountId") int accountId, @Param("status") boolean status, @Param("sigungu") String sigungu,
                                        @Param("dong") String dong, @Param("category") String category, @Param("query") String query,
                                        @Param("orderStandard") int orderStandard, Pageable pageable);
+
+    @Query(value = """
+            SELECT sa.ID as 'id'
+            FROM SHARE_ARTICLE sa
+            LEFT JOIN
+            LOCKER_STATION ls
+            ON sa.ADDRESS = ls.ADDRESS
+            WHERE sa.STATUS = :status And sa.SHARE_STATUS < :shareStatus And (sa.CATEGORY = :category1 OR sa.CATEGORY = :category2) AND sa.SIGUNGU = :sigungu AND sa.DONG = :dong
+            ORDER BY ABS(ls.LAT-:lat) ASC , ABS(ls.LNG-:lng) ASC, sa.HITS DESC
+            """, nativeQuery = true)
+    List<Object[]> getCFRecommendation(@Param("status") boolean status, @Param("shareStatus") byte shareStatus,
+                                                           @Param("category1") String category1, @Param("category2") String category2,
+                                                           @Param("sigungu") String sigungu, @Param("dong") String dong,
+                                                           @Param("lat") double lat, @Param("lng") double lng);
 
 }

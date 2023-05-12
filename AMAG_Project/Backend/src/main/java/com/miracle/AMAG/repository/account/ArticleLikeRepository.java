@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArticleLikeRepository extends JpaRepository<ArticleLike,Integer> {
 
-    long countByShareArticle_Id(@Param("shareArticleId") int shareArticleId);
+    long countByShareArticle_IdAndStatus(@Param("shareArticleId") int shareArticleId, @Param("status") boolean status);
 
     @Query("SELECT al FROM ArticleLike al WHERE al.account = :account AND al.shareArticle = :shareArticle AND al.status = false")
     ArticleLike findRegistedArticleLike(@Param("account") Account account, @Param("shareArticle") ShareArticle shareArticle);

@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+import { useQueryClient } from "react-query";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { useRef, useState } from "react";
 import { SlBell } from "react-icons/sl";
 
 import homeStore from "../../store/homeStore";
-import { useRef, useState } from "react";
 
 const homeNavStyle = css`
   width: 100vw;
@@ -87,18 +88,20 @@ const homeNavStyle = css`
 export default function HomeNavBar() {
   const { setSearch } = homeStore();
   const [input, setInput] = useState<string>("");
+  const queryClient = useQueryClient();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const searchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setSearch(input);
-      (inputRef?.current as any).value = "";
+      // (inputRef?.current as any).value = "";
+      queryClient.invalidateQueries();
     }
   };
   const searchClick = () => {
     setSearch(input);
-
-    (inputRef?.current as any).value = "";
+    queryClient.invalidateQueries();
+    // (inputRef?.current as any).value = "";
   };
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

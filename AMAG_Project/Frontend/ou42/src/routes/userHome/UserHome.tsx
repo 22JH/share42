@@ -27,11 +27,13 @@ import DropDown from "../../components/UI/DropDown";
 import Loading from "../../components/Loading";
 import pinkBox from "../../assets/pinkBox.png";
 import homeStore from "../../store/homeStore";
+import { useMutation } from "react-query";
 
 interface Props {
   fetchNextPage: any;
   data: any;
   hasNextPage: boolean;
+  refetch: any;
 }
 
 interface Location {
@@ -52,6 +54,7 @@ interface Data {
   shareStatus: number;
   uptDt: string;
   userId: string;
+  likeCheck: null | number;
 }
 
 // intersaction 옵션
@@ -96,6 +99,7 @@ function UserHomeFetcher({
         return [region_2depth_name, region_3depth_name];
       }
     },
+
     onSuccess: (data) => {
       if (data?.length) {
         // infinityquery 함수
@@ -142,7 +146,7 @@ function UserHomeFetcher({
   };
 
   // 공유글 데이터 불러오는 infinity query
-  const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
+  const { fetchNextPage, data, hasNextPage, refetch } = useInfiniteQuery(
     ["get-object-list"],
     getListFnc,
     {
@@ -218,17 +222,37 @@ function UserHomeFetcher({
     }
   }, []);
 
-  return cloneElement(children, { fetchNextPage, data, hasNextPage });
+  return cloneElement(children, { fetchNextPage, data, hasNextPage, refetch });
 }
 
 // 컨텐츠를 보여주는 컴포넌트
 function UserHomeList(props: Partial<Props>) {
-  const [isLike, setIslike] = useState<boolean>(false);
-  const divRef = useRef<HTMLDivElement | any>({});
+  const { fetchNextPage, data, hasNextPage, refetch } = props;
   const { setBranchChoice } = useBranchChoiceStore();
+  const queryClient = useQueryClient();
+  const divRef = useRef<HTMLDivElement | any>({});
   const ImgUrl = process.env.REACT_APP_IMAGE_URL;
+  const TOKEN = useGetUserToken();
 
-  const { fetchNextPage, data, hasNextPage } = props;
+  const { mutate: setLike } = useMutation((id) => {
+    return axios({
+      method: "post",
+      url: `http://www.share42-together.com:8088/api/user/share/share-articles/like/${id}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  });
+
+  const { mutate: setUnLike } = useMutation((id) => {
+    return axios({
+      method: "post",
+      url: `http://www.share42-together.com:8088/api/user/share/share-articles/unlike/${id}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  });
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -251,8 +275,14 @@ function UserHomeList(props: Partial<Props>) {
   }, [data]);
 
   // 좋아요 버튼 누름
-  const like = (e: React.MouseEvent<SVGElement>) => {
-    setIslike(!isLike);
+  const like = (id: any, likeCheck: null | number) => {
+    if (likeCheck) {
+      setUnLike(id);
+      queryClient.invalidateQueries();
+    } else {
+      setLike(id);
+      queryClient.invalidateQueries();
+    }
   };
 
   useEffect(() => {
@@ -263,8 +293,17 @@ function UserHomeList(props: Partial<Props>) {
     <>
       {data?.pages.length ? (
         data?.pages.map((data: Data, index: number) => {
-          const { category, content, hits, img, likeCount, sharePrice, uptDt } =
-            data;
+          const {
+            category,
+            content,
+            hits,
+            img,
+            likeCount,
+            sharePrice,
+            uptDt,
+            likeCheck,
+            id,
+          } = data;
           const date = new Date();
           let time = "";
 
@@ -312,12 +351,12 @@ function UserHomeList(props: Partial<Props>) {
                 return (divRef.current[index] = ref);
               }}
             >
-              {isLike ? (
+              {likeCheck ? (
                 <div className="img-icon">
                   <AiTwotoneHeart
                     className="redHeart"
                     size="30"
-                    onClick={like}
+                    onClick={() => like(id, likeCheck)}
                   />
                 </div>
               ) : (
@@ -326,7 +365,7 @@ function UserHomeList(props: Partial<Props>) {
                     className="blankHeart"
                     style={{ fill: "black" }}
                     size="30"
-                    onClick={like}
+                    onClick={() => like(id, likeCheck)}
                   />
                 </div>
               )}

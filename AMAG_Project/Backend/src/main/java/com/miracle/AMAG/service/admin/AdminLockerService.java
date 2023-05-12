@@ -34,4 +34,8 @@ public class AdminLockerService {
     public Page<LockerListMapping> getLockerList(int lockerStationId, Pageable pageable){
         return lockerRepository.findByLockerStation_Id(lockerStationId, pageable);
     }
+
+    public String  adminCollectProduct(int shareArticleId){
+        return "string";
+    }
 }

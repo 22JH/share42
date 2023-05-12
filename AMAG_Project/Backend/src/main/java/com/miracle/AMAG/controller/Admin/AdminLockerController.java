@@ -2,6 +2,7 @@ package com.miracle.AMAG.controller.Admin;
 
 import com.miracle.AMAG.service.admin.AdminLockerService;
 import com.miracle.AMAG.service.common.AddressService;
+import com.miracle.AMAG.util.network.CUDResponse;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "Admin_LockerControll", description = "사물함 로그 조회 및 기기조작")
 @RequestMapping("/api/admin/lockers")
@@ -78,6 +81,21 @@ public class AdminLockerController {
                                         @PathVariable("size") int size){
         PageRequest pageRequest = PageRequest.of(page - 1,size);
         return NormalResponse.toResponseEntity(HttpStatus.OK,adminLockerService.getLockerList(lockerStationId,pageRequest));
+    }
+
+    @PostMapping("/collect{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "공유 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "관리자 공유 물품 회수", description = "관리자가 공유 물품 회수를 진행합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "회수할 공유 글 번호", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> adminCollectProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCollectProduct(shareArticleId));
     }
 
 }

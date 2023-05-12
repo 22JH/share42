@@ -120,9 +120,9 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
     List<SidoUsageListMapping> getSidoLogList();
 
     @Query(value = """
-    SELECT COUNT(*) AS 'count', KL.SIDO AS 'sido', KL.LOCKER_STATION AS 'lockerStation'
+    SELECT KL.SIDO AS 'sido', KL.LOCKER_STATION AS 'lockerStation', KL.STATION_NAME AS 'stationName', COUNT(*) AS 'count'
     FROM(
-    SELECT LS.SIDO AS SIDO, L.LOCKER_STATION_ID AS LOCKER_STATION
+    SELECT LS.SIDO AS SIDO, L.LOCKER_STATION_ID AS LOCKER_STATION, LS.NAME AS STATION_NAME
     FROM(
     SELECT K.ID, K.LOCKER_ID AS LOCKER_ID, K.SHARE_ARTICLE_ID
     FROM KEEP AS K
@@ -142,6 +142,7 @@ public interface LockerStationRepository extends JpaRepository<LockerStation, In
     ) AS KL
     WHERE KL.SIDO = :sido
     GROUP BY LOCKER_STATION
+    ORDER BY COUNT DESC
     """, nativeQuery = true)
     List<StationUsageListMapping> getStationUsageList(@Param("sido") String sido);
 }

@@ -9,9 +9,21 @@ import { useGetUserToken } from "../../../hooks/useGetToken";
 import { useNavigate } from "react-router-dom";
 
 const URL = "http://k8d102.p.ssafy.io:8088/api/logout";
+interface Info {
+  address: string;
+  birth: string;
+  dong: string;
+  img: string;
+  name: string;
+  nickname: string;
+  phoneNumber: string;
+  sido: string;
+  sigungu: string;
+}
 
-function UserMyPageProfile() {
+function UserMyPageProfile({ info }: { info?: Info }) {
   const navigate = useNavigate();
+  const imgUrl = process.env.REACT_APP_IMAGE_URL;
 
   const options = {
     headers: {
@@ -31,9 +43,12 @@ function UserMyPageProfile() {
     <>
       <div css={profileStyle}>
         <div className="user-info">
-          {/* <img src={testObject} alt="프로필" /> */}
-          <CgProfile size={35} style={{ marginRight: "5%" }} />
-          <p>지나가는 아보카도</p>
+          {info?.img ? (
+            <img src={`${imgUrl}${info?.img}`} alt="프로필" />
+          ) : (
+            <CgProfile size={35} style={{ marginRight: "5%" }} />
+          )}
+          <p>{info?.nickname}</p>
         </div>
         <button onClick={handleLogOut}>로그아웃</button>
       </div>

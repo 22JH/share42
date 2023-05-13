@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 services:
   jenkins:
@@ -10,6 +10,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8080:8080
+    networks:
+      share42_net:
+        ipv4_address: 172.42.0.2
     restart: always
 
   mariadb:
@@ -24,6 +27,9 @@ services:
     env_file: .mariadb_env
     environment:
       TZ: Asia/Seoul
+    networks:
+      share42_net:
+        ipv4_address: 172.42.0.3
     restart: always
 
   redis:
@@ -37,6 +43,9 @@ services:
       - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
       - ./redis/acl/users.acl:/etc/redis/users.acl
     command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      share42_net:
+        ipv4_address: 172.42.0.4
 
   nginx:
     container_name: nginx-server
@@ -45,4 +54,15 @@ services:
       - 80:80
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      share42_net:
+        ipv4_address: 172.42.0.5
     restart: always
+  
+networks:
+  share42_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.42.0.0/16

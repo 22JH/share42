@@ -4,6 +4,7 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
 import com.miracle.AMAG.dto.responseDTO.user.RecommendationResponseDTO;
+import com.miracle.AMAG.dto.responseDTO.user.ShareArticleRecommendationResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.user.ShareArticleResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.ArticleLike;
@@ -242,7 +243,7 @@ public class UserShareArticleService {
             recommendation.setRegDt(LocalDateTime.now());
             recommendationRepository.save(recommendation);
         }
-        if(page>1){
+        if(page>1 || query != null || !category.equals("base")){
             Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
                     query, orderStandard,pageable);
 
@@ -301,11 +302,15 @@ public class UserShareArticleService {
                 return dto;
             });
 
-            List<ShareArticleResponseDTO> resultRecmmendation = new ArrayList<>();
+            List<ShareArticleRecommendationResponseDTO> resultRecmmendation = new ArrayList<>();
             if(sagim.size()==1){
                 for(int i=0;i<resultResponse.getSize();i++){
                     if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0]){
-                        resultRecmmendation.add(resultResponse.getContent().get(i));
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
                         break;
                     }
                 }
@@ -315,7 +320,11 @@ public class UserShareArticleService {
                 int forCount = 0;
                 for(int i=0;i<resultResponse.getSize();i++){
                     if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0] || resultResponse.getContent().get(i).getId()==(int)sagim.get(1)[0]){
-                        resultRecmmendation.add(resultResponse.getContent().get(i));
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
                         forCount++;
                     }
                     if(forCount==2){
@@ -353,23 +362,31 @@ public class UserShareArticleService {
                 dto.setLikeCheck((Integer) objects[12]);
                 return dto;
             });
-            List<ShareArticleResponseDTO> resultRecmmendation = new ArrayList<>();
+            List<ShareArticleRecommendationResponseDTO> resultRecmmendation = new ArrayList<>();
             if(recommendation.getReco2()!=null){
+                int forCount = 0;
                 for(int i=0;i<resultResponse.getSize();i++){
-                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1()){
-                        resultRecmmendation.add(resultResponse.getContent().get(i));
+                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1() || resultResponse.getContent().get(i).getId()==recommendation.getReco2()){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
+                        forCount++;
+                    }
+                    if(forCount==2){
                         break;
                     }
                 }
             }
             else if(recommendation.getReco1()!=null){
-                int forCount = 0;
                 for(int i=0;i<resultResponse.getSize();i++){
-                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1() || resultResponse.getContent().get(i).getId()==recommendation.getReco2()){
-                        resultRecmmendation.add(resultResponse.getContent().get(i));
-                        forCount++;
-                    }
-                    if(forCount==2){
+                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1()){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
                         break;
                     }
                 }

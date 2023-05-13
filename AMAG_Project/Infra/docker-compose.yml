@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   jenkins:
     container_name: jenkins-server
@@ -6,6 +7,7 @@ services:
     user: root
     volumes:
       - ./jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8080:8080
     restart: always
@@ -35,3 +37,12 @@ services:
       - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
       - ./redis/acl/users.acl:/etc/redis/users.acl
     command: redis-server /usr/local/etc/redis/redis.conf
+
+  nginx:
+    container_name: nginx-server
+    image: nginx:1.21.5-alpine   
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: always

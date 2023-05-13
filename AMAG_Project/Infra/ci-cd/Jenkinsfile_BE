@@ -17,6 +17,7 @@ pipeline {
         SPRING_IMAGE_NAME = 'miracle3070/share42-spring:latest'
         SPRING_CONTAINER_NAME = 'spring-server'
         SPRING_PICTURE_PATH = '/home/ubuntu/images'
+        SPRING_CONTAINER_PORT = '8088'
     }
 
     stages {
@@ -78,7 +79,7 @@ pipeline {
                     docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
-                    dockerImage.run("-p 8088:8088 -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME} --hostname ${SPRING_CONTAINER_NAME}")
+                    dockerImage.run("-p ${env.SPRING_CONTAINER_PORT}:${env.SPRING_CONTAINER_PORT} -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME} --hostname ${SPRING_CONTAINER_NAME}")
                 }
             }
         }

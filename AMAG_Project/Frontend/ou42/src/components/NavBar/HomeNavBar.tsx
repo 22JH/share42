@@ -1,12 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
 import { useRef, useState } from "react";
 import { SlBell } from "react-icons/sl";
+import axios from "axios";
 
+import { useGetUserToken } from "../../hooks/useGetToken";
 import homeStore from "../../store/homeStore";
 
 const homeNavStyle = css`
@@ -86,9 +88,31 @@ const homeNavStyle = css`
   }
 `;
 export default function HomeNavBar() {
-  const { setSearch } = homeStore();
   const [input, setInput] = useState<string>("");
   const queryClient = useQueryClient();
+  const { setSearch } = homeStore();
+  const TOKEN = useGetUserToken();
+
+  // 사용자 정보 받는 API 함수
+  const userInfo = () => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/user/info`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
+
+  // 사용자 정보 받는 query
+  const { data } = useQuery(["user-info"], userInfo, {
+    suspense: false,
+    cacheTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 30,
+    select: (data) => {
+      return data.data.message;
+    },
+  });
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const searchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -112,7 +136,7 @@ export default function HomeNavBar() {
       <div css={homeNavStyle}>
         {/* 최상위 */}
         <div className="top">
-          <p>진평동</p>
+          <p>{data?.dong}</p>
           <SlBell size={23} />
         </div>
 

@@ -225,7 +225,7 @@ public class UserShareArticleService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public Map<String, Object> getShareArticleList(Pageable pageable, String sigungu, String dong, String category, int orderStandard,
+    public Map<String, Object> getShareArticleList(Pageable pageable, int page, String sigungu, String dong, String category, int orderStandard,
                                             String query, double lat, double lng){
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
@@ -242,9 +242,31 @@ public class UserShareArticleService {
             recommendation.setRegDt(LocalDateTime.now());
             recommendationRepository.save(recommendation);
         }
+        if(page>1){
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+                    query, orderStandard,pageable);
 
+            Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
+                ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+                dto.setId((int) objects[0]);
+                dto.setCategory((String) objects[1]);
+                dto.setName((String) objects[2]);
+                dto.setContent((String) objects[3]);
+                dto.setSharePrice((int) objects[4]);
+                dto.setImg((String) objects[5]);
+                dto.setUptDt((Timestamp) objects[6]);
+                dto.setShareStatus((byte) objects[7]);
+                dto.setHits((int) objects[8]);
+                dto.setLikeCount((Long) objects[9]);
+                dto.setUserId((String) objects[10]);
+                dto.setNickname((String) objects[11]);
+                dto.setLikeCheck((Integer) objects[12]);
+                return dto;
+            });
+            resultData.put("article", resultResponse);
+        }
         //추천 받은지 30분이 지나야만 사용 가능(로딩 속도 최적화 때문)
-        if(ChronoUnit.MINUTES.between(recommendation.getRegDt(),LocalDateTime.now())>30){
+        else if(ChronoUnit.MINUTES.between(recommendation.getRegDt(),LocalDateTime.now())>30){
             Map<String, Double> scoreMap = CFRecommendation(loginId);
             List<String> keys = new ArrayList<>();
             for (String item : scoreMap.keySet()) {

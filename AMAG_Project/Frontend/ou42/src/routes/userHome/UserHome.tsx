@@ -114,6 +114,8 @@ function UserHomeFetcher({
               sigungu: data[0],
               dong: data[1],
               query: search,
+              lat: location.latitude,
+              lng: location.longitude,
             },
             headers: {
               Authorization: `Bearer ${TOKEN}`,
@@ -138,6 +140,8 @@ function UserHomeFetcher({
         sigungu: address?.length ? address[0] : "",
         dong: address?.length ? address[1] : "",
         query: search,
+        lat: location.latitude,
+        lng: location.longitude,
       },
       headers: {
         Authorization: `Bearer ${TOKEN}`,
@@ -151,15 +155,24 @@ function UserHomeFetcher({
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
-        if (allPage[0].data.message.totalPages > allPage.length) {
+        if (allPage[0].data.message.article.totalPages > allPage.length) {
           return allPage.length + 1;
         }
       },
       select: (data) => {
         const newData = pipe(L.map, L.flatten, takeAll);
-
+        let recommendation;
+        if (data.pages.length) {
+          recommendation = data.pages[0].data.message.CFRecommendation;
+        }
         return {
-          pages: newData((arr: any) => arr.data.message.content, data.pages),
+          pages: [
+            ...recommendation,
+            ...newData(
+              (arr: any) => arr.data.message.article.content,
+              data.pages
+            ),
+          ],
           pageParams: data.pageParams,
         };
       },
@@ -181,6 +194,8 @@ function UserHomeFetcher({
             sigungu: address[0],
             dong: address[1],
             query: search,
+            lat: location.latitude,
+            lng: location.longitude,
           },
           headers: {
             Authorization: `Bearer ${TOKEN}`,
@@ -227,7 +242,7 @@ function UserHomeFetcher({
 
 // 컨텐츠를 보여주는 컴포넌트
 function UserHomeList(props: Partial<Props>) {
-  const { fetchNextPage, data, hasNextPage, refetch } = props;
+  const { fetchNextPage, data, hasNextPage } = props;
   const { setBranchChoice } = useBranchChoiceStore();
   const queryClient = useQueryClient();
   const divRef = useRef<HTMLDivElement | any>({});

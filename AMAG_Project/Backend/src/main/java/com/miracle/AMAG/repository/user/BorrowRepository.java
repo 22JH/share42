@@ -20,11 +20,11 @@ public interface BorrowRepository extends JpaRepository<Borrow, Integer> {
 
     List<MetadataURIMapping> findAllByAccount(@Param("account") Account account, Pageable pageable);
     @Query("""
-            SELECT ((TIMESTAMPDIFF(DAY, br.regDt ,now())+1) * :price) 
+            SELECT ((TIMESTAMPDIFF(DAY, br.regDt ,now())+1) * :sharePrice) 
             FROM Borrow br 
             WHERE br.shareArticle = :shareArticle AND br.useType = 1 
             ORDER BY br.id DESC
             LIMIT 1
             """)
-    int calcReturnPrice(@Param("shareArticle") ShareArticle shareArticle, @Param("price") int price);
+    int calcReturnPrice(@Param("shareArticle") ShareArticle shareArticle, @Param("sharePrice") int sharePrice);
 }

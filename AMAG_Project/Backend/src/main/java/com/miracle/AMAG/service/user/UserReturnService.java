@@ -211,7 +211,7 @@ public class UserReturnService {
         // 결제 처리
         PaymentMethod paymentMethod = paymentMethodRepository.findByAccount(account);
         String billingKey = paymentMethod.getBillingKey();
-        int price = borrowRepository.calcReturnPrice(shareArticle, shareArticle.getPrice());
+        int price = borrowRepository.calcReturnPrice(shareArticle, shareArticle.getSharePrice());
         String phoneNumber = account.getPhoneNumber();
         String userName = account.getName();
         String receiptId = userInfoService.autoPayment(billingKey, price, phoneNumber, userName);

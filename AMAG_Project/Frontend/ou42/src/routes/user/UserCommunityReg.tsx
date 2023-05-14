@@ -87,7 +87,7 @@ const UserCommunityReg = () => {
   const { mutate:communityPost } = useMutation((postData: SubmitDataType) =>
     axios
       .post(
-        "https://www.share42-together.com:8088/api/user/community/posts",
+        "https://www.share42-together.com/api/user/community/posts",
         postData,
         {
           headers: {
@@ -188,9 +188,7 @@ const UserCommunityReg = () => {
         handleShareArea={handleShareArea}
       />
       {/* 바텀 버튼 */}
-      <UserCommunityRegSubmit
-        isSubmit={isSubmit}
-      />
+      <UserCommunityRegSubmit isSubmit={isSubmit} />
     </form>
   );
 };

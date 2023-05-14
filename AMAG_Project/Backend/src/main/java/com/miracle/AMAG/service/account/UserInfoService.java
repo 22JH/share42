@@ -60,10 +60,7 @@ public class UserInfoService {
     }
 
     public String insertPayMethod(PaymentMethodRequestDTO paymentMethodRequestDTO){
-        if(paymentMethodRequestDTO.getType()!=PayMethodUtils.BILLING_KEY || paymentMethodRequestDTO.getType()!=PayMethodUtils.ACCOUNT_NUMBER){
-            throw new RuntimeException();
-        }
-        else if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getReceiptId().equals("")&& paymentMethodRequestDTO.getReceiptId() == null){
+        if(paymentMethodRequestDTO.getType() == PayMethodUtils.BILLING_KEY && paymentMethodRequestDTO.getReceiptId().equals("")&& paymentMethodRequestDTO.getReceiptId() == null){
             throw new RuntimeException();
         }
         else if(paymentMethodRequestDTO.getType() == PayMethodUtils.ACCOUNT_NUMBER && paymentMethodRequestDTO.getNumber().equals("")&& paymentMethodRequestDTO.getNumber()== null){
@@ -85,12 +82,9 @@ public class UserInfoService {
 
                paymentMethodRepository.save(data);
             }
-            else if(data.getBillingKey() == null){
-                data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
+            else {
+                data.setBillingKey(paymentMethodRequestDTO.getReceiptId());
                 paymentMethodRepository.save(data);
-            }
-            else{
-                throw new RuntimeException();
             }
         }
         else if(paymentMethodRequestDTO.getType()==PayMethodUtils.ACCOUNT_NUMBER){
@@ -101,12 +95,9 @@ public class UserInfoService {
 
                 paymentMethodRepository.save(data);
             }
-            else if(data.getNumber() == null){
+            else {
                 data.setNumber(paymentMethodRequestDTO.getNumber());
                 paymentMethodRepository.save(data);
-            }
-            else{
-                throw new RuntimeException();
             }
         }
         else{

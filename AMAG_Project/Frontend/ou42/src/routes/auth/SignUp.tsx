@@ -12,9 +12,10 @@ import logo from "../../assets/logo.png";
 import { useApi } from "../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
-import { AxiosResponse } from "axios";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../..";
 
-const URL = `http://k8d102.p.ssafy.io:8088/api/join`;
+const URL = `https://www.share42-together.com/api/join`;
 
 const logoSection = css`
   position: relative;
@@ -117,9 +118,20 @@ export default function SignUp() {
     ) {
       submitSignUp()
         .then((res) => {
-          Alert("success", "회원가입이 완료되었습니다", () =>
-            navigate("/home")
-          );
+          setDoc(doc(db, "users", id), {
+            id,
+            phoneNumber,
+            nickName,
+            profile: "",
+          })
+            .then(() => {
+              setDoc(doc(db, "userChats", id), {}).then(() => {
+                Alert("success", "회원가입이 완료되었습니다", () =>
+                  navigate("/home")
+                );
+              });
+            })
+            .catch((err) => console.log("firebase 에러 ", err));
         })
         .catch((err) => Alert("error", err.response.data.message));
     } else {

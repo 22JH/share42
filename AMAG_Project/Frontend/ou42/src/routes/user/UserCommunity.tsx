@@ -74,12 +74,12 @@ const UserCommunity = () => {
 
   const SORT_API = (sort: any, category: any) => {
     // eslint-disable-next-line max-len
-    return `https://www.share42-together.com:8088/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}`;
+    return `https://www.share42-together.com/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}`;
   };
 
   const SEARCH_API = (sort: any, category: any, search: any) => {
     // eslint-disable-next-line max-len
-    return `https://www.share42-together.com:8088/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}&search=${search}`;
+    return `https://www.share42-together.com/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}&search=${search}`;
   };
 
   const { data } = useQuery(

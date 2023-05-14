@@ -108,11 +108,11 @@ export default function UserInfoModify() {
   const [addr, setAddr] = useState<string>("");
   const [nickName, setNickName] = useState<string>("");
 
-  const GET_SI_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sido`;
-  const GET_GU_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sigungu/${si}`;
-  const GET_DONG_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/dong/${si}/${goon}`;
-  const GET_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
-  const PATCH_USER_DATA = "http://k8d102.p.ssafy.io:8088/api/user/info";
+  const GET_SI_URL = `https://www.share42-together.com/api/common/address/sido`;
+  const GET_GU_URL = `https://www.share42-together.com/api/common/address/sigungu/${si}`;
+  const GET_DONG_URL = `https://www.share42-together.com/api/common/address/dong/${si}/${goon}`;
+  const GET_USER_DATA = "https://www.share42-together.com/api/user/info";
+  const PATCH_USER_DATA = "https://www.share42-together.com/api/user/info";
 
   const getUserDataOptions = {
     headers: { Authorization: `Bearer ${useGetUserToken()}` },
@@ -155,7 +155,9 @@ export default function UserInfoModify() {
       setNickName(() => res.nickname);
       setAddr(() => res.address);
       if (res.img) {
-        setCurrentImg(() => `http://k8d102.p.ssafy.io:8088/images/${res.img}`);
+        setCurrentImg(
+          () => `https://www.share42-together.com/images/${res.img}`
+        );
       }
       // setSi(() => res.sido);
       // setGoon(() => res.sigungu);

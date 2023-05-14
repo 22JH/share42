@@ -34,7 +34,7 @@ export default function IdCheck({ setId, id }: PropType) {
   const [checkPass, setCheckPass] = useState<number>(0);
 
   const reg = /^[a-z0-9_]{8,20}$/;
-  const URL = `http://k8d102.p.ssafy.io:8088/api/join/check-id/${validId}`;
+  const URL = `https://www.share42-together.com/api/join/check-id/${validId}`;
 
   const checkId = useApi("get", URL);
 

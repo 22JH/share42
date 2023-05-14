@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import UserShareDetailCarousel from "../../components/sharedetail/UserShareDetailCarousel";
@@ -10,22 +10,34 @@ import UserShareDetailContent from "../../components/sharedetail/UserShareDetail
 import UserShareDetailRequest from "../../components/sharedetail/UserShareDetailRequest";
 import axios from "axios";
 import { useQuery } from "react-query";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../..";
 import swal from "sweetalert";
 
 const SHARE_DETAIL_API = (id: any) => {
   // eslint-disable-next-line max-len
-  return `https://www.share42-together.com:8088/api/user/share/share-articles/${id}`;
+  return `https://www.share42-together.com/api/user/share/share-articles/${id}`;
 };
 
 const BORROW_API = (id: any) => {
   // eslint-disable-next-line max-len
-  return `https://www.share42-together.com:8088/api/user/share/borrow/${id}`;
+  return `https://www.share42-together.com/api/user/share/borrow/${id}`;
 };
 
 const BORROW_DELETE_API = (id: any) => {
   // eslint-disable-next-line max-len
-  return `https://www.share42-together.com:8088/api/user/share/borrow/cancel/${id}`;
-};
+  return `https://www.share42-together.com/api/user/share/borrow/cancel/${id}`;
+}
 
 const UserSharePost = () => {
   const { id } = useParams();
@@ -151,9 +163,36 @@ const UserSharePost = () => {
   };
 
   // 채팅하기 화면으로
-  const handleChating = () => {
-    // 채팅화면으로 가기
-    navigate("/user/chat/list");
+  const handleChating = async () => {
+    const loginObject = localStorage.getItem("loginInfo");
+    const { userId } = loginObject ? JSON.parse(loginObject) : null;
+
+    /// 글 등록 유저 id 임시
+    const temp_reg_user_id = "test_user_id";
+    /// 유저 쿼리 찾기
+    const q = query(collection(db, "users"), where("userId", "==", "test_id"));
+    ////
+    const querySnapshot = await getDocs(q);
+    ///////
+    const chatName =
+      userId > temp_reg_user_id
+        ? userId + temp_reg_user_id
+        : temp_reg_user_id + userId;
+    const chats = await getDoc(doc(db, "chats", chatName));
+
+    if (!chats.exists()) {
+      await setDoc(doc(db, "chats", chatName), { message: [] });
+      const res = await updateDoc(doc(db, "userChats", userId), {
+        [chatName + ".userInfo"]: {
+          id: temp_reg_user_id,
+          /// 프로필 받아와야함
+          profile: "",
+        },
+        [chatName + ".date"]: serverTimestamp(),
+      });
+    }
+
+    navigate(`/user/chat/${chatName}`);
   };
 
   // NFC 화면으로
@@ -222,8 +261,12 @@ const UserSharePost = () => {
           marginTop: "2.5vh",
         }}
       >
-        <UserShareDetailPostInfo isLike={isLike} data={data} setIsLike={setIsLike}/>
-        <UserShareDetailContent data={data} likeCount={likeCount} />
+        <UserShareDetailPostInfo
+          isLike={isLike}
+          data={data}
+          setIsLike={setIsLike}
+        />
+        <UserShareDetailContent data={data} likeCount={likeCount}/>
         <UserShareDetailRequest
           useRequest={userRequest}
           handleUseRequest={handleUseRequest}

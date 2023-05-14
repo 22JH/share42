@@ -26,7 +26,7 @@ import UserMyPageUsage from "./routes/userHome/UserMyPageUsage";
 import UserNfc from "./routes/user/UserNfc";
 import UserMyPageShare from "./routes/userHome/UserMyPageShare";
 import UserMyPageLike from "./routes/userHome/UserMyPageLike";
-import UserMyPageStatistics from "./routes/userHome/UserMyPageStatistics";
+import UserMyPageMyArticles from "./routes/userHome/UserMyPageMyArticles";
 import UserCommunity from "./routes/user/UserCommunity";
 import CommunityNavBar from "./components/NavBar/CommunityNavBar";
 import UserCommunityReg from "./routes/user/UserCommunityReg";
@@ -34,6 +34,8 @@ import UserInfoModify from "./routes/auth/UserInfoModify";
 import RouterGuard from "./components/auth/RouterGuard";
 import UserChatList from "./routes/user/UserChatList";
 import UserCommunityDetail from "./routes/user/UserCommunityDetail";
+import AdminLogin from "./routes/auth/AdminLogin";
+import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
 import UserReturn from "./routes/user/UserReturn";
@@ -66,11 +68,11 @@ function App() {
               <Route path="/user/mypage/share" element={<UserMyPageShare />} />
               <Route path="/user/mypage/like" element={<UserMyPageLike />} />
               <Route
-                path="/user/mypage/stats"
-                element={<UserMyPageStatistics />}
+                path="/user/mypage/articles"
+                element={<UserMyPageMyArticles />}
               />
-              <Route path="/user/chat" element={<UserChat />} />
-              <Route path="/user/chat/list" element={<UserChatList />} />
+              <Route path="/user/chat/:chatName" element={<UserChat />} />
+              <Route path="/user/chatlist" element={<UserChatList />} />
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
               <Route path="/user/payment" element={<UserPay />} />
               <Route path="/user/report" element={<UserReport />} />
@@ -78,25 +80,27 @@ function App() {
           </Route>
 
           {/* 공유 등록 페이지, 등록된 공유 상세 페이지*/}
-          <Route element={<SharePageNavBar/>}>
+          <Route element={<SharePageNavBar />}>
             <Route path="/user/share-reg" element={<UserShareReg />} />
             <Route path="/user/share-category" element={<UserShareCategorySelect />} />
             <Route path="/user/return" element={<UserReturn />} />
             <Route path="/user/share-post/:id" element={<UserSharePost />} />
           </Route>
-
-
-          <Route path="/user/mypage/stats" element={<UserMyPageStatistics />} />
-
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
-            <Route path="/user/community/:id" element={<UserCommunityDetail />} />
+            <Route
+              path="/user/community/:id"
+              element={<UserCommunityDetail />}
+            />
           </Route>
 
+          <Route element={<LoginRaouterGuard />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+          </Route>
           <Route path="/" element={<UserWelcome />} />
           <Route path="/start" element={<UserBeforeMain />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/admin/home" element={<AdminHome />} />
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />

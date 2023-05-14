@@ -4,13 +4,12 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Btn from "../../components/UI/Btn";
 import logo from "../../assets/logo.png";
-import { GoCheck } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import Circle from "../../components/UI/Circle";
 import { useApi } from "./../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
 
-const URL = "https://www.share42-together.com:8088/api/login";
+const URL = "https://www.share42-together.com/api/login";
 
 const container = css`
   width: 100%;
@@ -21,7 +20,7 @@ const container = css`
     flex: 1;
   }
   .logo {
-    flex: 7;
+    flex: 5.5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,8 +61,6 @@ const container = css`
 export default function Login() {
   const [id, setId] = useState<string>("");
   const [pd, setPd] = useState<string>("");
-  // flase = 유저, true = 관리자
-  const [type, setType] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -93,10 +90,16 @@ export default function Login() {
   const handleLogin = () => {
     postLogin()
       .then((res) => {
-        const obj: { token: string; expire: number; userId: string } = {
+        const obj: {
+          token: string;
+          expire: number;
+          userId: string;
+          type: string;
+        } = {
           token: res.data.message.token.accessToken,
           expire: Date.now() + 1800000,
           userId: id,
+          type: "user",
         };
         localStorage.setItem("loginInfo", JSON.stringify(obj));
 
@@ -132,9 +135,6 @@ export default function Login() {
           type="password"
           sx={{ zIndex: "2" }}
         />
-        <div className="changeType" onClick={() => setType((prev) => !prev)}>
-          관리자 로그인 {type ? <GoCheck /> : null}
-        </div>
       </div>
       <div className="btn">
         <Btn
@@ -142,7 +142,7 @@ export default function Login() {
           height="15%"
           content="로그인"
           borderR={10}
-          marginTop={100}
+          marginTop={20}
           boxShadow={"-1px 2px 1px 2px rgba(209, 77, 114, 0.25)"}
           backGroundColor="#FFABAB"
           border={0}

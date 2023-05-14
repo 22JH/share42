@@ -7,6 +7,7 @@ import navStore from "../../store/navStore";
 function UserMyPageUsage() {
   const { setPathTitle } = navStore();
   const [value, setValue] = useState<number>(0);
+  const [valueLength, setValueLength] = useState<number>(0);
 
   useEffect(() => {
     setPathTitle("사용 내역");
@@ -14,7 +15,11 @@ function UserMyPageUsage() {
 
   return (
     <div style={{ width: "100vw", height: "81vh" }}>
-      <UserMyPageListBtn setValue={setValue} value={value} />
+      <UserMyPageListBtn
+        setValue={setValue}
+        value={value}
+        setValueLength={setValueLength}
+      />
       <UserMyPageList />
       <BottomMenuBar />
     </div>

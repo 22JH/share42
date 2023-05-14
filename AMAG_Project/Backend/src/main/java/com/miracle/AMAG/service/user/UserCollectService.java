@@ -57,6 +57,9 @@ public class UserCollectService {
         if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_STAY) {
             throw new RuntimeException("회수 가능한 물품이 아닙니다.");
         }
+        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("물품 주인과 회수를 신청한 사용자의 아이디가 다릅니다.");
+        }
 
         Account account = accountRepository.findByUserId(loginId);
 
@@ -84,6 +87,51 @@ public class UserCollectService {
         collectRepository.save(collect);
 
         shareArticle.setShareStatus(ShareArticleUtils.COLLECT_STAY);
+        shareArticle.setUptDt(curTime);
+        shareArticleRepository.save(shareArticle);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String collectProduct(int shareArticleId) throws IOException {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
+        Account account = accountRepository.findByUserId(loginId);
+        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("물품 회수를 신청한 사용자와 회수를 시도하는 사용자가 다릅니다.");
+        }
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_STAY) {
+            throw new RuntimeException("해당 물품은 회수 처리를 진행할 수 없는 물품입니다.");
+        }
+
+        Collect collect = new Collect();
+        BeanUtils.copyProperties(collectRecord, collect);
+        LocalDateTime curTime = LocalDateTime.now();
+        collect.setRegDt(curTime);
+        collect.setId(0);
+
+        Locker locker = lockerRepository.findByShareArticle(shareArticle);
+        CollectDTO collectDTO = new CollectDTO();
+        BeanUtils.copyProperties(collect,collectDTO);
+        collectDTO.setLocker(locker.getId());
+        collectDTO.setAccount(account.getId());
+        collectDTO.setShareArticle(shareArticle.getId());
+
+        // 블록체인 관련 항목
+        String alias = "cd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(collectDTO);
+        klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
+        collect.setContractHash(alias);
+        collect.setMetadataUri(metadataUri);
+        collectRepository.save(collect);
+
+        locker.setShareArticle(null);
+        lockerRepository.save(locker);
+        shareArticle.setShareStatus(ShareArticleUtils.COLLECT_COMPLEATE);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 

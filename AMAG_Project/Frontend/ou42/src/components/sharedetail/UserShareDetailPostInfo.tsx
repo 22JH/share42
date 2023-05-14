@@ -24,7 +24,7 @@ const UserShareDetailPostInfo = ({
     try {
       const res = await axios({
         method: "POST",
-        url: `http://www.share42-together.com:8088/api/user/share/share-articles/like/${id}`,
+        url: `https://www.share42-together.com:8088/api/user/share/share-articles/like/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const UserShareDetailPostInfo = ({
     try {
       const res = await axios({
         method: "POST",
-        url: `http://www.share42-together.com:8088/api/user/share/share-articles/unlike/${id}`,
+        url: `https://www.share42-together.com:8088/api/user/share/share-articles/unlike/${id}`,
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const UserShareDetailPostInfo = ({
   const handleDelete = async (id:string | undefined) => {
     await axios({
       method: "DELETE",
-      url: `http://www.share42-together.com:8088/api/user/share/share-articles/${id}`,
+      url: `https://www.share42-together.com:8088/api/user/share/share-articles/${id}`,
       headers : {
         Authorization: `Bearer ${token}`,
       }

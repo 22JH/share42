@@ -87,7 +87,7 @@ const UserCommunityReg = () => {
   const { mutate:communityPost } = useMutation((postData: SubmitDataType) =>
     axios
       .post(
-        "http://www.share42-together.com:8088/api/user/community/posts",
+        "https://www.share42-together.com:8088/api/user/community/posts",
         postData,
         {
           headers: {
@@ -113,7 +113,7 @@ const UserCommunityReg = () => {
   const { mutate:communityPatch } = useMutation((postData: SubmitDataType) =>
     axios
       .patch(
-        `http://www.share42-together.com:8088/api/user/community/posts/${state.id}`,
+        `https://www.share42-together.com:8088/api/user/community/posts/${state.id}`,
         postData,
         {
           headers: {

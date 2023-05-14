@@ -27,11 +27,11 @@ const options = [
 ];
 
 const LOCKER_STATIONS_API = (page: number, size: number) => {
-  return `http://www.share42-together.com:8088/api/common/locker/locker-stations/${page}/${size}`;
+  return `https://www.share42-together.com:8088/api/common/locker/locker-stations/${page}/${size}`;
 };
 
 const LOCKER_API = (page: number, size: number, lockerId: string) => {
-  return `http://www.share42-together.com:8088/api/common/locker/${page}/${size}/${lockerId}`;
+  return `https://www.share42-together.com:8088/api/common/locker/${page}/${size}/${lockerId}`;
 };
 
 const UserReport = () => {
@@ -128,7 +128,7 @@ const UserReport = () => {
   const handleReportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // post로 보내기 / multipart
     e.preventDefault();
-    fetch(`http://www.share42-together.com:8088/api/user/reports/${typeSelect}` ,{
+    fetch(`https://www.share42-together.com:8088/api/user/reports/${typeSelect}` ,{
       method : 'POST',
       headers : {
         Authorization : `Bearer ${token}`

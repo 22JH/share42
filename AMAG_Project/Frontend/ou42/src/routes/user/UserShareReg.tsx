@@ -104,7 +104,7 @@ const UserShareReg = () => {
     if (location?.state?.editStatus === true) {
       console.log(location?.state?.editStatus)
       await fetch(
-        `http://www.share42-together.com:8088/api/user/share/share-articles/${location?.state?.id}`,
+        `https://www.share42-together.com:8088/api/user/share/share-articles/${location?.state?.id}`,
         {
           method: "PATCH",
           body: formData,
@@ -131,7 +131,7 @@ const UserShareReg = () => {
       })
     } else {
       await fetch(
-        `http://www.share42-together.com:8088/api/user/share/share-articles`,
+        `https://www.share42-together.com:8088/api/user/share/share-articles`,
         {
           method: "POST",
           body: formData,

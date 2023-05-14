@@ -69,7 +69,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
     const fetchData = async () => {
       const response = await axios({
         method: "GET",
-        url: `http://www.share42-together.com:8088/api/common/locker/${position.lat}/${position.lng}`,
+        url: `https://www.share42-together.com:8088/api/common/locker/${position.lat}/${position.lng}`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

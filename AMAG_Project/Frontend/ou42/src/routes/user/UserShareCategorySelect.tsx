@@ -28,7 +28,7 @@ const UserShareCategorySelect = () => {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "http://www.share42-together.com:8088/api/common/category",
+      url: "https://www.share42-together.com:8088/api/common/category",
       headers: {
         Authorization: `Bearer ${token}`,
       },

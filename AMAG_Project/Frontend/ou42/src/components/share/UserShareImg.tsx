@@ -28,7 +28,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
 
   useEffect(() => {
     if (detecImg === true) {
-      fetch("http://www.share42-together.com:8088/api/common/detection", {
+      fetch("https://www.share42-together.com:8088/api/common/detection", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
         })
         .catch((error) => console.log(error));
     } else if (detecImg === false) {
-      fetch("http://www.share42-together.com:8088/api/common/detection", {
+      fetch("https://www.share42-together.com:8088/api/common/detection", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

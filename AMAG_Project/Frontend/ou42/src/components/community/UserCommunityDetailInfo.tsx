@@ -32,7 +32,7 @@ const UserCommunityDetailInfo = ({
   const { mutate: communityDelete } = useMutation(() =>
     axios
       .delete(
-        `http://www.share42-together.com:8088/api/user/community/posts/${id}`,
+        `https://www.share42-together.com:8088/api/user/community/posts/${id}`,
         {
           headers: {
             "Content-Type": "application/json",

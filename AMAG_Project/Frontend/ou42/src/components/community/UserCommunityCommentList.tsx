@@ -61,7 +61,7 @@ const UserCommunityCommentList = ({
     e.preventDefault();
     const response = await axios({
       method: "PATCH",
-      url: `http://www.share42-together.com:8088/api/user/community/comments/${Number(
+      url: `https://www.share42-together.com:8088/api/user/community/comments/${Number(
         id
       )}`,
       data: {
@@ -83,7 +83,7 @@ const UserCommunityCommentList = ({
   const handleCommentDelete = async (e: React.MouseEvent<HTMLSpanElement>,id:number) => {
     const response = await axios({
       method: 'DELETE',
-      url: `http://www.share42-together.com:8088/api/user/community/comments/${Number(
+      url: `https://www.share42-together.com:8088/api/user/community/comments/${Number(
         id
       )}`,
       headers: {

@@ -43,7 +43,7 @@ const CustomOverlayMapComponent = ({
   useEffect(() => {
     axios({
       method: "GET",
-      url: `http://www.share42-together.com:8088/api/common/locker/detail/${page}/${size}/${marker.id}`,
+      url: `https://www.share42-together.com:8088/api/common/locker/detail/${page}/${size}/${marker.id}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

@@ -147,6 +147,6 @@ public class UserShareArticleController {
                                                  @RequestParam(value = "query", required = false) String query, @RequestParam("sigungu") String sigugun, @RequestParam("dong") String dong,
                                                  @RequestParam("lat") double lat, @RequestParam("lng") double lng) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.getShareArticleList(pageRequest, sigugun, dong, category, orderStandard, query, lat, lng));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.getShareArticleList(pageRequest, page,sigugun, dong, category, orderStandard, query, lat, lng));
     }
 }

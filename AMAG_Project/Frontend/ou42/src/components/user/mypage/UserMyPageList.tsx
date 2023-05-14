@@ -11,7 +11,10 @@ const container = (length: number, pathName: string) => css`
   width: 100%;
   height: auto;
   position: absolute;
-  top: ${pathName === "/user/mypage/like" ? "6vh" : "12vh"};
+  top: ${pathName === "/user/mypage/like" ||
+  pathName === "/user/mypage/articles"
+    ? "6vh"
+    : "12vh"};
   overflow: auto;
   .container:nth-of-type(${length}) {
     margin-bottom: 20%;
@@ -78,8 +81,24 @@ const container = (length: number, pathName: string) => css`
   }
 `;
 
+interface Data {
+  articleUptDt?: string;
+  hits: number;
+  id: number;
+  img: string;
+  likeUptDt: string;
+  likecount: number;
+  nickname: string;
+  shareArticleId: number;
+  sharePrice: number;
+  shareStatus: number;
+  title: string;
+  userId: string;
+  name: string;
+}
+
 interface Props {
-  data: any;
+  data: { pages: Data[] | any; pageParams: number | undefined[] };
   fetchNextPage: any;
   hasNextPage: boolean;
   valueLength: number;
@@ -89,7 +108,7 @@ function UserMyPageList(props: Partial<Props>) {
   const divRef = useRef<any>({});
   const pathName = useLocation().pathname;
   const [promiseData, setPromiseData] = useState<any[]>([]);
-  const { data, fetchNextPage, hasNextPage, valueLength } = props;
+  const { data, fetchNextPage, hasNextPage } = props;
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -113,6 +132,8 @@ function UserMyPageList(props: Partial<Props>) {
   if (data?.pages.length !== 0 && data?.pages instanceof Promise) {
     data.pages.then((res: any) => setPromiseData(res));
   }
+
+  console.log(data);
 
   return (
     <div

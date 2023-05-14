@@ -44,7 +44,7 @@ function UserMyPageLikeFetcher({
         const newPages = pipe(L.map, L.flatten, takeAll);
 
         return {
-          pages: newPages((d: any) => d.data.message, data.pages),
+          pages: newPages((d: any) => d.data.message.content, data.pages),
           pageParams: data.pageParams,
         };
       },

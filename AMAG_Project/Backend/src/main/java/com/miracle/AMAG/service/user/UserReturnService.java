@@ -264,4 +264,26 @@ public class UserReturnService {
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
+
+    public String openLocker(String nfcData) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        Locker locker = lockerRepository.findByNfc(nfcData);
+        ShareArticle shareArticle = locker.getShareArticle();
+        if(shareArticle == null) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+        ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY ||
+                !returnRecord.getAccount().getUserId().equals(loginId) ||
+                returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+
+        //////// 대여함 오픈 로직 추가 필요 //////////////
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 }

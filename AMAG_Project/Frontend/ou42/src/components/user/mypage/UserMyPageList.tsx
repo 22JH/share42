@@ -5,12 +5,13 @@ import { memo, useEffect, useRef, useState } from "react";
 import { AiOutlineHeart, AiOutlineEye } from "react-icons/ai";
 
 import testObject from "../../../assets/testObject.jpg";
+import { useLocation } from "react-router-dom";
 
-const container = (length: number) => css`
+const container = (length: number, pathName: string) => css`
   width: 100%;
-  height: 100%;
+  height: auto;
   position: absolute;
-  top: 12vh;
+  top: ${pathName === "/user/mypage/like" ? "6vh" : "12vh"};
   overflow: auto;
   .container:nth-of-type(${length}) {
     margin-bottom: 20%;
@@ -86,6 +87,7 @@ interface Props {
 
 function UserMyPageList(props: Partial<Props>) {
   const divRef = useRef<any>({});
+  const pathName = useLocation().pathname;
   const [promiseData, setPromiseData] = useState<any[]>([]);
   const { data, fetchNextPage, hasNextPage, valueLength } = props;
 
@@ -113,37 +115,46 @@ function UserMyPageList(props: Partial<Props>) {
   }
 
   return (
-    <div css={container(promiseData?.length)}>
+    <div
+      css={container(
+        data?.pages instanceof Promise
+          ? promiseData?.length
+          : data?.pages.length,
+        pathName
+      )}
+    >
       {data?.pages?.length !== 0
-        ? promiseData.map((item: any, index: number) => {
-            return (
-              <div
-                className="container"
-                ref={(ref) => (divRef.current[index] = ref)}
-                key={`${item} / ${index}`}
-              >
-                <div className="img">
-                  <img src={testObject} alt="사진" />
-                </div>
-                <div className="content">
-                  <p>ssafy123</p>
-                  <p>드라이버 공유합니다</p>
-                  <p>사용 중</p>
-                </div>
+        ? (data?.pages instanceof Promise ? promiseData : data?.pages).map(
+            (item: any, index: number) => {
+              return (
+                <div
+                  className="container"
+                  ref={(ref) => (divRef.current[index] = ref)}
+                  key={`${item} / ${index}`}
+                >
+                  <div className="img">
+                    <img src={testObject} alt="사진" />
+                  </div>
+                  <div className="content">
+                    <p>ssafy123</p>
+                    <p>드라이버 공유합니다</p>
+                    <p>사용 중</p>
+                  </div>
 
-                <div className="icon">
-                  <div className="eye">
-                    <AiOutlineEye />
-                    <p>30</p>
-                  </div>
-                  <div className="heart">
-                    <AiOutlineHeart />
-                    <p>12</p>
+                  <div className="icon">
+                    <div className="eye">
+                      <AiOutlineEye />
+                      <p>30</p>
+                    </div>
+                    <div className="heart">
+                      <AiOutlineHeart />
+                      <p>12</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            }
+          )
         : null}
     </div>
   );

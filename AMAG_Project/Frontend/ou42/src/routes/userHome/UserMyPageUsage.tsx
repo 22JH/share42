@@ -11,7 +11,7 @@ import BottomMenuBar from "../../components/BottomMenuBar";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import UserMyPageList from "../../components/user/mypage/UserMyPageList";
 import UserMyPageListBtn from "../../components/user/mypage/UserMyPageListBtn";
-import { C, L, pipe, takeAll } from "../../custom/FxJS";
+import { C, L, pipe } from "../../custom/FxJS";
 
 function UserMyPageUsageFetcher({
   children,

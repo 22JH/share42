@@ -30,7 +30,7 @@ function AdminHomeCircleChartFetchter({
     () => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/log/sido`,
+        url: `https://www.share42-together.com/api/admin/log/sido`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
@@ -64,7 +64,7 @@ function AdminHomeBarChartFetchter({
     () => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/log/sido/${change.region}`,
+        url: `https://www.share42-together.com/api/admin/log/sido/${change.region}`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },

@@ -65,7 +65,7 @@ const intersectionOptions = {
 };
 
 // API_URL
-const API_URL = `http://www.share42-together.com:8088/api/user/share/share-articles/search`;
+const API_URL = `https://www.share42-together.com/api/user/share/share-articles/search`;
 
 // 데이터 fetch 컴포넌트
 function UserHomeFetcher({
@@ -87,7 +87,7 @@ function UserHomeFetcher({
   const locationAPI = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/common/address/reverse-geo/${location.latitude}/${location.longitude}`,
+      url: `https://www.share42-together.com/api/common/address/reverse-geo/${location.latitude}/${location.longitude}`,
     });
   };
 
@@ -161,18 +161,25 @@ function UserHomeFetcher({
       },
       select: (data) => {
         const newData = pipe(L.map, L.flatten, takeAll);
-        let recommendation;
+        let recommendation = [];
         if (data.pages.length) {
           recommendation = data.pages[0].data.message.CFRecommendation;
         }
         return {
-          pages: [
-            ...recommendation,
-            ...newData(
-              (arr: any) => arr.data.message.article.content,
-              data.pages
-            ),
-          ],
+          pages: recommendation?.length
+            ? [
+                ...recommendation,
+                ...newData(
+                  (arr: any) => arr.data.message.article.content,
+                  data.pages
+                ),
+              ]
+            : [
+                ...newData(
+                  (arr: any) => arr.data.message.article.content,
+                  data.pages
+                ),
+              ],
           pageParams: data.pageParams,
         };
       },
@@ -215,7 +222,7 @@ function UserHomeFetcher({
           const API = () => {
             return axios({
               method: "get",
-              url: `http://www.share42-together.com:8088/api/common/address/reverse-geo/${props.coords.latitude}/${props.coords.longitude}`,
+              url: `https://www.share42-together.com/api/common/address/reverse-geo/${props.coords.latitude}/${props.coords.longitude}`,
             });
           };
 
@@ -252,7 +259,7 @@ function UserHomeList(props: Partial<Props>) {
   const { mutate: setLike } = useMutation((id) => {
     return axios({
       method: "post",
-      url: `http://www.share42-together.com:8088/api/user/share/share-articles/like/${id}`,
+      url: `https://www.share42-together.com/api/user/share/share-articles/like/${id}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -262,7 +269,7 @@ function UserHomeList(props: Partial<Props>) {
   const { mutate: setUnLike } = useMutation((id) => {
     return axios({
       method: "post",
-      url: `http://www.share42-together.com:8088/api/user/share/share-articles/unlike/${id}`,
+      url: `https://www.share42-together.com/api/user/share/share-articles/unlike/${id}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },

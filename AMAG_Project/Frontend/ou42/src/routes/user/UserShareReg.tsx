@@ -13,7 +13,7 @@ import shareIsOpenStore from "../../store/shareIsOpenStore";
 import UserSharePrice from "../../components/share/UserSharePrice";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserShareCategory from "../../components/share/UserShareCategory";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 
 const UserShareReg = () => {
   const loginObject = localStorage.getItem("loginInfo");
@@ -43,7 +43,7 @@ const UserShareReg = () => {
     formData.append("category", location.state);
     formData.append("content", content);
     formData.append("lockerStationId", String(branchChoice.id));
-    console.log(branchChoice.name)
+    console.log(branchChoice.name);
     if (
       preview &&
       title &&
@@ -88,7 +88,7 @@ const UserShareReg = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await fetch(
-      `http://www.share42-together.com:8088/api/user/share/share-articles`,
+      `https://www.share42-together.com/api/user/share/share-articles`,
       {
         method: "POST",
         body: formData,
@@ -97,27 +97,27 @@ const UserShareReg = () => {
         },
       }
     )
-    .then((response) => {
-      const data = response.json()
-      return data
-    })
-    .then((data) => {
-      console.log(data)
-      swal("등록이 완료되었습니다", "게시물을 확인해 보세요", "success");
-      navigate('/home')
-    })
-    .catch((e) => {
-      console.log(e);
-      setBranchChoice({name : "", id: null})
-      swal("등록이 실패하였습니다", "서버 오류가 발생했습니다.", "error");
-    })
+      .then((response) => {
+        const data = response.json();
+        return data;
+      })
+      .then((data) => {
+        console.log(data);
+        swal("등록이 완료되었습니다", "게시물을 확인해 보세요", "success");
+        navigate("/home");
+      })
+      .catch((e) => {
+        console.log(e);
+        setBranchChoice({ name: "", id: null });
+        swal("등록이 실패하였습니다", "서버 오류가 발생했습니다.", "error");
+      });
   };
 
   useEffect(() => {
     for (let i of formData) {
-      console.log(i)
+      console.log(i);
     }
-  }, [preview, title, price, location.state, content, branchChoice, formData])
+  }, [preview, title, price, location.state, content, branchChoice, formData]);
 
   return (
     <section

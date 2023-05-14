@@ -30,7 +30,7 @@ import { db } from "../..";
 
 const SHARE_DETAIL_API = (id: any) => {
   // eslint-disable-next-line max-len
-  return `http://www.share42-together.com:8088/api/user/share/share-articles/${id}`;
+  return `https://www.share42-together.com/api/user/share/share-articles/${id}`;
 };
 
 const UserSharePost = () => {

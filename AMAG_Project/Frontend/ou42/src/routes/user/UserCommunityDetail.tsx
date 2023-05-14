@@ -37,11 +37,11 @@ const UserCommunityDetail = () => {
   const [postcomment, setPostComment] = useState<string>("");
 
   const Detail_API = (id: string | undefined) => {
-    return `http://www.share42-together.com:8088/api/user/community/posts/${id}/${PAGE}/${SIZE}`;
+    return `https://www.share42-together.com/api/user/community/posts/${id}/${PAGE}/${SIZE}`;
   };
 
   const Post_Comment_API = () => {
-    return `http://www.share42-together.com:8088/api/user/community/comments`;
+    return `https://www.share42-together.com/api/user/community/comments`;
   };
 
   const { data, refetch } = useQuery(

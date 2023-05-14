@@ -97,7 +97,7 @@ export default function HomeNavBar() {
   const userInfo = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/user/info`,
+      url: `https://www.share42-together.com/api/user/info`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },

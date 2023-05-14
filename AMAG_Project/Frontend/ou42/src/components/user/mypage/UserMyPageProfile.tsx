@@ -8,7 +8,7 @@ import { useApi } from "./../../../hooks/useApi";
 import { useGetUserToken } from "../../../hooks/useGetToken";
 import { useNavigate } from "react-router-dom";
 
-const URL = "http://k8d102.p.ssafy.io:8088/api/logout";
+const URL = "https://www.share42-together.com/api/logout";
 interface Info {
   address: string;
   birth: string;

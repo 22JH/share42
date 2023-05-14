@@ -18,7 +18,7 @@ export interface UserCommunityCommentListProps {
   getTimeAgo: (timestamp: string) => string;
   setComment: React.Dispatch<React.SetStateAction<string>>;
   comment: string;
-  refetch: any
+  refetch: any;
 }
 
 const UserCommunityCommentList = ({
@@ -34,7 +34,7 @@ const UserCommunityCommentList = ({
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const handleEditComment = (commentId:number, content:string) => {
+  const handleEditComment = (commentId: number, content: string) => {
     if (isEdit === false) {
       setIsEdit(!isEdit);
       setEditCommentId(commentId);
@@ -42,7 +42,7 @@ const UserCommunityCommentList = ({
       setIsEdit(!isEdit);
       setEditCommentId(null);
     }
-    setComment(content)
+    setComment(content);
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ const UserCommunityCommentList = ({
     e.preventDefault();
     const response = await axios({
       method: "PATCH",
-      url: `http://www.share42-together.com:8088/api/user/community/comments/${Number(
+      url: `https://www.share42-together.com/api/user/community/comments/${Number(
         id
       )}`,
       data: {
@@ -76,22 +76,25 @@ const UserCommunityCommentList = ({
     }
   };
 
-  const handleCommentDelete = async (e: React.MouseEvent<HTMLSpanElement>,id:number) => {
+  const handleCommentDelete = async (
+    e: React.MouseEvent<HTMLSpanElement>,
+    id: number
+  ) => {
     const response = await axios({
-      method: 'DELETE',
-      url: `http://www.share42-together.com:8088/api/user/community/comments/${Number(
+      method: "DELETE",
+      url: `https://www.share42-together.com/api/user/community/comments/${Number(
         id
       )}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
     if (response.data.status === 200) {
       refetch();
     }
-  }
+  };
 
   return (
     <div
@@ -209,27 +212,28 @@ const UserCommunityCommentList = ({
               alignItems: "center",
             }}
           >
-            {isEdit && editCommentId === item?.id ? 
-            <form onSubmit={(e) => handleEditSubmit(e, item?.id)}>
-              <input
-                type="text"
-                onChange={handleEditChange}
-                value={comment}
-              />
-              <button type="submit">수정하기</button>
-            </form>
-            :
-            <span
-              style={{
-                display: "block",
-                minHeight: "3vh",
-                width: '100%',
-                overflow: "auto",
-                paddingBottom: "1vh",
-              }}
-            >
-              {item?.content}
-            </span>}
+            {isEdit && editCommentId === item?.id ? (
+              <form onSubmit={(e) => handleEditSubmit(e, item?.id)}>
+                <input
+                  type="text"
+                  onChange={handleEditChange}
+                  value={comment}
+                />
+                <button type="submit">수정하기</button>
+              </form>
+            ) : (
+              <span
+                style={{
+                  display: "block",
+                  minHeight: "3vh",
+                  width: "100%",
+                  overflow: "auto",
+                  paddingBottom: "1vh",
+                }}
+              >
+                {item?.content}
+              </span>
+            )}
           </div>
         </div>
       ))}

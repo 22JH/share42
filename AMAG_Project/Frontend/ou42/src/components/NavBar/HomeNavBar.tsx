@@ -1,9 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { SlBell } from "react-icons/sl";
+import { useQuery, useQueryClient } from "react-query";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { useRef, useState } from "react";
+import { SlBell } from "react-icons/sl";
+import axios from "axios";
+
+import { useGetUserToken } from "../../hooks/useGetToken";
+import homeStore from "../../store/homeStore";
 
 const homeNavStyle = css`
   width: 100vw;
@@ -82,15 +88,55 @@ const homeNavStyle = css`
   }
 `;
 export default function HomeNavBar() {
-  const searchItem = () => {
-    console.log("검색");
+  const [input, setInput] = useState<string>("");
+  const queryClient = useQueryClient();
+  const { setSearch } = homeStore();
+  const TOKEN = useGetUserToken();
+
+  // 사용자 정보 받는 API 함수
+  const userInfo = () => {
+    return axios({
+      method: "get",
+      url: `http://www.share42-together.com:8088/api/user/info`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
+
+  // 사용자 정보 받는 query
+  const { data } = useQuery(["user-info"], userInfo, {
+    suspense: false,
+    cacheTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 30,
+    select: (data) => {
+      return data.data.message;
+    },
+  });
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const searchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearch(input);
+      // (inputRef?.current as any).value = "";
+      queryClient.invalidateQueries();
+    }
+  };
+  const searchClick = () => {
+    setSearch(input);
+    queryClient.invalidateQueries();
+    // (inputRef?.current as any).value = "";
+  };
+  const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInput(value);
   };
   return (
     <>
       <div css={homeNavStyle}>
         {/* 최상위 */}
         <div className="top">
-          <p>진평동</p>
+          <p>{data?.dong}</p>
           <SlBell size={23} />
         </div>
 
@@ -129,11 +175,14 @@ export default function HomeNavBar() {
               type="text"
               placeholder="관심있는 상품을 검색해보세요"
               autoComplete="false"
+              onChange={searchInput}
+              onKeyUp={searchKeyDown}
+              ref={inputRef}
             />
             <BsSearch
               size={20}
               style={{ fill: "#FFABAB" }}
-              onClick={searchItem}
+              onClick={searchClick}
             />
           </div>
         </div>

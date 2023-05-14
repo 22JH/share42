@@ -1,26 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
-import { cloneElement, Suspense, useEffect, useRef } from "react";
 import {
   useInfiniteQuery,
   InfiniteQueryObserverResult,
   FetchNextPageOptions,
-  useQueryErrorResetBoundary,
   useQueryClient,
 } from "react-query";
+import { cloneElement, memo, Suspense, useEffect, useRef } from "react";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import axios, { AxiosError } from "axios";
 
-import * as userHomeStyle from "../../user/UserHomeStyle";
-import testObject from "../../../assets/testObject.jpg";
+import { useGetUserToken } from "../../../hooks/useGetToken";
+import AdminModalContent from "../AdminModalContent";
+import adminStore from "../../../store/adminStore";
 import pinkBox from "../../../assets/pinkBox.png";
+import { ErrorMessage } from "../../ErrorMessage";
 import ErrorBoundary from "../../ErrorBoundary";
 import * as FxJS from "../../../custom/FxJS";
 import Loading from "../../Loading";
-import adminStore from "../../../store/adminStore";
 
-export const contentStyle = css`
+export const contentStyle = (length: number | undefined) => css`
   width: 100%;
   border-bottom: 1px solid #dddddd;
   height: 15vh;
@@ -59,6 +59,10 @@ export const contentStyle = css`
       color: #bababa;
     }
   }
+
+  &:nth-of-type(${length}) {
+    margin-bottom: 20%;
+  }
 `;
 
 const emptyBox = css`
@@ -77,17 +81,61 @@ const emptyBox = css`
   }
 `;
 
+export const dialog = css`
+  border: 0;
+  border-radius: 20px;
+  animation-name: show;
+  animation-duration: 0.5s;
+  outline: none;
+
+  background-color: #fffbfb;
+
+  &::backdrop {
+    background-color: #969696;
+    opacity: 0.5;
+  }
+
+  @keyframes show {
+    0% {
+      transform: translate(0, 800px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+`;
+
+interface Data {
+  data?: any;
+  hasNextPage?: boolean;
+  fetchNextPage?: (
+    options?: FetchNextPageOptions
+  ) => Promise<InfiniteQueryObserverResult<any, AxiosError>>;
+}
+
+export interface Page {
+  accountNickname: string;
+  category: number;
+  content: string;
+  id: number;
+  img: string;
+  lockerLockerStationDong: string;
+  lockerLockerStationSido: string;
+  lockerLockerStationSigungu: string;
+  regDt: string;
+  title: string;
+}
+
+const SIZE = 8;
+
 // api 받는 컴포넌트
 function AdminReportFatcher(props: {
   children: React.PropsWithChildren<ReactJSXElement>;
 }) {
   const { children } = props;
-  const SIZE = 8;
   const { category } = adminStore();
-
   const queryClient = useQueryClient();
-
-  const TOKEN = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEyMyIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjgzNTMyNjY2fQ.fHZpwEpqFHhDgE5fmq1B1_LH2a4cJNxOLxbHUvABYkzZ1BnHdBASq2Jz28CDPkl_CnkMbCUZrY-2z1XbpxOHFQ`;
+  const TOKEN = useGetUserToken();
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["admin-report", category],
@@ -102,7 +150,9 @@ function AdminReportFatcher(props: {
     },
     {
       getNextPageParam: (lastPage, allPage) => {
-        return allPage.length + 1;
+        if (allPage[0].data.message.totalPages > allPage.length) {
+          return allPage.length + 1;
+        }
       },
       select: (data) => {
         const newPages = FxJS.pipe(
@@ -124,14 +174,13 @@ function AdminReportFatcher(props: {
     queryClient.prefetchInfiniteQuery(
       ["admin-report", category],
       ({ pageParam = 1 }) => {
-        return axios.get(
-          `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
-          {
-            headers: {
-              Authorization: `Bearer ${TOKEN}`,
-            },
-          }
-        );
+        return axios({
+          method: "get",
+          url: `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
       }
     );
   }, [category]);
@@ -139,19 +188,16 @@ function AdminReportFatcher(props: {
   return cloneElement(children, { data, hasNextPage, fetchNextPage });
 }
 
-interface Data {
-  data?: any;
-  hasNextPage?: boolean;
-  fetchNextPage?: (
-    options?: FetchNextPageOptions
-  ) => Promise<InfiniteQueryObserverResult<any, AxiosError>>;
-}
-
 // 내용을 구성하는 컴포넌트
 function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
-  const divRef = useRef<HTMLDivElement | any>({});
   const { pages } = data;
-  console.log(pages);
+  const divRef = useRef<HTMLDivElement | any>({});
+  const dialogRef = useRef<HTMLDialogElement | any>({});
+
+  const ImgUrl = process.env.REACT_APP_IMAGE_URL;
+
+  const LENGTH = pages.length;
+
   const intersetion = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -175,7 +221,7 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
   return (
     <>
       {pages.length ? (
-        pages?.map((page: any, index: number) => {
+        pages?.map((page: Page, index: number) => {
           const {
             lockerLockerStationSigungu: si,
             lockerLockerStationDong: dong,
@@ -183,58 +229,55 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
             regDt,
             content,
             title,
+            img,
           } = page;
 
           const date = regDt.split("T")[0];
 
           return (
             <div
-              css={contentStyle}
-              key={index}
-              ref={(ref) => {
-                return (divRef.current[index] = ref);
-              }}
+              key={`${index} / ${si} / ${dong} / ${accountNickname} / ${regDt} / ${content} / ${title}`}
             >
-              <img src={testObject} alt="test" className="img" />
-              <div className="text">
-                <p>{title}</p>
-                <p>{content}</p>
-                <p>{`${accountNickname} · ${date}`}</p>
-                <p>{`${si} · ${dong}`}</p>
+              {/* 목록 LIST */}
+              <div
+                css={contentStyle(LENGTH)}
+                ref={(ref) => {
+                  return (divRef.current[index] = ref);
+                }}
+                onClick={() => {
+                  dialogRef?.current[index].showModal();
+                }}
+              >
+                <img src={`${ImgUrl}${img}`} alt="test" className="img" />
+                <div className="text">
+                  <p>{title}</p>
+                  <p>{content}</p>
+                  <p>{`${accountNickname} · ${date}`}</p>
+                  <p>{`${si} · ${dong}`}</p>
+                </div>
               </div>
+
+              {/* modal */}
+              <dialog
+                ref={(ref) => (dialogRef.current[index] = ref)}
+                css={dialog}
+              >
+                <AdminModalContent
+                  dialogRef={dialogRef}
+                  data={page}
+                  index={index}
+                />
+              </dialog>
             </div>
           );
         })
       ) : (
         <div css={emptyBox}>
-          <p>리스트가 없어요</p>
+          <p>빈 리스트 입니다</p>
           <img src={pinkBox} alt="빈 리스트" />
         </div>
       )}
     </>
-  );
-}
-
-// 에러시 생성되는 컴포넌트
-function ErrorMessage() {
-  const { reset } = useQueryErrorResetBoundary();
-
-  const queryClient = useQueryClient();
-  const refetch = () => {
-    return queryClient.refetchQueries(["admin-report"]);
-  };
-
-  const reTry = () => {
-    reset();
-    refetch();
-  };
-  return (
-    <div css={userHomeStyle.errorMsgStyle}>
-      <p>잠시 후 다시 시도해주세요</p>
-      <p>요청을 처리하는데</p>
-      <p>실패했습니다.</p>
-      <button onClick={reTry}>다시시도</button>
-    </div>
   );
 }
 
@@ -244,12 +287,14 @@ function AdminReportContent() {
       <ErrorBoundary fallback={ErrorMessage}>
         <Suspense fallback={<Loading />}>
           <AdminReportFatcher>
-            <AdminReportContainer />
+            <MemoizedContainer />
           </AdminReportFatcher>
         </Suspense>
       </ErrorBoundary>
     </>
   );
 }
+
+const MemoizedContainer = memo(AdminReportContainer);
 
 export default AdminReportContent;

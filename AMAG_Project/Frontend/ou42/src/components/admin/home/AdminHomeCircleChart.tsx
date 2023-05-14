@@ -1,19 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { useEffect, useRef } from "react";
 import { arc, interpolate, pie, select, scaleLinear } from "d3";
+import { useQueryClient } from "react-query";
+import { useEffect, useRef } from "react";
 
-const data = [
-  [50, "전국"],
-  [150, "서울"],
-  [100, "대전"],
-  [200, "인천"],
-  [250, "대구"],
-  [30, "광주"],
-  [170, "부산"],
-  [230, "울산"],
-];
+import { Change } from "../../../routes/admin/AdminHome";
+
+// const data = [
+//   [50, "전국"],
+//   [150, "서울"],
+//   [100, "대전"],
+//   [200, "인천"],
+//   [250, "대구"],
+//   [30, "광주"],
+//   [170, "부산"],
+//   [230, "울산"],
+// ];
 
 const info = css`
   display: flex;
@@ -33,10 +36,13 @@ const info = css`
 `;
 
 const outer = css`
-  width: 70%;
+  width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  p {
+    font-weight: 900;
+  }
 `;
 
 const box = (d: any) => css`
@@ -46,18 +52,24 @@ const box = (d: any) => css`
   margin-left: 5vw;
 `;
 
+type Data = [number, string];
+
 const DURATION: 1000 = 1000;
 
 function AdminHomeCircleChart({
   setChange,
+  data,
 }: {
-  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+  setChange: React.Dispatch<React.SetStateAction<Change>>;
+  data?: Data[];
 }) {
   const canvas = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const COLORINDEX = 0.3;
 
   const color = scaleLinear()
     .domain([0, 1])
-    .range(["#ff4f4f", "white"] as any);
+    .range(["#fb5959", "white"] as any);
 
   useEffect((): any => {
     const canv = select(canvas.current);
@@ -83,12 +95,14 @@ function AdminHomeCircleChart({
       .enter()
       .append("path")
       .attr("fill", (d: any, index: number): any => {
-        return color(index * 0.1);
+        return color(index * COLORINDEX);
       })
       .attr("stroke-width", "2px")
       .attr("d", f)
       .on("click", (event: any, d: any) => {
-        setChange((isChange) => !isChange);
+        setChange((change) => {
+          return { region: d.data[1], isChange: !change.isChange };
+        });
       })
       .transition()
       .duration(DURATION)
@@ -105,34 +119,45 @@ function AdminHomeCircleChart({
         "transform",
         (d: any) => `translate(${f.centroid(d)[0] - 10}, ${f.centroid(d)[1]})`
       )
-      .attr("fill", "white")
-      .attr("dy", "0.35em")
+      .attr("fill", "black")
+      .attr("dy", "5.35rem")
       .attr("font-size", "0.8rem")
       .attr("font-weight", "900")
+      .attr("transform", "rotate(-20)")
       .text((d: any) => {
-        if (d.data[0] >= 100) {
+        if (Math.abs(d.endAngle - d.startAngle) >= 1) {
           return d.data[1];
         }
         return;
       })
       .on("click", (event: any, d: any) => {
-        setChange((isChange) => !isChange);
+        setChange((change) => {
+          return { region: d.data[1], isChange: !change.isChange };
+        });
       })
       .transition()
       .duration(DURATION)
       .attr("fill", "white");
   }, []);
 
+  const goToBar = (e: React.MouseEvent<HTMLParagraphElement>) => {
+    const value = (e.target as HTMLElement).textContent;
+
+    setChange((change) => {
+      return { region: value!, isChange: !change.isChange };
+    });
+  };
+
   return (
     <div>
       <div className="canvas" ref={canvas}></div>
       <div css={info}>
         <div css={outer}>
-          {data.map((d: any[], index: number) => {
+          {data?.map((d: Data, index: number) => {
             return (
               <div className="container" key={index}>
-                <div css={box(color(index * 0.1))}></div>
-                <p>{d[1]}</p>
+                <div css={box(color(index * COLORINDEX))}></div>
+                <p onClick={goToBar}>{d[1]}</p>
               </div>
             );
           })}

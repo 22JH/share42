@@ -99,7 +99,7 @@ function AdminLogListFetcher({
   areaInfo: Area;
 }) {
   const TOKEN = useGetUserToken();
-  const SIZE = 5;
+  const SIZE = 20;
 
   // 리스트 요청 API 함수
   const listAPI = ({ pageParam = 1 }) => {

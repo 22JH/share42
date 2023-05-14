@@ -150,7 +150,7 @@ function UserHomeFetcher({
   };
 
   // 공유글 데이터 불러오는 infinity query
-  const { fetchNextPage, data, hasNextPage, refetch } = useInfiniteQuery(
+  const { fetchNextPage, data, hasNextPage } = useInfiniteQuery(
     ["get-object-list"],
     getListFnc,
     {
@@ -244,7 +244,7 @@ function UserHomeFetcher({
     }
   }, []);
 
-  return cloneElement(children, { fetchNextPage, data, hasNextPage, refetch });
+  return cloneElement(children, { fetchNextPage, data, hasNextPage });
 }
 
 // 컨텐츠를 보여주는 컴포넌트

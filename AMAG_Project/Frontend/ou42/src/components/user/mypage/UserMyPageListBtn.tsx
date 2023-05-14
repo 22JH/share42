@@ -3,13 +3,15 @@ import { css } from "@emotion/react";
 
 import { useLocation } from "react-router-dom";
 import { useEffect, useRef } from "react";
-import { L, pipe } from "../../../custom/FxJS";
-import { takeAll } from "./../../../custom/FxJS";
 
 const container = (value: number) => css`
   width: 100%;
   height: auto;
   color: #a8a8a8;
+  position: fixed;
+  top: 6%;
+  z-index: 99;
+  background-color: white;
 
   .select {
     list-style: none;
@@ -42,28 +44,45 @@ const container = (value: number) => css`
 interface Props {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   value: number;
-  setValueLength: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function UserMyPageListBtn({ setValue, value, setValueLength }: Props) {
+function UserMyPageListBtn({ setValue, value }: Props) {
   const { pathname } = useLocation();
   const ulRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
     const liNodes = ulRef.current?.children;
-    setValueLength(
-      (value) => pipe(L.map, takeAll)((n: Node) => n, liNodes).length
-    );
+    if (pathname === "/user/mypage/usage") {
+      setValue(2);
+    }
+    if (liNodes) {
+      for (const a of liNodes) {
+        a.addEventListener("click", () => {
+          if (a.childNodes[0].textContent === "회수이력") {
+            setValue(0);
+          } else if (a.childNodes[0].textContent === "보관이력") {
+            setValue(1);
+          } else if (a.childNodes[0].textContent === "사용이력") {
+            setValue(2);
+          } else if (a.childNodes[0].textContent === "반납이력") {
+            setValue(3);
+          }
+        });
+      }
+    }
+    // setValueLength(
+    //   (value) => pipe(L.map, takeAll)((n: Node) => n, liNodes).length
+    // );
   }, []);
 
   return (
-    <div css={container(value + 1)}>
+    <div css={container(value === 0 || value === 1 ? value + 1 : value - 1)}>
       <ul className="select" ref={ulRef}>
-        <li onClick={() => setValue(0)}>
-          <p>{pathname === "/user/mypage/usage" ? "사용이력" : "보관이력"}</p>
+        <li>
+          <p>{pathname === "/user/mypage/usage" ? "사용이력" : "회수이력"}</p>
         </li>
-        <li onClick={() => setValue(1)}>
-          <p>{pathname === "/user/mypage/usage" ? "반납이력" : "회수이력"}</p>
+        <li>
+          <p>{pathname === "/user/mypage/usage" ? "반납이력" : "보관이력"}</p>
         </li>
       </ul>
     </div>

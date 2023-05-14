@@ -90,7 +90,7 @@ function AdminSelectBox(props: Props) {
   // 지점 선택 함수
   const clickBranch = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    const SIZE = 8;
+    const SIZE = 20;
 
     // 리스트 요청 API 함수
     const listAPI = ({ pageParam = 1 }) => {

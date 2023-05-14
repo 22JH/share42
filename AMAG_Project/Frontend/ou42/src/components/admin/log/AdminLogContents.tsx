@@ -45,13 +45,6 @@ interface Props {
   hasNextPage?: boolean;
 }
 
-// intersaction 옵션
-const intersectionOptions = {
-  root: document.querySelector("#scrollArea"),
-  rootMargin: "0px",
-  threshold: 0.5,
-};
-
 function AdminLogContents(props: Props) {
   const { listData, fetchNextPage, hasNextPage } = props;
   const dialogRef = useRef<HTMLDialogElement | any>({});
@@ -70,7 +63,7 @@ function AdminLogContents(props: Props) {
         }
       }
     });
-  }, intersectionOptions);
+  });
 
   useEffect(() => {
     if (divRef?.current && listData?.length) {

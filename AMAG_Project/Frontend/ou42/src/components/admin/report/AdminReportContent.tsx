@@ -126,7 +126,7 @@ export interface Page {
   title: string;
 }
 
-const SIZE = 8;
+const SIZE = 20;
 
 // api 받는 컴포넌트
 function AdminReportFatcher(props: {

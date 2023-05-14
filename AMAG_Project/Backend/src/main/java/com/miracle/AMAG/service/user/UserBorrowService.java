@@ -189,4 +189,25 @@ public class UserBorrowService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String openLocker(String nfcData) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        Locker locker = lockerRepository.findByNfc(nfcData);
+        ShareArticle shareArticle = locker.getShareArticle();
+        if(shareArticle == null) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+        Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_STAY ||
+                !borrowRecord.getAccount().getUserId().equals(loginId) ||
+                borrowRecord.getUseType() != BorrowUtils.BORROW_APPLY) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+
+        //////// 대여함 오픈 로직 추가 필요 //////////////
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 }

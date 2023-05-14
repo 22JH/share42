@@ -77,4 +77,19 @@ public class UserBorrowController {
     public ResponseEntity<?> receiveProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userBorrowService.receiveProduct(shareArticleId));
     }
+
+    @PostMapping("/nfc/open/{nfc_data}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "대여함 오픈 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "대여함 오픈 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "물품 대여를 위한 대여함 오픈", description = "대여 신청 했던 공유 물품의 대여함을 열기 위해 호출되는 API")
+    @Parameters({
+            @Parameter(name = "nfc_data", description = "NFC 시리얼 번호", in = ParameterIn.PATH),
+    })
+    public ResponseEntity<?> openLockerForBorrow(@PathVariable("nfc_data") String nfcData) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userBorrowService.openLocker(nfcData));
+    }
 }

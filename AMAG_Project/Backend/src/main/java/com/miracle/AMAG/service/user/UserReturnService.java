@@ -121,9 +121,12 @@ public class UserReturnService {
 
         ShareReturnDTO shareReturnDTO = new ShareReturnDTO();
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
-        shareReturnDTO.setLocker(locker.getId());
-        shareReturnDTO.setAccount(account.getId());
-        shareReturnDTO.setShareArticle(shareArticle.getId());
+        shareReturnDTO.setAccountUserId(account.getUserId());
+        shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
+        shareReturnDTO.setShareArticleName(shareArticle.getName());
+        shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
+        shareReturnDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "r0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
@@ -178,9 +181,12 @@ public class UserReturnService {
 
         ShareReturnDTO shareReturnDTO = new ShareReturnDTO();
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
-        shareReturnDTO.setLocker(locker.getId());
-        shareReturnDTO.setAccount(account.getId());
-        shareReturnDTO.setShareArticle(shareArticle.getId());
+        shareReturnDTO.setAccountUserId(account.getUserId());
+        shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
+        shareReturnDTO.setShareArticleName(shareArticle.getName());
+        shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
+        shareReturnDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "rc0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();

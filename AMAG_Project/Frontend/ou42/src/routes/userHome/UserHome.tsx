@@ -417,20 +417,6 @@ function UserHomeList(props: Partial<Props>) {
       ) : (
         <div css={userHomeStyle.img}>
           <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
-          <p>빈 리스트 입니다</p>
           <img src={pinkBox} alt="blank" />
         </div>
       )}

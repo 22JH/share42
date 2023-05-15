@@ -39,6 +39,10 @@ const BORROW_DELETE_API = (id: any) => {
   return `https://www.share42-together.com/api/user/share/borrow/cancel/${id}`;
 };
 
+const BILLING_KEY_API = () => {
+  return `https://www.share42-together.com/api/user/info/pay-method/check/0`
+}
+
 const UserSharePost = () => {
   const { id } = useParams();
   const loginObject = localStorage.getItem("loginInfo");
@@ -55,7 +59,26 @@ const UserSharePost = () => {
   const [keepImg, setKeepImg] = useState<undefined | string>(undefined);
   const [returnImg, setReturnImg] = useState<any[]>([]);
 
+  const [billing, setBilling] = useState<string>("");
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios({
+      method: 'GET',
+      url: BILLING_KEY_API(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    .then((res:any) => {
+      console.log(res.data.message)
+      setBilling(res.data.message)
+    })
+    .catch((e) => console.log(e))
+  }, [])
+
+  console.log(billing)
 
   // 점 클릭하면 넘어가게 일단 기능 구현
   const handleDotClick = (idx: number) => {
@@ -114,6 +137,12 @@ const UserSharePost = () => {
 
   // 사용신청 하기
   const handleUseRequest = async (id: string | undefined) => {
+    if (billing === 'FAIL') {
+      console.log('Welcome to the home')
+      // navigate('/home')
+      return
+    }
+
     try {
       const res = await axios({
         method: "POST",
@@ -230,6 +259,8 @@ const UserSharePost = () => {
     }
   );
 
+  console.log(data)
+
   // 사용 신청 상태 저장
   useEffect(() => {
     if (data && data.article.shareStatus === 2) {
@@ -274,6 +305,7 @@ const UserSharePost = () => {
           handleNFC={handleNFC}
           handleChating={handleChating}
           data={data}
+          billing={billing}
         />
       </div>
     </>

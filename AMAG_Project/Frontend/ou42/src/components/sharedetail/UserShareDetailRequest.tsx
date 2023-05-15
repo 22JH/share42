@@ -38,9 +38,9 @@ const COLLECT_USE_API = () => {
   return `https://www.share42-together.com/api/common/usage/3`;
 };
 
-const USER_COLLECT_API = (id : string | undefined) => {
-  return `https://www.share42-together.com/api/user/share/collect/${id}`
-}
+const USER_COLLECT_API = (id: string | undefined) => {
+  return `https://www.share42-together.com/api/user/share/collect/${id}`;
+};
 
 const UserShareDetailRequest = ({
   useRequest,
@@ -49,6 +49,7 @@ const UserShareDetailRequest = ({
   handleNFC,
   handleChating,
   data,
+  billing
 }: UserShareDetailRequestProps) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -89,28 +90,30 @@ const UserShareDetailRequest = ({
       .catch((e) => console.log(e));
   }, []);
 
-  const handleUserCollect = (id:string | undefined) => {
+  const handleUserCollect = (id: string | undefined) => {
     axios({
-      method: 'POST',
+      method: "POST",
       url: USER_COLLECT_API(id),
       headers: {
         Authorization: `Bearer ${token}`,
-      }
+      },
     })
-    .then((res) => {
-      if (res.data.status === 200) {
-        swal("신청 성공", "회수 신청이 완료되었습니다.", "success");
-        navigate('/user/nfc')
-      } else {
-        swal("신청 실패", "회수 신청이 실패되었습니다.", "error");
-      }
-      return res.data.message
-    })
-    .catch((e) => {
-      console.log(e)
-      swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
-    })
-  }
+      .then((res) => {
+        if (res.data.status === 200) {
+          swal("신청 성공", "회수 신청이 완료되었습니다.", "success");
+          navigate("/user/nfc");
+        } else {
+          swal("신청 실패", "회수 신청이 실패되었습니다.", "error");
+        }
+        return res.data.message;
+      })
+      .catch((e) => {
+        console.log(e);
+        swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+      });
+  };
+
+  console.log(data?.article.shareStatus)
 
   return (
     <div
@@ -140,44 +143,64 @@ const UserShareDetailRequest = ({
           {data?.article.accountSigungu} {data?.article.accountDong}
         </span>
       </div>
-      {userId !== data?.article.accountUserId ? <div>
-        {useRequest ? (
-          <>
-            <button
+      {userId !== data?.article.accountUserId ? (
+        <div>
+          {useRequest ? (
+            <>
+              {data?.article.accountUserId === userId ? <>
+                <button
+                  style={{
+                    color: "#ffffff",
+                    backgroundColor: "#909090",
+                    border: "none",
+                    borderRadius: "5px",
+                    boxShadow: "2px 2px 5px #00000051",
+                    padding: "1.4vh 4vw",
+                  }}
+                  onClick={() => handleUseCancel(id)}
+                >
+                  사용취소
+                </button>
+                <div
+                  style={{
+                    position: "fixed",
+                    bottom: "12vh",
+                    right: "8vw",
+                    width: "5rem",
+                    height: "5rem",
+                    borderRadius: "50%",
+                    textAlign: "center",
+                    lineHeight: "5rem",
+                    backgroundColor: "red",
+                    color: "white",
+                    fontWeight: "900",
+                  }}
+                  onClick={handleNFC}
+                >
+                  NFC
+                </div>
+              </> : null}
+            </>
+          ) : (
+            data?.article?.shareStatus === 1 ? <button
               style={{
                 color: "#ffffff",
-                backgroundColor: "#909090",
+                backgroundColor: "#FFABAB",
                 border: "none",
                 borderRadius: "5px",
                 boxShadow: "2px 2px 5px #00000051",
                 padding: "1.4vh 4vw",
               }}
-              onClick={() => handleUseCancel(id)}
-            >
-              사용취소
-            </button>
-            <div
-              style={{
-                position: "fixed",
-                bottom: "12vh",
-                right: "8vw",
-                width: "5rem",
-                height: "5rem",
-                borderRadius: "50%",
-                textAlign: "center",
-                lineHeight: "5rem",
-                backgroundColor: "red",
-                color: "white",
-                fontWeight: "900",
+              onClick={() => {
+                dialogRef?.current.showModal();
               }}
-              onClick={handleNFC}
             >
-              NFC
-            </div>
-          </>
-        ) : (
+              사용신청
+            </button> : null
+          )}
           <button
             style={{
+              marginLeft: "3vw",
               color: "#ffffff",
               backgroundColor: "#FFABAB",
               border: "none",
@@ -185,28 +208,13 @@ const UserShareDetailRequest = ({
               boxShadow: "2px 2px 5px #00000051",
               padding: "1.4vh 4vw",
             }}
-            onClick={() => {
-              dialogRef?.current.showModal();
-            }}
+            onClick={handleChating}
           >
-            사용신청
+            채팅하기
           </button>
-        )}
+        </div>
+      ) : data?.article.shareStatus === 1 ? (
         <button
-          style={{
-            marginLeft: "3vw",
-            color: "#ffffff",
-            backgroundColor: "#FFABAB",
-            border: "none",
-            borderRadius: "5px",
-            boxShadow: "2px 2px 5px #00000051",
-            padding: "1.4vh 4vw",
-          }}
-          onClick={handleChating}
-          >
-          채팅하기
-        </button>
-      </div> : data?.article.shareStatus === 1 ? <button
           style={{
             marginLeft: "3vw",
             color: "#ffffff",
@@ -219,60 +227,76 @@ const UserShareDetailRequest = ({
           onClick={() => {
             dialogRef?.current.showModal();
           }}
-          >
+        >
           회수하기
-        </button> : null}
+        </button>
+      ) : null}
       <dialog
         ref={(ref) => {
           return (dialogRef.current = ref);
         }}
         css={dialog}
         style={{
-          textAlign: 'center'
+          textAlign: "center",
         }}
-        >
+      >
         <h1>HOW TO 사용신청?</h1>
         <button
           onClick={() => {
             (dialogRef.current as any).close();
           }}
           style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            border: 'none',
-            backgroundColor: '#ffffff'
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            border: "none",
+            backgroundColor: "#ffffff",
           }}
-          >
+        >
           X
         </button>
         <ul
           style={{
-            textAlign: 'left',
-            paddingLeft: '20px'
+            textAlign: "left",
+            paddingLeft: "20px",
           }}
-          >
+        >
           {termsContent.map((term, index) => (
-            <li 
-            style={{
-              listStyleType: 'dicimal'
-            }}
-            key={index}>{term}</li>
-            ))}
+            <li
+              style={{
+                listStyleType: "dicimal",
+              }}
+              key={index}
+            >
+              {term}
+            </li>
+          ))}
         </ul>
-        <button
+        {billing === 'SUCCESS' ? <button
           style={{
-            padding: '3% 6%',
-            fontWeight: '900',
-            color: '#ffffff',
-            backgroundColor: '#FFABAB',
-            border: 'none',
-            borderRadius: '12px'
+            padding: "3% 6%",
+            fontWeight: "900",
+            color: "#ffffff",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            borderRadius: "12px",
           }}
           onClick={() => handleUseRequest(id)}
-          >
+        >
           사용 신청하기
-        </button>
+        </button> : <button
+          style={{
+            padding: "3% 6%",
+            fontWeight: "900",
+            color: "#ffffff",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            borderRadius: "12px",
+          }}
+          onClick={() => navigate('/home')}
+        >
+          계좌 인증을 진행해주세요!
+        </button>}
       </dialog>
       <dialog
         ref={(ref) => {
@@ -280,49 +304,52 @@ const UserShareDetailRequest = ({
         }}
         css={dialog}
         style={{
-          textAlign: 'center'
+          textAlign: "center",
         }}
-        >
+      >
         <h1>HOW TO 회수신청?</h1>
         <button
           onClick={() => {
             (dialogRef.current as any).close();
           }}
           style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            border: 'none',
-            backgroundColor: '#ffffff'
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            border: "none",
+            backgroundColor: "#ffffff",
           }}
         >
           X
         </button>
         <ul
           style={{
-            textAlign: 'left',
-            paddingLeft: '20px'
+            textAlign: "left",
+            paddingLeft: "20px",
           }}
-          >
+        >
           {collectContent.map((term, index) => (
-            <li 
+            <li
               style={{
-                listStyleType: 'dicimal'
+                listStyleType: "dicimal",
               }}
-            key={index}>{term}</li>
+              key={index}
+            >
+              {term}
+            </li>
           ))}
         </ul>
         <button
           style={{
-            padding: '3% 6%',
-            fontWeight: '900',
-            color: '#ffffff',
-            backgroundColor: '#FFABAB',
-            border: 'none',
-            borderRadius: '12px'
+            padding: "3% 6%",
+            fontWeight: "900",
+            color: "#ffffff",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            borderRadius: "12px",
           }}
           onClick={() => handleUserCollect(id)}
-          >
+        >
           회수 신청하기
         </button>
       </dialog>

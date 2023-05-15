@@ -24,6 +24,7 @@ export interface UserShareDetailRequestProps {
   handleNFC: () => void;
   handleChating: () => void;
   data: any;
+  billing: string;
 }
 
 export interface UserShareDetailContentProps {

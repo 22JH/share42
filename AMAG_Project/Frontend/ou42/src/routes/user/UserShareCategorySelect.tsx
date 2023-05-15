@@ -10,11 +10,11 @@ const CategoryDiv = css`
     margin-right: 8vw;
   }
 
-  &:nth-of-type(7), 
+  &:nth-of-type(7),
   &:nth-of-type(8) {
-    margin-bottom: '0vh',
+    margin-bottom: "0vh";
   }
-`
+`;
 
 const UserShareCategorySelect = () => {
   const loginObject = localStorage.getItem("loginInfo");
@@ -28,7 +28,7 @@ const UserShareCategorySelect = () => {
   useEffect(() => {
     axios({
       method: "GET",
-      url: "http://www.share42-together.com:8088/api/common/category",
+      url: "https://www.share42-together.com/api/common/category",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -57,11 +57,11 @@ const UserShareCategorySelect = () => {
         }}
       ></div>
       <div
-        css={{CategoryDiv}}
+        css={{ CategoryDiv }}
         style={{
-          margin: '3vh',
-          display: 'flex',
-          flexWrap: 'wrap'
+          margin: "3vh",
+          display: "flex",
+          flexWrap: "wrap",
         }}
       >
         {options.map((item, index) => (
@@ -69,25 +69,27 @@ const UserShareCategorySelect = () => {
             key={index}
             css={CategoryDiv}
             style={{
-              marginBottom: '2vh',
-              backgroundColor: '#FFABAB',
-              color: 'white',
-              borderRadius: '12px',
-              textAlign: 'center',
-              cursor: 'pointer',
-              width: '39.3vw',
-              height: '19.3vh',
-              lineHeight: '19.3vh',
-              fontSize: '1.5rem',
-              fontWeight: '900'
+              marginBottom: "2vh",
+              backgroundColor: "#FFABAB",
+              color: "white",
+              borderRadius: "12px",
+              textAlign: "center",
+              cursor: "pointer",
+              width: "39.3vw",
+              height: "19.3vh",
+              lineHeight: "19.3vh",
+              fontSize: "1.5rem",
+              fontWeight: "900",
             }}
             onClick={() => handleCategorySelector(item.category)}
           >
             <span
               style={{
-                whiteSpace: 'nowrap'
+                whiteSpace: "nowrap",
               }}
-            >{item.category}</span>
+            >
+              {item.category}
+            </span>
           </div>
         ))}
       </div>

@@ -126,7 +126,7 @@ export interface Page {
   title: string;
 }
 
-const SIZE = 8;
+const SIZE = 20;
 
 // api 받는 컴포넌트
 function AdminReportFatcher(props: {
@@ -142,7 +142,7 @@ function AdminReportFatcher(props: {
     ({ pageParam = 1 }) => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
+        url: `https://www.share42-together.com/api/admin/reports/${category}/${pageParam}/${SIZE}`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
@@ -176,7 +176,7 @@ function AdminReportFatcher(props: {
       ({ pageParam = 1 }) => {
         return axios({
           method: "get",
-          url: `http://www.share42-together.com:8088/api/admin/reports/${category}/${pageParam}/${SIZE}`,
+          url: `https://www.share42-together.com/api/admin/reports/${category}/${pageParam}/${SIZE}`,
           headers: {
             Authorization: `Bearer ${TOKEN}`,
           },

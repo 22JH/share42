@@ -48,7 +48,7 @@ function AdminLogFetcher({
   const rigionAPI = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido`,
+      url: `https://www.share42-together.com/api/admin/lockers/address/sido`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -66,7 +66,7 @@ function AdminLogFetcher({
   const pointAPI = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido/${areaInfo.region}`,
+      url: `https://www.share42-together.com/api/admin/lockers/address/sido/${areaInfo.region}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -99,13 +99,13 @@ function AdminLogListFetcher({
   areaInfo: Area;
 }) {
   const TOKEN = useGetUserToken();
-  const SIZE = 5;
+  const SIZE = 20;
 
   // 리스트 요청 API 함수
   const listAPI = ({ pageParam = 1 }) => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/log/${areaInfo.point}/${pageParam}/${SIZE}`,
+      url: `https://www.share42-together.com/api/admin/log/${areaInfo.point}/${pageParam}/${SIZE}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },

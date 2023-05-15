@@ -8,7 +8,7 @@ import logo from "../../assets/logo.png";
 import { useQuery, useQueryErrorResetBoundary } from "react-query";
 import { useApi } from "./../../hooks/useApi";
 
-const URL = "http://k8d102.p.ssafy.io:8088/api/common/terms/join";
+const URL = "https://www.share42-together.com/api/common/terms/join";
 
 const container = css`
   height: 100vh;

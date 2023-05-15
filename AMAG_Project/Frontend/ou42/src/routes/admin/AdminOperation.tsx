@@ -31,7 +31,7 @@ function AdminOperationFetcher({
   const rigionAPI = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido`,
+      url: `https://www.share42-together.com/api/admin/lockers/address/sido`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -48,7 +48,7 @@ function AdminOperationFetcher({
   const pointAPI = () => {
     return axios({
       method: "get",
-      url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido/${areaInfo.region}`,
+      url: `https://www.share42-together.com/api/admin/lockers/address/sido/${areaInfo.region}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },

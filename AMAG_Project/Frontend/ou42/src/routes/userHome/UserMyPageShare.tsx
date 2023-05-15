@@ -1,61 +1,81 @@
 /** @jsxImportSource @emotion/react */
 
+import axios from "axios";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import { cloneElement, memo, Suspense, useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import axios from "axios";
 
-import UserMyPageListBtn from "../../components/user/mypage/UserMyPageListBtn";
-import UserMyPageList from "../../components/user/mypage/UserMyPageList";
-import { ErrorMessage } from "../../components/ErrorMessage";
-import BottomMenuBar from "../../components/BottomMenuBar";
-import ErrorBoundary from "../../components/ErrorBoundary";
-import Loading from "./../../components/Loading";
 import navStore from "../../store/navStore";
+import Loading from "./../../components/Loading";
+import { C, L, pipe, takeAll } from "../../custom/FxJS";
+import { useGetUserToken } from "../../hooks/useGetToken";
+import ErrorBoundary from "../../components/ErrorBoundary";
+import BottomMenuBar from "../../components/BottomMenuBar";
+import { ErrorMessage } from "../../components/ErrorMessage";
+import UserMyPageList from "../../components/user/mypage/UserMyPageList";
+import UserMyPageListBtn from "../../components/user/mypage/UserMyPageListBtn";
 
 // API 요청 함수
 function UserMyPageShareFetcher({
   children,
   value,
-  valueLength,
 }: {
   children: React.PropsWithChildren<ReactJSXElement>;
   value: number;
-  valueLength: number;
 }) {
-  const API = `https://jsonplaceholder.typicode.com/todos/1`;
-  const queryFn = () => {
-    return axios({
-      method: "get",
-      url: API,
-    });
-  };
+  const SIZE = 20;
+  const TOKEN = useGetUserToken();
   const queryClient = useQueryClient();
 
-  const { data } = useQuery(["user-mypage-share", value], queryFn, {
-    cacheTime: 300 * 1000,
-    staleTime: 300 * 1000,
-  });
+  // 물품 관련 API
+  const getListFnc = ({ pageParam = 1 }) => {
+    return axios({
+      method: "get",
+      url: `https://www.share42-together.com/api/user/mypage/share-articles/${pageParam}/${SIZE}/${value}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
 
-  console.log("렌더링");
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    ["user-mypage-list"],
+    getListFnc,
+    {
+      getNextPageParam: (lastPage, allPage) => {
+        if (allPage[0].data.message.totalPages > allPage.length) {
+          return allPage.length + 1;
+        }
+      },
+      select: (data) => {
+        const newPages = pipe(
+          L.map,
+          L.flatten,
+          L.map((d: any) => axios(d.metadataUri)),
+          L.map((d: any) => d.data),
+          C.take(Infinity)
+        );
+
+        return {
+          pages: newPages((d: any) => d.data.message, data.pages),
+          pageParams: data.pageParams,
+        };
+      },
+    }
+  );
 
   useEffect(() => {
-    for (let i = 0; i < valueLength; i++) {
-      queryClient.prefetchQuery(["user-mypage-share", i], queryFn, {
-        cacheTime: 300 * 1000,
-        staleTime: 300 * 1000,
-      });
-    }
-  }, []);
+    queryClient.prefetchInfiniteQuery(["user-mypage-list"], getListFnc);
+  }, [value]);
 
-  return cloneElement(children);
+  return cloneElement(children, { data, fetchNextPage, hasNextPage });
 }
 
 // 메인 컴포넌트
 function UserMyPageShare() {
   const { setPathTitle } = navStore();
   const [value, setValue] = useState<number>(0);
-  const [valueLength, setValueLength] = useState<number>(0);
+  // const [valueLength, setValueLength] = useState<number>(0);
 
   useEffect(() => {
     setPathTitle("공유 등록한 물품");
@@ -63,15 +83,11 @@ function UserMyPageShare() {
 
   return (
     <div style={{ width: "100vw", height: "81vh" }}>
-      <UserMyPageListBtn
-        setValue={setValue}
-        value={value}
-        setValueLength={setValueLength}
-      />
+      <UserMyPageListBtn setValue={setValue} value={value} />
 
       <ErrorBoundary fallback={ErrorMessage}>
         <Suspense fallback={<Loading />}>
-          <UserMyPageShareFetcher value={value} valueLength={valueLength}>
+          <UserMyPageShareFetcher value={value}>
             <UserMyPageList />
           </UserMyPageShareFetcher>
         </Suspense>

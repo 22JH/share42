@@ -8,8 +8,8 @@ import { useState } from "react";
 import { GoCheck } from "react-icons/go";
 import { useEffect } from "react";
 
-const SEND_URL = "http://k8d102.p.ssafy.io:8088/api/join/sms-send";
-const CONFIG_URL = "http://k8d102.p.ssafy.io:8088/api/join/sms-auth";
+const SEND_URL = "https://www.share42-together.com/api/join/sms-send";
+const CONFIG_URL = "https://www.share42-together.com/api/join/sms-auth";
 
 interface PropType {
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;

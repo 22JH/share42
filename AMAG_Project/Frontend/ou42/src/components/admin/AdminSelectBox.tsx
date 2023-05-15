@@ -72,7 +72,7 @@ function AdminSelectBox(props: Props) {
     const pointAPI = () => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/lockers/address/sido/${value}`,
+        url: `https://www.share42-together.com/api/admin/lockers/address/sido/${value}`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
@@ -90,13 +90,13 @@ function AdminSelectBox(props: Props) {
   // 지점 선택 함수
   const clickBranch = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    const SIZE = 8;
+    const SIZE = 20;
 
     // 리스트 요청 API 함수
     const listAPI = ({ pageParam = 1 }) => {
       return axios({
         method: "get",
-        url: `http://www.share42-together.com:8088/api/admin/log/${value}/${pageParam}/${SIZE}`,
+        url: `https://www.share42-together.com/api/admin/log/${value}/${pageParam}/${SIZE}`,
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },

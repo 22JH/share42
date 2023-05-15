@@ -2,7 +2,9 @@
 import { css } from "@emotion/react";
 
 export const content = (value: string) => css`
-  position: relative;
+  position: absolute;
+  overflow: auto;
+  height: auto;
 
   .sort-bar {
     display: flex;

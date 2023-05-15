@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../..";
 
-const URL = `http://k8d102.p.ssafy.io:8088/api/join`;
+const URL = `https://www.share42-together.com/api/join`;
 
 const logoSection = css`
   position: relative;

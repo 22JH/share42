@@ -6,11 +6,14 @@ import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
 @Component
 public class LockerControlHandler extends TextWebSocketHandler {
+    private List<WebSocketSession> sessionList = new ArrayList<>();
 
     private String getLocketNumFromUri(URI uri) {
         // uri에서 locker정보를 받는거
@@ -21,14 +24,30 @@ public class LockerControlHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        //uri에서 라커정보 받기
-//        String locckerNum = getLocketNumFromUri(session.getUri());
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        // 클라이언트와 연결 이후에 실행되는 메서드
+        sessionList.add(session);
+        log.info("{} 연결됨",session.getId());
+    }
 
-        String payload = message.getPayload();
-        log.info("payload {}", payload);
-//        log.info("locckerNum {}", locckerNum);
-        TextMessage textMessage = new TextMessage("connection complete");
-        session.sendMessage(textMessage);
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        for (WebSocketSession sess : sessionList) {
+           log.info("session.getId() : {}",session.getId());
+            String payload = message.getPayload();
+            log.info("payload {}", payload);
+            TextMessage textMessage = new TextMessage("connection complete");
+            sess.sendMessage(textMessage);
+        }
+
+
+    }
+
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        // 클라이언트와 연결을 끊었을 때 실행되는 메소드
+        sessionList.remove(session);
+        log.info("{} 연결 끊김",session.getId());
     }
 }

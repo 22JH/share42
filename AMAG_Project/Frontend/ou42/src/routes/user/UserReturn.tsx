@@ -57,15 +57,11 @@ const UserReturn = () => {
   const formData = useMemo(() => new FormData(), []);
 
   const handleSelectProduct = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = JSON.parse(e.target.value);
-    setReturnStatus(value.shareArticleShareStatus);
-    if (selectId !== value) {
-      setSelectId(value.shareArticleId);
-    } else if (returnStatus === '3') {
-      setDeleteBtn(true)
-    }
+    const value = e.target.value
+    setSelectId(value);
   };
 
+  
   const { data } = useQuery(
     ["getReturnCategory"],
     async () => {
@@ -100,9 +96,17 @@ const UserReturn = () => {
     {
       suspense: false,
     }
-  );
+    );
 
-  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useEffect(() => {
+      const ans = data?.find((item) => item.shareArticleId === Number(selectId))
+      setReturnStatus(String(ans?.shareArticleShareStatus))
+      if (String(ans?.shareArticleShareStatus) === '3') {
+        setDeleteBtn(true)
+      }
+    }, [data, selectId])
+    
+    const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files != null && files.length > 0) {
       setPreview(files[0]);
@@ -111,8 +115,6 @@ const UserReturn = () => {
 
   // formData에 담기
   useEffect(() => {
-    console.log(returnStatus);
-
     if (preview) {
       formData.append("imgFile", preview);
       formData.append("lockerStationId", state);
@@ -220,7 +222,7 @@ const UserReturn = () => {
           onChange={handleSelectProduct}
         >
           {data?.map((option: any, index: number) => (
-            <option key={index} value={JSON.stringify(option)}>
+            <option key={index} value={option.shareArticleId}>
               {option.shareArticleAccountNickname} {option.shareArticleName}{" "}
               {option.shareArticleSharePrice
                 ? option.shareArticleSharePrice.toLocaleString()

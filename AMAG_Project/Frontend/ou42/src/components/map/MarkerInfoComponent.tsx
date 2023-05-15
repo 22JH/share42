@@ -1,14 +1,41 @@
 /* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 
-import { useState, useEffect } from "react";
-import { MdMap } from "react-icons/md";
 import mapicon from "../../assets/mapicon.svg";
 import { OverlayListStyle } from "./style/MapStyle";
 import MarkerCardsComponent from "./MarkerCardsComponent";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MarkerDetailShareInfoComponentProps } from "./type/MapType";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
 
+export const dialog = css`
+  border: 0;
+  border-radius: 20px;
+  animation-name: show;
+  animation-duration: 0.5s;
+  outline: none;
+  position: relative;
+  background-color: #fffbfb;
+
+  &::backdrop {
+    background-color: #969696;
+    opacity: 0.5;
+  }
+
+  @keyframes show {
+    0% {
+      transform: translate(0, 800px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+`;
+const RETURN_USE_API = () => {
+  return `https://www.share42-together.com/api/common/usage/2`;
+};
 const MarkerInfoComponent = ({
   id,
   handleMarkerInfo,
@@ -18,6 +45,10 @@ const MarkerInfoComponent = ({
 }: MarkerDetailShareInfoComponentProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const dialogRef = useRef<HTMLDialogElement | any>({});
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+  const [termsContent, setTermsContent] = useState<string[]>([]);
 
   const handleLogNavigate = () => {
     navigate("/admin/log");
@@ -32,6 +63,21 @@ const MarkerInfoComponent = ({
       state : id
     })
   }
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: RETURN_USE_API(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res: any) => {
+        const lst = res.data.message[0].content.split("\r\n");
+        setTermsContent(lst.slice(0, lst.length - 1));
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <div
@@ -204,13 +250,68 @@ const MarkerInfoComponent = ({
                 border: 'none',
                 cursor: 'pointer'
               }}
-              onClick={handleReturnNavigate}
-            >
+              onClick={() => {
+                dialogRef?.current.showModal();
+              }}
+              >
               반납 하기
             </button>
           </div>
         </div>
       )}
+      <dialog
+        ref={(ref) => {
+          return (dialogRef.current = ref);
+        }}
+        css={dialog}
+        style={{
+          textAlign: 'center'
+        }}
+        >
+        <h1>HOW TO 반납신청?</h1>
+        <button
+          onClick={() => {
+            (dialogRef.current as any).close();
+          }}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            border: 'none',
+            backgroundColor: '#ffffff'
+          }}
+          >
+          X
+        </button>
+        <ul
+          style={{
+            textAlign: 'left',
+            paddingLeft: '20px'
+          }}
+        >
+          {termsContent.map((term, index) => (
+            <li 
+            style={{
+              listStyleType: 'dicimal',
+              whiteSpace: 'normal'
+            }}
+            key={index}>{term}</li>
+            ))}
+        </ul>
+        <button
+          style={{
+            padding: '3% 6%',
+            fontWeight: '900',
+            color: '#ffffff',
+            backgroundColor: '#FFABAB',
+            border: 'none',
+            borderRadius: '12px'
+          }}
+          onClick={handleReturnNavigate}
+        >
+          반납 신청하기
+        </button>
+      </dialog>
     </div>
   );
 };

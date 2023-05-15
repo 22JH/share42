@@ -59,12 +59,11 @@ const UserCommunityReg = () => {
   const { token } = loginObject ? JSON.parse(loginObject) : null;
   const navigate = useNavigate();
   const { state } = useLocation();
-  
-  const [title, setTitle] = useState<string>(state.data.communityDetail.title ? state.data.communityDetail.title: "");
-  const [category, setCategory] = useState<string>(state.data.communityDetail.category ? state.data.communityDetail.category : "");
-  const [content, setContent] = useState<string>(state.data.communityDetail.content ? state.data.communityDetail.content: "");
+  console.log(state)
+  const [title, setTitle] = useState<string>(state?.data?.communityDetail?.title ? state.data.communityDetail.title: "");
+  const [category, setCategory] = useState<string>(state?.data?.communityDetail?.category ? state.data.communityDetail.category : "");
+  const [content, setContent] = useState<string>(state?.data?.communityDetail?.content ? state.data.communityDetail.content: "");
   const [isSubmit, setIsSubmit] = useState<boolean | null>(null);
-
 
   const handleCommunityTitle = (e: React.FocusEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -138,7 +137,7 @@ const UserCommunityReg = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (state.editStatus) {
+    if (state?.editStatus) {
       communityPatch({
         category,
         title,
@@ -152,10 +151,6 @@ const UserCommunityReg = () => {
       });
     }
   };
-
-  console.log(state.editStatus)
-  console.log(state.data)
-  console.log(state.id)
 
   useEffect(() => {
     if (title !== "" && category !== "" && content !== "") {

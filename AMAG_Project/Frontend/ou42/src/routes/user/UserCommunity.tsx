@@ -3,7 +3,7 @@
 import { css } from "@emotion/react";
 import { useEffect, useRef, useState } from "react";
 import communityStore from "../../store/communityStore";
-import { useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import UserCommunityBtns from "../../components/community/UserCommunityBtns";
 import UserCommunityPosts from "../../components/community/UserCommunityPosts";
@@ -29,15 +29,14 @@ export const UserCommunityBtnStyle = css`
   & > .sort-button-news.active,
   & > .sort-button-need.active,
   & > .sort-button-share.active {
-    background-color: #FFABAB;
+    background-color: #ffabab;
     border: none;
     color: #ffffff;
     font-weight: 900;
   }
 `;
 
-const PAGE = 1;
-const SIZE = 20;
+const SIZE = 10;
 
 const sortArray = [
   { idx: 0, num: 0, title: "최신순", category: "recent" },
@@ -68,37 +67,45 @@ const UserCommunity = () => {
   });
   const { search } = communityStore();
   const divRef = useRef<HTMLDivElement | any>({});
-  const queryClient = useQueryClient();
   const loginObject = localStorage.getItem("loginInfo");
   const { token } = loginObject ? JSON.parse(loginObject) : null;
 
-  const SORT_API = (sort: any, category: any) => {
+  const SORT_API = (sort: any, category: any, page: number) => {
     // eslint-disable-next-line max-len
-    return `https://www.share42-together.com/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}`;
+    return `https://www.share42-together.com/api/user/community/posts/list?page=${page}&size=${SIZE}&sort=${sort}&category=${category.num}`;
   };
 
-  const SEARCH_API = (sort: any, category: any, search: any) => {
+  const SEARCH_API = (sort: any, category: any, search: any, page: number) => {
     // eslint-disable-next-line max-len
-    return `https://www.share42-together.com/api/user/community/posts/list?page=${PAGE}&size=${SIZE}&sort=${sort}&category=${category.num}&search=${search}`;
+    return `https://www.share42-together.com/api/user/community/posts/list?page=${page}&size=${SIZE}&sort=${sort}&category=${category.num}&search=${search}`;
   };
 
-  const { data } = useQuery(
+  const fetchRepositories = async (page: number = 1) => {
+    const response = await axios({
+      method: "GET",
+      url: search
+        ? SEARCH_API(sort, category, search, page)
+        : SORT_API(sort, category, page),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.message;
+  };
+
+  const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["getCommunity", sort, category, search],
-    async () => {
-      const response = await axios({
-        method: "get",
-        url: search
-          ? SEARCH_API(sort, category, search)
-          : SORT_API(sort, category),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const { content } = response.data.message;
-      return content;
-    },
+    ({ pageParam }) => fetchRepositories(pageParam),
     {
+      getNextPageParam: (lastPage, allPages: any[]) => {
+        const maxPages = lastPage.totalPages;
+        const nextPages = Math.floor(
+          allPages[0].totalElements / allPages[0].size
+        );
+        return nextPages <= maxPages ? nextPages : undefined;
+      },
       suspense: false,
     }
   );
@@ -157,6 +164,26 @@ const UserCommunity = () => {
       setAll(true);
     }
   }, [sort, category.idx]);
+
+  useEffect(() => {
+    let fetching = false;
+    const onScroll = async (event: any) => {
+      const { scrollHeight, scrollTop, clientHeight } =
+        event.target.scrollingElement;
+
+      if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
+        fetching = true;
+        if (hasNextPage) {
+          await fetchNextPage();
+          fetching = false;
+        }
+      }
+    };
+    document.addEventListener("scroll", onScroll);
+    return () => {
+      document.removeEventListener("scroll", onScroll);
+    };
+  }, [hasNextPage, fetchNextPage]);
 
   return (
     <>

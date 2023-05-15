@@ -95,8 +95,9 @@ function App() {
             />
           </Route>
 
+          <Route path="/login" element={<Login />} />
+          
           <Route element={<LoginRaouterGuard />}>
-            <Route path="/login" element={<Login />} />
             <Route path="/admin/login" element={<AdminLogin />} />
           </Route>
           <Route path="/" element={<UserWelcome />} />

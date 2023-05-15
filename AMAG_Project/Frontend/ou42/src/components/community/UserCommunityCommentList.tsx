@@ -61,11 +61,7 @@ const UserCommunityCommentList = ({
     e.preventDefault();
     const response = await axios({
       method: "PATCH",
-<<<<<<< HEAD
-      url: `https://www.share42-together.com:8088/api/user/community/comments/${Number(
-=======
       url: `https://www.share42-together.com/api/user/community/comments/${Number(
->>>>>>> origin/feature/FE/user-mypage-api
         id
       )}`,
       data: {
@@ -89,13 +85,8 @@ const UserCommunityCommentList = ({
     id: number
   ) => {
     const response = await axios({
-<<<<<<< HEAD
-      method: 'DELETE',
-      url: `https://www.share42-together.com:8088/api/user/community/comments/${Number(
-=======
       method: "DELETE",
       url: `https://www.share42-together.com/api/user/community/comments/${Number(
->>>>>>> origin/feature/FE/user-mypage-api
         id
       )}`,
       headers: {

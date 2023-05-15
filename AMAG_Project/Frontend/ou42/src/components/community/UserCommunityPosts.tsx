@@ -2,7 +2,7 @@ import { FaRegComment, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export interface UserCommunityPostsProps {
-  data: any[];
+  data: any;
   divRef: React.MutableRefObject<any>;
   getTimeAgo: (timestamp: string) => string;
 }
@@ -29,7 +29,7 @@ const UserCommunityPosts = ({
         marginTop: "11vh"
       }}
     >
-      {data?.map((item: any, index: number) => {
+      {data?.pages[0]?.content.map((item: any, index: number) => {
         return (
           <div
             ref={(ref) => (divRef.current[index] = ref)}

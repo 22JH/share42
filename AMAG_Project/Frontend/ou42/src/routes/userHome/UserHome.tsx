@@ -155,6 +155,7 @@ function UserHomeFetcher({
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
+        console.log(allPage)
         if (allPage[0].data.message.article.totalPages > allPage.length) {
           return allPage.length + 1;
         }
@@ -310,6 +311,8 @@ function UserHomeList(props: Partial<Props>) {
   useEffect(() => {
     setBranchChoice({ name: "", id: null });
   }, []);
+
+  console.log(data)
 
   return (
     <>

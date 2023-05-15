@@ -24,10 +24,10 @@ const UserShareReg = () => {
   // 아예 상태관리를 통해서 화면 구분 짓기
   const { isOpenShareMap, setIsOpenShareMap } = shareIsOpenStore();
   const [preview, setPreview] = useState<null | File>(null);
-  const [title, setTitle] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [sharePrice, setSharePrice] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [title, setTitle] = useState<string>(location?.state?.data?.name ? location?.state?.data?.name : "");
+  const [price, setPrice] = useState<string>(location?.state?.data?.sharePrice ? location?.state?.data?.sharePrice : "");
+  const [sharePrice, setSharePrice] = useState<string>(location?.state?.data?.price ? location?.state?.data?.price : "");
+  const [content, setContent] = useState<string>(location?.state?.data?.content ? location?.state?.data?.content : "");
   const [isFull, setIsFull] = useState<boolean>(false);
   const { branchChoice, setBranchChoice } = useBranchChoiceStore();
 
@@ -38,24 +38,38 @@ const UserShareReg = () => {
       formData.append("imgFile", preview);
     }
     formData.append("name", title);
-    formData.append("price", price);
-    formData.append("sharePrice", sharePrice);
-    formData.append("category", location.state);
+    formData.append("sharePrice", price);
+    formData.append("price", sharePrice);
+    formData.append(
+      "category",
+      location?.state?.data?.category
+        ? location?.state?.data?.category
+        : location?.state?.category
+    );
     formData.append("content", content);
-    formData.append("lockerStationId", String(branchChoice.id));
-    console.log(branchChoice.name);
+    if (location?.state?.editStatus !== true) {
+      formData.append("lockerStationId", String(branchChoice?.id));
+    }
     if (
       preview &&
       title &&
       price &&
       sharePrice &&
-      location.state &&
+      location.state.category &&
       content &&
       branchChoice.id
     ) {
       setIsFull(true);
     }
-  }, [preview, title, price, location.state, content, branchChoice, formData]);
+  }, [
+    preview,
+    title,
+    price,
+    location.state.category,
+    content,
+    branchChoice,
+    formData,
+  ]);
 
   const handleShareTitle = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
@@ -87,37 +101,77 @@ const UserShareReg = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await fetch(
-      `https://www.share42-together.com/api/user/share/share-articles`,
-      {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    if (location?.state?.editStatus === true) {
+      console.log(location?.state?.editStatus)
+      await fetch(
+        `https://www.share42-together.com:8088/api/user/share/share-articles/${location?.state?.id}`,
+        {
+          method: "PATCH",
+          body: formData,
+          headers : {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      )
       .then((response) => {
-        const data = response.json();
-        return data;
+        return response.json();
       })
       .then((data) => {
-        console.log(data);
-        swal("등록이 완료되었습니다", "게시물을 확인해 보세요", "success");
-        navigate("/home");
+        console.log(data)
+        if (data.status === 200) {
+          swal("변경 완료", "게시물 내용 변경이 완료되었습니다.", "success");
+          navigate(`/user/share-post/${location?.state?.id}`);
+        } else {
+          swal("변경 실패", "게시물 내용 변경에 실패하였습니다.", "error");
+        }
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e)
+        swal("서버 오류", "서버 오류가 발생했습니다.", "error");
+      })
+    } else {
+      await fetch(
+        `https://www.share42-together.com:8088/api/user/share/share-articles`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        if (data.status === 200) {
+          swal("등록 완료", "게시물 등록이 완료되었습니다.", "success");
+          navigate("/home");
+        } else {
+          swal("등록 실패", "게시물 등록에 실패하였습니다.", "error");
+        }
+      })
+      .catch((e) => {
         setBranchChoice({ name: "", id: null });
-        swal("등록이 실패하였습니다", "서버 오류가 발생했습니다.", "error");
+        console.log(e)
+        swal("서버 오류", "서버 오류가 발생했습니다.", "error");
       });
+    }
   };
 
   useEffect(() => {
     for (let i of formData) {
       console.log(i);
     }
-  }, [preview, title, price, location.state, content, branchChoice, formData]);
+  }, [
+    preview,
+    title,
+    price,
+    location.state.category,
+    content,
+    branchChoice,
+    formData,
+  ]);
 
   return (
     <section
@@ -131,7 +185,13 @@ const UserShareReg = () => {
         </>
       ) : (
         <>
-          <UserShareCategory selectValue={location.state} />
+          <UserShareCategory
+            selectValue={
+              location?.state?.data?.category
+                ? location?.state?.data?.category
+                : location?.state?.category
+            }
+          />
           <UserShareImg
             preview={preview}
             setPreview={setPreview}
@@ -152,9 +212,28 @@ const UserShareReg = () => {
             content={content}
             handleShareArea={handleShareArea}
           />
-          <UserShareChoiceName
+          {location?.state?.editStatus ? null : <UserShareChoiceName
             handleShareMapNavigate={handleShareMapNavigate}
-          />
+          />}
+          {location?.state?.editStatus === true ?
+            <button
+              style={{
+                position: "absolute",
+                bottom: "0px",
+                width: "100%",
+                height: "6vh",
+                backgroundColor: "#FFABAB",
+                color: "#D14D72",
+                fontSize: "1.5rem",
+                fontWeight: "900",
+                border: "none",
+              }}
+              type="submit"
+              onClick={handleSubmit}
+            >
+              완료
+            </button>
+          :
           <button
             style={{
               position: "absolute",
@@ -172,7 +251,7 @@ const UserShareReg = () => {
             onClick={handleSubmit}
           >
             완료
-          </button>
+          </button>}
         </>
       )}
     </section>

@@ -1,6 +1,10 @@
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 import BottomMenuBar from "../BottomMenuBar";
 import { useLocation, useNavigate } from "react-router-dom";
 import UserHomeSpeedDial from "../user/UserHomeSpeedDial";
+import { useState } from "react";
 
 const UserCommunityBottomBar = () => {
   const { pathname } = useLocation();

@@ -43,6 +43,7 @@ function SharePageNavBar() {
   const navigate = useNavigate();
   const [bgColor, setBgColor] = useState<string>("");
   const [svgColor, setSvgColor] = useState<string>("");
+  const { state } = useLocation();
 
   const handleNavigate = () => {
     if (isOpenShareMap) {
@@ -55,25 +56,35 @@ function SharePageNavBar() {
 
   useEffect(() => {
     if (pathname === "/user/share-reg") {
-      setPathTitle("공유 물품 등록하기");
-      setBgColor("white");
-      setSvgColor("#000000")
+      if (state?.editStatus === true) {
+        setPathTitle("공유 게시글 변경하기");
+        setBgColor("white");
+        setSvgColor("#000000")
+      } else {
+        setPathTitle("공유 물품 등록하기");
+        setBgColor("white");
+        setSvgColor("#000000")
+      }
     } else if (pathname === "/user/share-category") {
       setPathTitle("카테고리 선택하기");
       setBgColor("white");
       setSvgColor("#000000")
     } else if (pathname === `/user/share-post/${id}`) {
+      setPathTitle("")
       setBgColor("rgba(0,0,0,0)");
-      setSvgColor("#ffffff")
+      setSvgColor("#f19898")
+    } else if (pathname === `/user/return`) {
+      setPathTitle("공유 물품 반납하기");
+    } else {
     }
-    console.log(pathname);
   }, [pathname, id, setPathTitle]);
 
   return (
     <>
       {pathname === `/user/share-reg` ||
       pathname === `/user/share-category` ||
-      pathname === `/user/share-post/${id}` ? (
+      pathname === `/user/share-post/${id}` ||
+      pathname === `/user/return`? (
         <div
           css={nav}
           style={{
@@ -101,7 +112,9 @@ function SharePageNavBar() {
               marginRight: "1rem",
               color: `${svgColor}`
             }}
-            onClick={() => navigate("/user/report")}
+            onClick={() => navigate("/user/report", {
+              state: id
+            })}
           />
         </div>
       ) : null}

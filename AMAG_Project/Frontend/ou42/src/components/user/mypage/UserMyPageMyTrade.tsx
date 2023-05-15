@@ -11,12 +11,13 @@ const contents = [
   { title: "공유 이력", Icon: BsCalendarHeart, url: "/user/mypage/share" },
   { title: "관심 목록", Icon: BsHeart, url: "/user/mypage/like" },
   { title: "내가 쓴 글", Icon: MdOutlineArticle, url: "/user/mypage/articles" },
+  { title: "목록", Icon: MdOutlineArticle, url: "/user/nfc" },
 ];
 function UserMyPageMyTrade() {
   const navigate = useNavigate();
 
   return (
-    <div css={contentStyle(33)}>
+    <div css={contentStyle(40)}>
       <p className="main">나의 거래</p>
 
       {contents.map((content, index) => {

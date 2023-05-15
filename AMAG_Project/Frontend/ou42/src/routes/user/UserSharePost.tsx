@@ -37,7 +37,7 @@ const BORROW_API = (id: any) => {
 const BORROW_DELETE_API = (id: any) => {
   // eslint-disable-next-line max-len
   return `https://www.share42-together.com/api/user/share/borrow/cancel/${id}`;
-}
+};
 
 const UserSharePost = () => {
   const { id } = useParams();
@@ -215,11 +215,11 @@ const UserSharePost = () => {
           },
         });
         if (res?.data?.status === 200) {
-          setKeepImg(res.data.message.keepImg)
-          setReturnImg(res.data.message.returnImg)
-          setIsLike(res.data.message.likeCheck)
+          setKeepImg(res.data.message.keepImg);
+          setReturnImg(res.data.message.returnImg);
+          setIsLike(res.data.message.likeCheck);
           setLikeCount(res.data.message.likeCount);
-          return res.data.message.article;
+          return res.data.message;
         }
       } catch (e) {
         console.log(e);
@@ -232,12 +232,12 @@ const UserSharePost = () => {
 
   // 사용 신청 상태 저장
   useEffect(() => {
-    if (data && data.shareStatus === 2) {
+    if (data && data.article.shareStatus === 2) {
       setUserRequest(true);
-    } else if (data && data.shareStatus === 1) {
+    } else if (data && data.article.shareStatus === 1) {
       setUserRequest(false);
     }
-  }, [data?.shareStatus, data]);
+  }, [data?.article.shareStatus, data]);
 
   return (
     <>
@@ -266,7 +266,7 @@ const UserSharePost = () => {
           data={data}
           setIsLike={setIsLike}
         />
-        <UserShareDetailContent data={data} likeCount={likeCount}/>
+        <UserShareDetailContent data={data} likeCount={likeCount} />
         <UserShareDetailRequest
           useRequest={userRequest}
           handleUseRequest={handleUseRequest}

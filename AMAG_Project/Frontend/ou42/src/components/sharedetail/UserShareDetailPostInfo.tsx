@@ -112,7 +112,7 @@ const UserShareDetailPostInfo = ({
             width: "50px",
             height: "50px",
           }}
-          src={`${process.env.REACT_APP_IMAGE_URL}${data?.accountImg}`}
+          src={`${process.env.REACT_APP_IMAGE_URL}${data?.article.accountImg}`}
           alt="ProfilePic"
         />
         <div
@@ -129,9 +129,9 @@ const UserShareDetailPostInfo = ({
             }}
           >
             <span style={{ fontSize: "1.1rem", fontWeight: "900" }}>
-              {data?.accountNickname}
+              {data?.article.accountNickname}
             </span>
-            {data?.accountUserId === userId ? <div>
+            {data?.article.accountUserId === userId ? <div>
               <span
                 style={{
                   color: '#adadad',
@@ -157,8 +157,8 @@ const UserShareDetailPostInfo = ({
             </div> : null}
           </div>
           <span style={{ color: "#ADADAD" }}>
-            {data?.category} · {data?.accountSigungu} {data?.accountDong}{" "}
-            {getTimeAgo(data?.uptDt)}
+            {data?.article.category} · {data?.article.accountSigungu} {data?.article.accountDong}{" "}
+            {getTimeAgo(data?.article.uptDt)}
           </span>
         </div>
       </div>

@@ -11,26 +11,36 @@ const UserShareDetailCarousel = ({
   currentSlide,
   data,
   keepImg,
-  returnImg
+  returnImg,
 }: UserShareDetailCarouselProps) => {
   const [carouselImg, setCarouselImg] = useState<any[]>([]);
-  
+  const lst:any[] = [];
+
   useEffect(() => {
-    let lst = []
-    if (data?.img) {
-      lst.push(`${process.env.REACT_APP_IMAGE_URL}${data.img}`)
+    if (data?.article.img) {
+      lst.push(`${process.env.REACT_APP_IMAGE_URL}${data?.article.img}`);
     }
-    if (keepImg) {
-      console.log(keepImg)
-      lst.push(`${process.env.REACT_APP_IMAGE_URL}${keepImg}`)
-    }
-    else if (returnImg.length > 0) {
-      for (let i = 0; i < returnImg.length; i++) {
-        lst.push(`${process.env.REACT_APP_IMAGE_URL}${returnImg[i].img}`)
+  }, [data])
+
+  useEffect(() => {
+    if (data) {
+      if (data?.keepImg === null || data?.keepImg === undefined) {
       }
+      else {
+        lst.push(`${process.env.REACT_APP_IMAGE_URL}${data?.keepImg}`);
+      } 
+      if (data?.returnImg.length > 0) {
+        for (let i = 0; i < data?.returnImg.length; i++) {
+          if (data?.returnImg[i] !== null) {
+            lst.push(
+              `${process.env.REACT_APP_IMAGE_URL}${data?.returnImg[i]}`
+            );
+          }
+        }
+      }
+      setCarouselImg(lst);
     }
-    setCarouselImg(lst)
-  }, [data?.img, keepImg, returnImg])
+  }, [data]);
 
   return (
     <>
@@ -46,15 +56,17 @@ const UserShareDetailCarousel = ({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {carouselImg ? carouselImg?.map((slide, idx) => (
-          <div key={idx} style={{ width: slideWidth }}>
-            <img
-              src={slide}
-              alt={`${idx} Slide`}
-              style={{ width: slideWidth, height: slideWidth }}
-            />
-          </div>
-        )) : null}
+        {carouselImg
+          ? carouselImg?.map((slide, idx) => (
+              <div key={idx} style={{ width: slideWidth }}>
+                <img
+                  src={slide}
+                  alt={`${idx} Slide`}
+                  style={{ width: slideWidth, height: slideWidth }}
+                />
+              </div>
+            ))
+          : null}
       </div>
       <div
         style={{
@@ -64,20 +76,22 @@ const UserShareDetailCarousel = ({
           marginTop: "-5vh",
         }}
       >
-        {carouselImg ? carouselImg?.map((slide, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleDotClick(idx)}
-            style={{
-              padding: "0",
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              margin: 5,
-              backgroundColor: currentSlide === idx ? "lightGray" : "white",
-            }}
-          ></button>
-        )): null}
+        {carouselImg
+          ? carouselImg?.map((slide, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleDotClick(idx)}
+                style={{
+                  padding: "0",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  margin: 5,
+                  backgroundColor: currentSlide === idx ? "lightGray" : "white",
+                }}
+              ></button>
+            ))
+          : null}
       </div>
     </>
   );

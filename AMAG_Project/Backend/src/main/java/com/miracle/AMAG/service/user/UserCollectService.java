@@ -74,9 +74,13 @@ public class UserCollectService {
 
         CollectDTO collectDTO = new CollectDTO();
         BeanUtils.copyProperties(collect, collectDTO);
-        collectDTO.setLocker(locker.getId());
-        collectDTO.setAccount(account.getId());
-        collectDTO.setShareArticle(shareArticle.getId());
+        collectDTO.setAccountUserId(account.getUserId());
+        collectDTO.setAccountNickname(account.getNickname());
+        collectDTO.setShareArticleId(shareArticle.getId());
+        collectDTO.setShareArticleCategory(shareArticle.getCategory());
+        collectDTO.setShareArticleName(shareArticle.getName());
+        collectDTO.setLockerLockerNumber(locker.getLockerNumber());
+        collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "c0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
@@ -117,9 +121,13 @@ public class UserCollectService {
         Locker locker = lockerRepository.findByShareArticle(shareArticle);
         CollectDTO collectDTO = new CollectDTO();
         BeanUtils.copyProperties(collect,collectDTO);
-        collectDTO.setLocker(locker.getId());
-        collectDTO.setAccount(account.getId());
-        collectDTO.setShareArticle(shareArticle.getId());
+        collectDTO.setAccountUserId(account.getUserId());
+        collectDTO.setAccountNickname(account.getNickname());
+        collectDTO.setShareArticleId(shareArticle.getId());
+        collectDTO.setShareArticleCategory(shareArticle.getCategory());
+        collectDTO.setShareArticleName(shareArticle.getName());
+        collectDTO.setLockerLockerNumber(locker.getLockerNumber());
+        collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "cd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();

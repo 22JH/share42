@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,7 +79,8 @@ public class AdminLockerController {
         return NormalResponse.toResponseEntity(HttpStatus.OK,adminLockerService.getLockerList(lockerStationId));
     }
 
-    @PostMapping("/collect/{share_article_id}")
+
+    @PostMapping("/collect/{lockerId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "공유 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -89,11 +89,12 @@ public class AdminLockerController {
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "관리자 공유 물품 회수", description = "관리자가 공유 물품 회수를 진행합니다.")
     @Parameters({
-            @Parameter(name = "share_article_id", description = "회수할 공유 글 번호", in = ParameterIn.PATH)
+            @Parameter(name = "share_article_id", description = "회수할 대여 물품 게시글 ID", in = ParameterIn.PATH)
     })
-    public ResponseEntity<?> adminCollectProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCollectProduct(shareArticleId));
+    public ResponseEntity<?> adminCollectProduct(@PathVariable("lockerId") int lockerId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCollectProduct(lockerId));
     }
+
 
 }
 

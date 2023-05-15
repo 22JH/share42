@@ -95,8 +95,6 @@ public class UserKeepService {
         keep.setMetadataUri(metadataUri);
         keepRepository.save(keep);
 
-        locker.setShareArticle(shareArticle);
-        lockerRepository.save(locker);
         shareArticle.setShareStatus(ShareArticleUtils.SHARE_STAY);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);

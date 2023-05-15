@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 
 import axios from "axios";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { scaleLinear, select, arc, pie, interpolate } from "d3";
 
@@ -59,21 +59,38 @@ const box = (d: any) => css`
 const date = css`
   position: absolute;
   top: 5%;
-  right: 0;
+  right: 2%;
   .MuiFormControl-root {
     width: 40%;
     margin-left: 55%;
   }
 `;
 
+const hr = css`
+  border: 1px solid rgba(141, 141, 141, 0.09);
+  margin-left: 4%;
+`;
+
+const title = css`
+  position: absolute;
+  margin: 0;
+  top: 5%;
+  left: 4%;
+  font-size: 1.1rem;
+  font-weight: 900;
+`;
+
 type Data = [number, string];
 
 const DURATION: 1000 = 1000;
 
+const DATE = new Date();
+
 function UserMyPageChart() {
-  const COLORINDEX = 0.3;
+  const COLORINDEX = 0.1;
   const TOKEN = useGetUserToken();
   const canvas = useRef<HTMLDivElement>(null);
+  const [year, setYear] = useState<number>(DATE.getFullYear());
 
   const test = useQuery(["user-mypage-circle-chart"], () => {
     return axios({
@@ -93,14 +110,14 @@ function UserMyPageChart() {
     const canv = select(canvas.current);
     canv.selectAll("*").remove();
 
-    const svg = canv.append("svg").attr("width", "100%").attr("height", "28vh");
+    const svg = canv.append("svg").attr("width", "100%").attr("height", "30vh");
     // .style("padding-left", "8%");
 
     const g = svg.append("g").attr("transform", "translate(170, 150)");
 
     const f: any = arc()
-      .innerRadius(55)
-      .outerRadius(120)
+      .innerRadius(45)
+      .outerRadius(110)
       .padAngle(0.025)
       .cornerRadius(5);
 
@@ -153,6 +170,7 @@ function UserMyPageChart() {
   };
   return (
     <div style={{ position: "relative" }}>
+      <p css={title}>수익</p>
       <div className="canvas" ref={canvas}></div>{" "}
       <div css={date}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -170,6 +188,7 @@ function UserMyPageChart() {
           })}
         </div>
       </div>
+      <hr css={hr} />
     </div>
   );
 }

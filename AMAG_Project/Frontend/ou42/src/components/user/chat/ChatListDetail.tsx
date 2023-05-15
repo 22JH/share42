@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../..";
+import { useEffect, useState } from "react";
 
 interface PropType {
   profile: string;
@@ -56,7 +59,15 @@ const container = css`
 
 export default function ChatListDetail({ data }: any) {
   const navigate = useNavigate();
-
+  const [otherUserProfile, setOtherUserProfile] = useState<any>();
+  useEffect(() => {
+    (async () => {
+      const otherUser: any = await getDoc(
+        doc(db, "users", data[1]?.userInfo?.id)
+      );
+      setOtherUserProfile(otherUser.data().profile);
+    })();
+  }, []);
   return (
     <div
       css={container}
@@ -67,7 +78,7 @@ export default function ChatListDetail({ data }: any) {
       <div className="imgSection">
         <div className="imgBox">
           <img
-            src={data[1].userInfo.profile}
+            src={`https://www.share42-together.com/images/${otherUserProfile}`}
             alt="profile"
             className="profile"
           />

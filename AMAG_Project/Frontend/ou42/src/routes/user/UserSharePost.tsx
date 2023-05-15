@@ -40,8 +40,8 @@ const BORROW_DELETE_API = (id: any) => {
 };
 
 const BILLING_KEY_API = () => {
-  return `https://www.share42-together.com/api/user/info/pay-method/check/0`
-}
+  return `https://www.share42-together.com/api/user/info/pay-method/check/0`;
+};
 
 const UserSharePost = () => {
   const { id } = useParams();
@@ -65,20 +65,20 @@ const UserSharePost = () => {
 
   useEffect(() => {
     axios({
-      method: 'GET',
+      method: "GET",
       url: BILLING_KEY_API(),
       headers: {
         Authorization: `Bearer ${token}`,
-      }
+      },
     })
-    .then((res:any) => {
-      console.log(res.data.message)
-      setBilling(res.data.message)
-    })
-    .catch((e) => console.log(e))
-  }, [])
+      .then((res: any) => {
+        console.log(res.data.message);
+        setBilling(res.data.message);
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
-  console.log(billing)
+  console.log(billing);
 
   // 점 클릭하면 넘어가게 일단 기능 구현
   const handleDotClick = (idx: number) => {
@@ -137,10 +137,10 @@ const UserSharePost = () => {
 
   // 사용신청 하기
   const handleUseRequest = async (id: string | undefined) => {
-    if (billing === 'FAIL') {
-      console.log('Welcome to the home')
+    if (billing === "FAIL") {
+      console.log("Welcome to the home");
       // navigate('/home')
-      return
+      return;
     }
 
     try {
@@ -195,7 +195,7 @@ const UserSharePost = () => {
   const handleChating = async () => {
     const loginObject = localStorage.getItem("loginInfo");
     const { userId } = loginObject ? JSON.parse(loginObject) : null;
-
+    const otherPerson = data?.article.accountUserId;
     /// 글 등록 유저 id 임시
     const temp_reg_user_id = "test_user_id";
     /// 유저 쿼리 찾기
@@ -204,18 +204,16 @@ const UserSharePost = () => {
     const querySnapshot = await getDocs(q);
     ///////
     const chatName =
-      userId > temp_reg_user_id
-        ? userId + temp_reg_user_id
-        : temp_reg_user_id + userId;
+      userId > otherPerson ? userId + otherPerson : otherPerson + userId;
     const chats = await getDoc(doc(db, "chats", chatName));
 
     if (!chats.exists()) {
       await setDoc(doc(db, "chats", chatName), { message: [] });
-      const res = await updateDoc(doc(db, "userChats", userId), {
+      await updateDoc(doc(db, "userChats", userId), {
         [chatName + ".userInfo"]: {
-          id: temp_reg_user_id,
+          id: otherPerson,
           /// 프로필 받아와야함
-          profile: "",
+          // profile: `https://www.share42-together.com/images/${data?.article.accountImg}`,
         },
         [chatName + ".date"]: serverTimestamp(),
       });
@@ -259,7 +257,7 @@ const UserSharePost = () => {
     }
   );
 
-  console.log(data)
+  console.log(data);
 
   // 사용 신청 상태 저장
   useEffect(() => {

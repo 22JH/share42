@@ -3,13 +3,13 @@ import { fontWeight } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import markerImg from "../../assets/marker.png";
+import { getTimeAgo } from "../../utils/getTimeAgo";
 import MapButtonComponent from "./MapButtonComponent";
 import { CustomOverlayContentProps } from "./type/MapType";
 
 const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
   const { pathname } = useLocation();
   const [statusName, setStatusName] = useState<string>("");
-  console.log(markerInfo);
   useEffect(() => {
     if (markerInfo.shareArticleShareStatus === 0) {
       setStatusName("수납 대기");
@@ -37,7 +37,7 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
         style={{
           height: "150px",
           display: "grid",
-          gridTemplateColumns: "1fr 2fr",
+          gridTemplateColumns: "1fr 3fr",
         }}
       >
         <div
@@ -51,21 +51,13 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
         >
           <div
             style={{
-              marginRight: "5%",
               fontWeight: "900",
+              border: "1px solid black",
+              padding: "10%",
             }}
           >
             {markerInfo?.lockerNumber}번
           </div>
-          <img
-            style={{
-              width: "100px",
-              height: "100px",
-              border: "1px solid black",
-            }}
-            src={markerImg}
-            alt="상품이미지"
-          />
         </div>
         <div
           style={{
@@ -75,7 +67,13 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             whiteSpace: "normal",
           }}
         >
-          <div style={{ marginTop: "30px", marginLeft: "5%" }}>
+          <div
+            style={{
+              marginTop: "30px",
+              marginLeft: "5%",
+              position: "relative",
+            }}
+          >
             <p
               style={{
                 margin: "0",
@@ -94,7 +92,6 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             >
               {markerInfo.shareArticleName}
             </p>
-            <br />
             <p
               style={{
                 margin: "0",
@@ -104,17 +101,29 @@ const MarkerCardsComponent = ({ markerInfo }: CustomOverlayContentProps) => {
             >
               {markerInfo.shareArticleSharePrice.toLocaleString()}원
             </p>
+            <p
+              style={{
+                margin: "10px 0px",
+                fontWeight: "900",
+                fontSize: "1rem",
+                color: '#7b7b7b',
+                
+              }}
+            >
+              {getTimeAgo(markerInfo.shareArticleUptDt)}
+            </p>
           </div>
           <div
             style={{
               display: "flex",
               justifyContent: "end",
               marginRight: "15px",
-              marginTop: "-10px",
+              marginTop: "-40px",
             }}
           >
             {(pathname.includes("admin/map") ||
-              pathname.includes("user/map")) && markerInfo && (
+              pathname.includes("user/map")) &&
+              markerInfo && (
                 <MapButtonComponent
                   status={markerInfo.shareArticleShareStatus}
                   text={statusName}

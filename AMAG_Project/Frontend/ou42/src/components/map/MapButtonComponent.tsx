@@ -52,6 +52,7 @@ const MapButtonComponent = ({ status, text, articleId }: ButtonProps) => {
         border: "none",
         borderRadius: "5px",
         backgroundColor: bgColor,
+        
       }}
       onClick={handleShareNavigate}
     >

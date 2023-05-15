@@ -39,6 +39,7 @@ const CustomOverlayMapComponent = ({
   const [totalCount, setTotalCount] = useState<number>(0);
   const [useCount, setUseCount] = useState<number>(0);
 
+
   // 해당 마커 상세 정보 가져오기
   useEffect(() => {
     axios({
@@ -50,6 +51,7 @@ const CustomOverlayMapComponent = ({
       },
     })
     .then((response) => {
+      console.log(response)
       setTotalCount(response.data.message.totalCount);
       setUseCount(response.data.message.useCount);
       setTempArray(response.data.message.lockerList)

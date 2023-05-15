@@ -53,6 +53,7 @@ export interface CustomOverlayContentProps {
     shareArticleName: string;
     shareArticleSharePrice: number;
     shareArticleShareStatus: number;
+    shareArticleUptDt: string;
   };
 }
 

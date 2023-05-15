@@ -13,11 +13,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BorrowDTO {
 
-    private int locker;
+    private String lockerLockerStationName;
 
-    private int account;
+    private int lockerLockerNumber;
 
-    private int shareArticle;
+    private String accountUserId;
+
+    private String accountNickname;
+
+    private int shareArticleId;
+
+    private String shareArticleCategory;
+
+    private String shareArticleName;
 
     private LocalDateTime regDt;
 

@@ -1,117 +1,175 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import {
-  axisBottom,
-  axisLeft,
-  line,
-  max,
-  scaleBand,
-  scaleLinear,
-  curveBasis,
-  select,
-} from "d3";
+import axios from "axios";
 import { useEffect, useRef } from "react";
+import { useQuery, useQueryClient } from "react-query";
+import { scaleLinear, select, arc, pie, interpolate } from "d3";
 
-import { data } from "../../SampleData";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useGetUserToken } from "../../../hooks/useGetToken";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-const chartStyle = css`
-  height: 100%;
-  .canvas {
-    overflow-x: auto;
-    &::-webkit-scrollbar {
-      display: none;
+const data = [
+  [50, "전국"],
+  [150, "서울"],
+  [100, "대전"],
+  [200, "인천"],
+  [250, "대구"],
+  [30, "광주"],
+  [170, "부산"],
+  [230, "울산"],
+];
+
+const info = css`
+  display: flex;
+  width: 100%;
+  margin-bottom: 10%;
+  justify-content: center;
+  .container {
+    display: flex;
+    align-items: center;
+    padding-top: 3%;
+    p {
+      margin: 0;
+      padding-left: 1.5vw;
+      font-size: 0.9rem;
     }
-  }
-
-  .line-path {
-    fill: none;
-    stroke: steelblue;
   }
 `;
 
+const outer = css`
+  width: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  p {
+    font-weight: 900;
+  }
+`;
+
+const box = (d: any) => css`
+  background-color: ${d};
+  width: 15px;
+  height: 15px;
+  margin-left: 5vw;
+`;
+
+const date = css`
+  position: absolute;
+  top: 5%;
+  right: 0;
+  .MuiFormControl-root {
+    width: 40%;
+    margin-left: 55%;
+  }
+`;
+
+type Data = [number, string];
+
+const DURATION: 1000 = 1000;
+
 function UserMyPageChart() {
+  const COLORINDEX = 0.3;
+  const TOKEN = useGetUserToken();
   const canvas = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const test = useQuery(["user-mypage-circle-chart"], () => {
+    return axios({
+      method: "get",
+      url: `https://www.share42-together.com/api/user/mypage/profits/{year}`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  });
+
+  const color = scaleLinear()
+    .domain([0, 1])
+    .range(["#fb5959", "white"] as any);
+
+  useEffect((): any => {
     const canv = select(canvas.current);
     canv.selectAll("*").remove();
 
-    const Y = 250;
-    const svgWidth = data.length * 50 + 100;
+    const svg = canv.append("svg").attr("width", "100%").attr("height", "28vh");
+    // .style("padding-left", "8%");
 
-    const svg = canv
-      .append("svg")
-      .attr("width", svgWidth)
-      .attr("height", "37vh");
+    const g = svg.append("g").attr("transform", "translate(170, 150)");
 
-    const g = svg
-      .append("g")
-      .attr("width", "100%")
-      .attr("transform", "translate(45, 50)");
+    const f: any = arc()
+      .innerRadius(55)
+      .outerRadius(120)
+      .padAngle(0.025)
+      .cornerRadius(5);
 
-    const xAxisG = g.append("g").attr("transform", `translate(0, ${Y})`);
-    const yAxisG = g.append("g");
+    const pieGraph: any = pie()
+      .sort((a: any, b: any) => b - a)
+      .value((d: any) => d[0]);
 
-    const x: any = scaleBand()
-      .domain(data.map((item) => item["지역이름"]))
-      .range([0, svgWidth - 100])
-      .padding(0.2);
-
-    const y: any = scaleLinear()
-      .domain([0, max(data, (d) => d["확진자수"])])
-      .range([Y, 0]);
-
-    const LINE = line()
-      .x((d: any) => x(d.지역이름) + 20)
-      .y((d: any) => y(d.확진자수) - 10)
-      .curve(curveBasis);
-
-    const lines = g.selectAll("path").data(data);
-
-    lines
+    g.selectAll("path")
+      .data(pieGraph(data))
       .enter()
       .append("path")
-      .transition()
-      .duration(2000)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
+      .attr("fill", (d: any, index: number): any => {
+        return color(index * COLORINDEX);
+      })
       .attr("stroke-width", "2px")
-      .attr("stroke-dasharray", function () {
-        const pathLength: any = this.getTotalLength();
-        return `${pathLength} ${pathLength}`;
+      .attr("d", f)
+      .transition()
+      .duration(DURATION)
+      .attrTween("d", (d: any) => {
+        const i = interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return (t: any) => f(i(t));
+      });
+
+    g.selectAll("text")
+      .data(pieGraph(data))
+      .enter()
+      .append("text")
+      .attr(
+        "transform",
+        (d: any) => `translate(${f.centroid(d)[0] - 10}, ${f.centroid(d)[1]})`
+      )
+      .attr("fill", "black")
+      .attr("dy", "5.35rem")
+      .attr("font-size", "0.8rem")
+      .attr("font-weight", "900")
+      .attr("transform", "rotate(-20)")
+      .text((d: any) => {
+        if (Math.abs(d.endAngle - d.startAngle) >= 1) {
+          return d.data[1];
+        }
+        return;
       })
-      .attr("stroke-dashoffset", function () {
-        const pathLength: any = this.getTotalLength();
-        return `${pathLength}`;
-      })
-
-      .attr("stroke-dashoffset", 0)
-      .attr("d", LINE(data));
-    // .enter()
-    // .append("path")
-    // .attr("fill", "none")
-    // .attr("stroke", "blue")
-    // .attr("stroke-width", "2px")
-    // .transition()
-    // .duration(1000)
-    // .attr("d", LINE(data));
-
-    const xAxis = axisBottom(x).tickSizeInner(-Y).tickPadding(15);
-    const yAxis = axisLeft(y)
-      .tickSizeInner(-(svgWidth - 100))
-      .tickPadding(10);
-
-    xAxisG.call(xAxis);
-    yAxisG.call(yAxis);
-
-    xAxisG.selectAll(".tick line").attr("opacity", 0.3);
-    yAxisG.selectAll(".tick line").attr("opacity", 0.3);
+      .transition()
+      .duration(DURATION)
+      .attr("fill", "white");
   }, []);
 
+  const getYear = (e: any) => {
+    console.log(e.$y);
+  };
   return (
-    <div css={chartStyle}>
-      <div className="canvas" ref={canvas}></div>
+    <div style={{ position: "relative" }}>
+      <div className="canvas" ref={canvas}></div>{" "}
+      <div css={date}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker label={'"year"'} views={["year"]} onChange={getYear} />
+        </LocalizationProvider>
+      </div>
+      <div css={info}>
+        <div css={outer}>
+          {data?.map((d: any, index: number) => {
+            return (
+              <div className="container" key={index}>
+                {/* <div css={box(color(index * COLORINDEX))}></div> */}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DropDown from "../../components/UI/DropDown";
 import Btn from "./../../components/UI/Btn";
 import pinkBox from "../../assets/pinkBox.png";
-import AlertDialogSlide from "../../components/UI/AlertDialog";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import Alert from "./../../components/UI/Alert";
 import NfcCheck from "../../components/user/nfc/NfcCheck";
 
@@ -15,7 +13,7 @@ const container = (selectType: boolean, selectItem: string) => css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 18%;
   .selectType {
     flex: 0.8;
     width: 85%;

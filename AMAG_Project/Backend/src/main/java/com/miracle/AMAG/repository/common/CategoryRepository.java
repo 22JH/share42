@@ -13,5 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findByCategory(@Param("category") String category);
 
-    List<CategoryMapping> findDistinctBy();
+    List<CategoryMapping> findDistinctByOrderByCategoryAsc();
 }

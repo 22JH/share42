@@ -11,15 +11,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ShareReturnDTO {
 
-    private int locker;
+    private String lockerLockerStationName;
+    private int lockerLockerNumber;
 
-    private int account;
+    private String accountUserId;
 
-    private int shareArticle;
+    private String accountNickname;
+
+    private int shareArticleId;
+
+    private String shareArticleCategory;
+
+    private String shareArticleName;
 
     private String img;
 
     private LocalDateTime regDt;
 
     private byte returnType;
+
+    private int price;
 }

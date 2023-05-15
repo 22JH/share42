@@ -232,13 +232,16 @@ public class UserReturnService {
         payment.setRegDt(curTime);
         payment.setReceiptId(receiptId);
 
-
         // 블록체인 관련 항목 (반납기록)
         ShareReturnDTO shareReturnDTO = new ShareReturnDTO();
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
-        shareReturnDTO.setLocker(locker.getId());
-        shareReturnDTO.setAccount(account.getId());
-        shareReturnDTO.setShareArticle(shareArticle.getId());
+        shareReturnDTO.setAccountUserId(account.getUserId());
+        shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
+        shareReturnDTO.setShareArticleName(shareArticle.getName());
+        shareReturnDTO.setPrice(payment.getPrice());
+        shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
+        shareReturnDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         String alias = "rd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
         String metadataUri = klaytnService.getUri(shareReturnDTO);

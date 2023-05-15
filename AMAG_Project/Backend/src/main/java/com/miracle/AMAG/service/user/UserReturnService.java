@@ -123,6 +123,7 @@ public class UserReturnService {
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
         shareReturnDTO.setAccountUserId(account.getUserId());
         shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleId(shareArticle.getId());
         shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
         shareReturnDTO.setShareArticleName(shareArticle.getName());
         shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
@@ -183,6 +184,7 @@ public class UserReturnService {
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
         shareReturnDTO.setAccountUserId(account.getUserId());
         shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleId(shareArticle.getId());
         shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
         shareReturnDTO.setShareArticleName(shareArticle.getName());
         shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
@@ -243,6 +245,7 @@ public class UserReturnService {
         BeanUtils.copyProperties(shareReturn, shareReturnDTO);
         shareReturnDTO.setAccountUserId(account.getUserId());
         shareReturnDTO.setAccountNickname(account.getNickname());
+        shareReturnDTO.setShareArticleId(shareArticle.getId());
         shareReturnDTO.setShareArticleCategory(shareArticle.getCategory());
         shareReturnDTO.setShareArticleName(shareArticle.getName());
         shareReturnDTO.setPrice(payment.getPrice());

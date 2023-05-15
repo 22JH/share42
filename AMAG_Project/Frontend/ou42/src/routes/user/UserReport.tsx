@@ -51,7 +51,6 @@ const UserReport = () => {
   const [reportData, setReportData] = useState<FormData | null>(null);
   const { pathname } = useLocation();
   const { state } = useLocation();
-  console.log(state)
 
   const formData = useMemo(() => new FormData(), []);
 
@@ -61,7 +60,7 @@ const UserReport = () => {
     title && formData.append("title", title);
     content && formData.append("content", content);
     state && formData.append("shareArticleId", state)
-    lockerSelect && formData.append("lockerSelect", lockerSelect)
+    lockerSelect && formData.append("lockerId", lockerSelect)
     setReportData(formData);
   }, [file, category, title, content, formData, lockerSelect, state]);
 
@@ -142,9 +141,8 @@ const UserReport = () => {
     .then((data) => {
       if (data?.status === 200) {
         swal("신고 완료", "신고가 완료되었습니다.", "success");
-        navigate('/user/mypage')
+        navigate('/home')
       } else {
-        console.log(data)
         swal("신고 실패", "신고가 실패되었습니다.", "error");
       }
     })
@@ -154,12 +152,11 @@ const UserReport = () => {
     })
   };
 
-  useEffect(() => {
-    console.log(state)
-    for(let i of formData) {
-      console.log(i)
-    }
-  }, [file, category, title, content, formData, lockerSelect, state])
+  // useEffect(() => {
+  //   for(let i of formData) {
+  //     console.log(i)
+  //   }
+  // }, [file, category, title, content, formData, lockerSelect, state])
 
   useEffect(() => {
     axios({

@@ -1,6 +1,7 @@
-package com.miracle.AMAG.config.chat;
+package com.miracle.AMAG.config.socket;
 
-import com.miracle.AMAG.handler.chat.ChatWebSocketHandler;
+import com.miracle.AMAG.handler.socket.ChatWebSocketHandler;
+import com.miracle.AMAG.handler.socket.LockerControlHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -12,11 +13,12 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
-    private ChatWebSocketHandler chatWebSocketHandler;
+    private LockerControlHandler lockerControlHandler;
+
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(chatWebSocketHandler, "/chat/{roomName}")
+        registry.addHandler(lockerControlHandler, "/ws/locker")
                 .setAllowedOrigins("*");
     }
 

@@ -1,4 +1,4 @@
-package com.miracle.AMAG.dto.chat;
+package com.miracle.AMAG.dto.socket;
 
 import jakarta.persistence.Id;
 import lombok.Getter;

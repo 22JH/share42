@@ -1,16 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { SlBell } from "react-icons/sl";
+import { useQuery, useQueryClient } from "react-query";
 import { BsSearch } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { SlBell } from "react-icons/sl";
+import axios from "axios";
 
-const homeNavStyle = css`
+import { useGetUserToken } from "../../hooks/useGetToken";
+import homeStore from "../../store/homeStore";
+
+const homeNavStyle = (isScroll: boolean) => css`
   width: 100vw;
   height: 35vh;
+  height: ${isScroll ? "7vh" : "35vh"};
+  position: ${isScroll ? "fixed" : "relative"};
+  z-index: 99;
+  top: 0;
+
   background-color: #fef2f4;
-  position: relative;
   margin-bottom: 7%;
+  transition: height 0.3s;
 
   .top {
     display: flex;
@@ -22,12 +33,19 @@ const homeNavStyle = css`
       font-weight: 900;
       color: #d14d72;
     }
+
+    .bell {
+      opacity: ${isScroll ? "0" : "1"};
+      transition: opacity 0.1s;
+    }
   }
 
   .middle {
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: ${isScroll ? "0" : "1"};
+    transition: opacity 0.1s;
 
     svg {
       position: absolute;
@@ -60,10 +78,12 @@ const homeNavStyle = css`
       position: absolute;
       border: 2px solid #ffabab;
       border-radius: 30px;
-      height: 15%;
-      width: 80%;
-      top: 90%;
+      height: ${isScroll ? "60%" : "15%"};
+      width: ${isScroll ? "75%" : "80%"};
+      top: ${isScroll ? "20%" : "90%"};
+      margin-left: ${isScroll ? "17%" : "0"};
       background-color: white;
+      transition: all 0.3s;
 
       input {
         border: 0;
@@ -81,17 +101,75 @@ const homeNavStyle = css`
     }
   }
 `;
+
+const LIMIT = 0;
+
 export default function HomeNavBar() {
-  const searchItem = () => {
-    console.log("검색");
+  const TOKEN = useGetUserToken();
+  const { setSearch } = homeStore();
+  const queryClient = useQueryClient();
+  const [input, setInput] = useState<string>("");
+  const [isScroll, setIsScroll] = useState<boolean>(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY > LIMIT && !isScroll) {
+        setIsScroll(true);
+      } else if (window.scrollY <= LIMIT && isScroll) {
+        setIsScroll(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isScroll]);
+
+  console.log(window.scrollY, isScroll);
+
+  // 사용자 정보 받는 API 함수
+  const userInfo = () => {
+    return axios({
+      method: "get",
+      url: `https://www.share42-together.com/api/user/info`,
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+  };
+
+  // 사용자 정보 받는 query
+  const { data } = useQuery(["user-info"], userInfo, {
+    suspense: false,
+    cacheTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 30,
+    select: (data) => {
+      return data.data.message;
+    },
+  });
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const searchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearch(input);
+      // (inputRef?.current as any).value = "";
+      queryClient.invalidateQueries();
+    }
+  };
+  const searchClick = () => {
+    setSearch(input);
+    queryClient.invalidateQueries();
+    // (inputRef?.current as any).value = "";
+  };
+  const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInput(value);
   };
   return (
     <>
-      <div css={homeNavStyle}>
+      <div css={homeNavStyle(isScroll)}>
         {/* 최상위 */}
         <div className="top">
-          <p>진평동</p>
-          <SlBell size={23} />
+          <p>{data?.dong}</p>
+          <SlBell size={23} className="bell" />
         </div>
 
         {/* 중간 로고 */}
@@ -129,11 +207,14 @@ export default function HomeNavBar() {
               type="text"
               placeholder="관심있는 상품을 검색해보세요"
               autoComplete="false"
+              onChange={searchInput}
+              onKeyUp={searchKeyDown}
+              ref={inputRef}
             />
             <BsSearch
               size={20}
               style={{ fill: "#FFABAB" }}
-              onClick={searchItem}
+              onClick={searchClick}
             />
           </div>
         </div>

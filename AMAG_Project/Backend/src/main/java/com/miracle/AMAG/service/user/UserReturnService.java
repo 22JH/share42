@@ -211,7 +211,7 @@ public class UserReturnService {
         // 결제 처리
         PaymentMethod paymentMethod = paymentMethodRepository.findByAccount(account);
         String billingKey = paymentMethod.getBillingKey();
-        int price = borrowRepository.calcReturnPrice(shareArticle, shareArticle.getPrice());
+        int price = borrowRepository.calcReturnPrice(shareArticle, shareArticle.getSharePrice());
         String phoneNumber = account.getPhoneNumber();
         String userName = account.getName();
         String receiptId = userInfoService.autoPayment(billingKey, price, phoneNumber, userName);
@@ -261,6 +261,28 @@ public class UserReturnService {
         shareReturnRepository.save(shareReturn);
         shareArticleRepository.save(shareArticle);
         paymentRepository.save(payment);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
+    public String openLocker(String nfcData) {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        Locker locker = lockerRepository.findByNfc(nfcData);
+        ShareArticle shareArticle = locker.getShareArticle();
+        if(shareArticle == null) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+        ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY ||
+                !returnRecord.getAccount().getUserId().equals(loginId) ||
+                returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
+            throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
+        }
+
+        //////// 대여함 오픈 로직 추가 필요 //////////////
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

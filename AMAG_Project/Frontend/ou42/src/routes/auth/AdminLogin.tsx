@@ -9,7 +9,7 @@ import Circle from "../../components/UI/Circle";
 import { useApi } from "./../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
 
-const URL = "http://k8d102.p.ssafy.io:8088/api/login";
+const URL = "https://www.share42-together.com/api/login";
 
 const container = css`
   width: 100%;

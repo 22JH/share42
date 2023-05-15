@@ -139,11 +139,14 @@ public class UserShareArticleController {
             @Parameter(name = "category", description = "원하는 카테고리", in = ParameterIn.QUERY),
             @Parameter(name = "orderStandard", description = "정렬 기준(0: 최신순, 1: 가격순, 2: 조회수 순)", in = ParameterIn.QUERY),
             @Parameter(name = "query", description = "검색어", in = ParameterIn.QUERY),
+            @Parameter(name = "lat", description = "위도", in = ParameterIn.QUERY),
+            @Parameter(name = "lng", description = "경도", in = ParameterIn.QUERY)
     })
     public ResponseEntity<?> getShareArticleList(@RequestParam("page") int page, @RequestParam("size") int size,
                                                  @RequestParam(value = "category", defaultValue = "base") String category, @RequestParam(value = "orderStandard", defaultValue = "0") int orderStandard,
-                                                 @RequestParam(value = "query", required = false) String query, @RequestParam("sigungu") String sigugun, @RequestParam("dong") String dong) {
+                                                 @RequestParam(value = "query", required = false) String query, @RequestParam("sigungu") String sigugun, @RequestParam("dong") String dong,
+                                                 @RequestParam("lat") double lat, @RequestParam("lng") double lng) {
         PageRequest pageRequest = PageRequest.of(page - 1,size);
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.getShareArticleList(pageRequest, sigugun, dong, category, orderStandard, query));
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userShareArticleService.getShareArticleList(pageRequest, page,sigugun, dong, category, orderStandard, query, lat, lng));
     }
 }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class CollectDTO {
+
     private int locker;
 
     private int account;

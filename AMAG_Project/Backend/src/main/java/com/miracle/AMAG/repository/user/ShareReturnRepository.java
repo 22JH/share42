@@ -19,8 +19,22 @@ public interface ShareReturnRepository extends JpaRepository<ShareReturn, Intege
     @Query("SELECT sr FROM ShareReturn sr WHERE sr.shareArticle = :shareArticle ORDER BY sr.regDt DESC LIMIT 1")
     ShareReturn findRecentReturnRecord(ShareArticle shareArticle);
 
-    List<ShareReturnGetImgMapping> findAllByShareArticle_IdAndReturnType(@Param("shareArticleId") int shareArticleId,
+    ShareReturnGetImgMapping findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(@Param("shareArticleId") int shareArticleId,
                                                                          @Param("returnType") byte returnType);
 
     List<MetadataURIMapping> findAllByAccount(@Param("account") Account account, Pageable pageable);
+
+    @Query(value = """
+            SELECT a.USER_ID , sa.CATEGORY
+            FROM SHARE_RETURN sr
+            LEFT JOIN\s
+            SHARE_ARTICLE sa
+            ON sr.SHARE_ARTICLE_ID = sa.ID
+            LEFT JOIN\s
+            ACCOUNT a\s
+            ON a.ID = sr.ACCOUNT_ID\s
+            WHERE RETURN_TYPE = 1
+            GROUP BY sr.ACCOUNT_ID, sr.SHARE_ARTICLE_ID
+            """, nativeQuery = true)
+    List<Object[]> getCFR(@Param("returnType") byte returnType);
 }

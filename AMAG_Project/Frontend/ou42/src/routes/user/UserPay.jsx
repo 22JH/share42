@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import axios from "axios";
 
-const URL = "http://k8d102.p.ssafy.io:8088/api/user/info/pay-method";
+const URL = "https://www.share42-together.com/api/user/info/pay-method";
 
 export default function UserPay() {
   const token = useGetUserToken();

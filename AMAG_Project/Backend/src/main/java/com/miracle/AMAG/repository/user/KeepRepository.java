@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface KeepRepository extends JpaRepository<Keep, Integer> {
 
-    KeepGetImgMapping findByShareArticle_Id(@Param("shareArticleId") int shareArticleId);
+    KeepGetImgMapping findTopByShareArticle_IdOrderByRegDtDesc(@Param("shareArticleId") int shareArticleId);
 
     List<MetadataURIMapping> findAllByAccount(@Param("account") Account account, Pageable pageable);
 }

@@ -1,8 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+
+import { Area } from "../../routes/admin/AdminLog";
 import { useLocation } from "react-router-dom";
+import { useQueryClient } from "react-query";
+import axios, { AxiosResponse } from "axios";
+import { memo } from "react";
+
 import Btn from "./../UI/Btn";
+import { useGetUserToken } from "../../hooks/useGetToken";
 
 const container = (pathName: string) => css`
   width: 90%;
@@ -32,31 +38,86 @@ const container = (pathName: string) => css`
   }
 `;
 
-function AdminSelectBox() {
-  const [area, setArea] = useState<string>("");
-  const [branch, setBranch] = useState<string>("");
+interface Sido {
+  sido: string;
+}
+
+interface Point {
+  id: number;
+  name: string;
+}
+
+interface Props {
+  regionData?: Sido[];
+  pointData?: Point[];
+  numberData?: AxiosResponse<any, any>;
+  listData?: AxiosResponse<any, any>;
+  setAreaInfo: React.Dispatch<React.SetStateAction<Area>>;
+  areaInfo: Area;
+}
+
+function AdminSelectBox(props: Props) {
+  const { regionData, pointData, numberData, setAreaInfo, areaInfo } = props;
+  const queryClient = useQueryClient();
+  const TOKEN = useGetUserToken();
+
   const location = useLocation();
   const pathName = location.pathname;
-
-  const options = [
-    { value: "서울", text: "서울" },
-    { value: "대구", text: "대구" },
-    { value: "대전", text: "대전" },
-  ];
 
   // 지역 선택 함수
   const clickArea = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (area !== value) {
-      setArea(value);
+
+    // 지점 API 함수
+    const pointAPI = () => {
+      return axios({
+        method: "get",
+        url: `https://www.share42-together.com/api/admin/lockers/address/sido/${value}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    };
+
+    if (areaInfo?.region !== value && value) {
+      queryClient.prefetchQuery(["admin-point"], pointAPI);
+      setAreaInfo!((info) => {
+        return { ...info, region: value };
+      });
     }
   };
 
   // 지점 선택 함수
   const clickBranch = (e: React.MouseEvent<HTMLSelectElement>) => {
     const value = (e.target as HTMLSelectElement).value;
-    if (branch !== value) {
-      setBranch(value);
+    const SIZE = 20;
+
+    // 리스트 요청 API 함수
+    const listAPI = ({ pageParam = 1 }) => {
+      return axios({
+        method: "get",
+        url: `https://www.share42-together.com/api/admin/log/${value}/${pageParam}/${SIZE}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    };
+
+    if (areaInfo?.point !== value && value) {
+      queryClient.prefetchInfiniteQuery(["admin-list"], listAPI);
+      setAreaInfo!((info) => {
+        return { ...info, point: value };
+      });
+    }
+  };
+
+  // 번호 선택 함수
+  const clickNumber = (e: React.MouseEvent<HTMLSelectElement>) => {
+    const value = (e.target as HTMLSelectElement).value;
+    if (areaInfo?.number !== value && value) {
+      setAreaInfo!((info) => {
+        return { ...info, number: value };
+      });
     }
   };
 
@@ -70,32 +131,39 @@ function AdminSelectBox() {
       <p>지역선택</p>
       <select onClick={clickArea}>
         <option value="">지역을 선택해주세요</option>
-        {options.map((option, index) => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
+        {regionData?.map((data: Sido, index: number) => {
+          const { sido } = data;
+          return (
+            <option key={sido} value={sido}>
+              {sido}
+            </option>
+          );
+        })}
       </select>
 
       <p>지점선택</p>
       <select onClick={clickBranch}>
         <option value="">지점을 선택해주세요</option>
-        {options.map((option, index) => (
-          <option key={option.value} value={option.value}>
-            {option.text}
-          </option>
-        ))}
+        {pointData?.map((data: Point, index: number) => {
+          const { id, name } = data;
+          return (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          );
+        })}
       </select>
+
       {pathName === "/admin/operation" ? (
         <>
           <p>번호선택</p>
-          <select onClick={clickBranch}>
+          <select onClick={clickNumber}>
             <option value="">번호를 선택해주세요</option>
-            {options.map((option, index) => (
+            {/* {options.map((option, index) => (
               <option key={option.value} value={option.value}>
                 {option.text}
               </option>
-            ))}
+            ))} */}
           </select>
           <Btn
             width={100}
@@ -114,4 +182,4 @@ function AdminSelectBox() {
   );
 }
 
-export default AdminSelectBox;
+export default memo(AdminSelectBox);

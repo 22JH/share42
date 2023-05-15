@@ -1,18 +1,25 @@
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 import axios from "axios";
 import { useInfiniteQuery } from "react-query";
 import { Suspense, cloneElement, useEffect } from "react";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
 import navStore from "../../store/navStore";
-import Loading from "../../components/Loading";
 import { L, pipe, takeAll } from "../../custom/FxJS";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import BottomMenuBar from "../../components/BottomMenuBar";
+import UserMyPageList from "../../components/user/mypage/UserMyPageList";
 import ErrorBoundary from "../../components/ErrorBoundary";
 import { ErrorMessage } from "../../components/ErrorMessage";
-import UserMyPageList from "../../components/user/mypage/UserMyPageList";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import Loading from "../../components/Loading";
 
-function UserMyPageLikeFetcher({
+const container = css`
+  width: 100vw;
+  height: 85vh;
+`;
+function UserMyPageMyArticlesFetcher({
   children,
 }: {
   children: React.PropsWithChildren<ReactJSXElement>;
@@ -24,7 +31,7 @@ function UserMyPageLikeFetcher({
   const getListFnc = ({ pageParam = 1 }) => {
     return axios({
       method: "get",
-      url: `https://www.share42-together.com/api/user/mypage/like/${pageParam}/${SIZE}`,
+      url: `https://www.share42-together.com/api/user/mypage/posts/${pageParam}/${SIZE}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -32,7 +39,7 @@ function UserMyPageLikeFetcher({
   };
 
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    ["user-mypage-like-list"],
+    ["user-mypage-article-list"],
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
@@ -54,20 +61,20 @@ function UserMyPageLikeFetcher({
   return cloneElement(children, { data, fetchNextPage, hasNextPage });
 }
 
-function UserMyPageLike() {
+function UserMyPageMyArticles() {
   const { setPathTitle } = navStore();
 
   useEffect(() => {
-    setPathTitle("관심 목록");
+    setPathTitle("내가 쓴 글");
   }, []);
 
   return (
-    <div style={{ width: "100vw", height: "81vh" }}>
+    <div css={container}>
       <ErrorBoundary fallback={ErrorMessage}>
         <Suspense fallback={<Loading />}>
-          <UserMyPageLikeFetcher>
+          <UserMyPageMyArticlesFetcher>
             <UserMyPageList />
-          </UserMyPageLikeFetcher>
+          </UserMyPageMyArticlesFetcher>
         </Suspense>
       </ErrorBoundary>
       <BottomMenuBar />
@@ -75,4 +82,4 @@ function UserMyPageLike() {
   );
 }
 
-export default UserMyPageLike;
+export default UserMyPageMyArticles;

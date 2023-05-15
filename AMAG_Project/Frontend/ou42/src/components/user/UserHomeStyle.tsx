@@ -2,7 +2,9 @@
 import { css } from "@emotion/react";
 
 export const content = (value: string) => css`
-  position: relative;
+  position: absolute;
+  overflow: auto;
+  height: auto;
 
   .sort-bar {
     display: flex;
@@ -139,6 +141,20 @@ export const content = (value: string) => css`
         }
       }
     }
+  }
+`;
+
+export const img = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25%;
+  p {
+    font-size: 1.4rem;
+    font-weight: 900;
+  }
+  img {
+    width: 30%;
   }
 `;
 

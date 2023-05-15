@@ -12,6 +12,10 @@ const nav = css`
   justify-content: space-between;
   background-color: #ffabab;
   align-items: center;
+  position: fixed;
+  width: 100vw;
+  top: 0;
+  z-index: 99;
 
   .left-icon {
     width: 100%;

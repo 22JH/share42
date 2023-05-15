@@ -55,9 +55,9 @@ export default function Address({
     data?: any;
     refetch: () => void;
   }
-  const GET_SI_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sido`;
-  const GET_GU_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/sigungu/${si}`;
-  const GET_DONG_URL = `http://k8d102.p.ssafy.io:8088/api/common/address/dong/${si}/${goon}`;
+  const GET_SI_URL = `https://www.share42-together.com/api/common/address/sido`;
+  const GET_GU_URL = `https://www.share42-together.com/api/common/address/sigungu/${si}`;
+  const GET_DONG_URL = `https://www.share42-together.com/api/common/address/dong/${si}/${goon}`;
   const getSiData = useApi("get", GET_SI_URL);
   const getGuData = useApi("get", GET_GU_URL);
   const getDongData = useApi("get", GET_DONG_URL);

@@ -12,11 +12,14 @@ pipeline {
         REPOSITORY_ADDRESS = 'lab.ssafy.com/s08-final/S08P31D102.git'
         DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
         DOCKER_HUB_CREDENTIALS = 'DockerHub_Account'
+        DOCKER_NETWORK_NAME = 'ubuntu_share42_net'
 
         SPRING_ROOT_PATH = 'S08P31D102/AMAG_Project/Backend'
         SPRING_IMAGE_NAME = 'miracle3070/share42-spring:latest'
         SPRING_CONTAINER_NAME = 'spring-server'
         SPRING_PICTURE_PATH = '/home/ubuntu/images'
+        SPRING_CONTAINER_PORT = '8088'
+        SPRING_CONTAINER_IP = '172.42.1.1'
     }
 
     stages {
@@ -78,7 +81,7 @@ pipeline {
                     docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
-                    dockerImage.run("-p 8088:8088 -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME} --hostname ${SPRING_CONTAINER_NAME}")
+                    dockerImage.run("-p ${env.SPRING_CONTAINER_PORT}:${env.SPRING_CONTAINER_PORT} --ip ${env.SPRING_CONTAINER_IP} --network ${env.DOCKER_NETWORK_NAME} -v ${SPRING_PICTURE_PATH}:${SPRING_PICTURE_PATH} --name ${SPRING_CONTAINER_NAME} --hostname ${SPRING_CONTAINER_NAME}")
                 }
             }
         }

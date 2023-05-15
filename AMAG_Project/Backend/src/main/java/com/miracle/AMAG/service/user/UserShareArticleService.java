@@ -3,22 +3,25 @@ package com.miracle.AMAG.service.user;
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
+import com.miracle.AMAG.dto.responseDTO.user.RecommendationResponseDTO;
+import com.miracle.AMAG.dto.responseDTO.user.ShareArticleRecommendationResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.user.ShareArticleResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.ArticleLike;
 import com.miracle.AMAG.entity.locker.Locker;
+import com.miracle.AMAG.entity.user.Recommendation;
 import com.miracle.AMAG.entity.user.ShareArticle;
-import com.miracle.AMAG.mapping.user.KeepGetImgMapping;
-import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
-import com.miracle.AMAG.mapping.user.ShareReturnGetImgMapping;
+import com.miracle.AMAG.mapping.user.*;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.ArticleLikeRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.KeepRepository;
+import com.miracle.AMAG.repository.user.RecommendationRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.repository.user.ShareReturnRepository;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.Role;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import com.miracle.AMAG.util.common.ShareReturnUtils;
 import jakarta.transaction.Transactional;
@@ -30,7 +33,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +64,9 @@ public class UserShareArticleService {
 
     @Autowired
     private KeepRepository keepRepository;
+
+    @Autowired
+    private RecommendationRepository recommendationRepository;
 
     public String insertShareArticle(ShareArticleRequestDTO shareArticleRequestDTO) {
         String loginId = SecurityUtil.getCurrentUserId();
@@ -113,12 +122,11 @@ public class UserShareArticleService {
         }
         //이미지 유효성 검사 부분
 
-
         if (shareArticleUpdateRequestDTO.getImgFile() != null) {
             String fileName = BoardUtils.singleFileSave((shareArticleUpdateRequestDTO).getImgFile());
             shareArticle.setImg(fileName);
         }
-        BeanUtils.copyProperties(shareArticle, shareArticleUpdateRequestDTO);
+        BeanUtils.copyProperties(shareArticleUpdateRequestDTO, shareArticle);
 
         shareArticle.setUptDt(LocalDateTime.now());
         shareArticleRepository.save(shareArticle);
@@ -137,16 +145,20 @@ public class UserShareArticleService {
         shareArticleRepository.updateHitUP(shareArticleId);
 
         ShareArticleGetMapping sagm = shareArticleRepository.findByIdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
-        long likeCount = articleLikeRepository.countByShareArticle_Id(shareArticleId);
-        List<ShareReturnGetImgMapping> srgim = shareReturnRepository.findAllByShareArticle_IdAndReturnType(shareArticleId, ShareReturnUtils.RETURN);
-        KeepGetImgMapping kgim = keepRepository.findByShareArticle_Id(shareArticleId);
+        long likeCount = articleLikeRepository.countByShareArticle_IdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
+        ShareReturnGetImgMapping srgimReturn = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN);
+        ShareReturnGetImgMapping srgimReturnApply = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN_APPLY);
+        KeepGetImgMapping kgim = keepRepository.findTopByShareArticle_IdOrderByRegDtDesc(shareArticleId);
         ArticleLike like = articleLikeRepository.findByAccountAndShareArticle_IdAndStatus(account, shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
+        List<ShareReturnGetImgMapping> returnImg = new ArrayList<>();
+        returnImg.add(srgimReturnApply);
+        returnImg.add(srgimReturn);
 
         Map<String, Object> result = new HashMap<>();
         result.put("article", sagm);
         result.put("likeCount", likeCount);
         result.put("keepImg", kgim);
-        result.put("returnImg", srgim);
+        result.put("returnImg", returnImg);
         if(like!=null){
             result.put("likeCheck", true);
         }
@@ -214,32 +226,271 @@ public class UserShareArticleService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public Page<ShareArticleResponseDTO> getShareArticleList(Pageable pageable, String sigungu, String dong, String category, int orderStandard, String query){
+    public Map<String, Object> getShareArticleList(Pageable pageable, int page, String sigungu, String dong, String category, int orderStandard,
+                                            String query, double lat, double lng){
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
         //로그인된 아이디로 테이블 id column 가져오기
         Account account = accountRepository.findByUserId(loginId);
+        Map<String, Object> resultData = new HashMap<>();
 
-        Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
-                query, orderStandard,pageable);
+        Recommendation recommendation = recommendationRepository.findByAccount(account);
 
-        return result.map(objects -> {
-            ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
-            dto.setId((int) objects[0]);
-            dto.setCategory((String) objects[1]);
-            dto.setName((String) objects[2]);
-            dto.setContent((String) objects[3]);
-            dto.setSharePrice((int) objects[4]);
-            dto.setImg((String) objects[5]);
-            dto.setUptDt((Timestamp) objects[6]);
-            dto.setShareStatus((byte) objects[7]);
-            dto.setHits((int) objects[8]);
-            dto.setLikeCount((Long) objects[9]);
-            dto.setUserId((String) objects[10]);
-            dto.setNickname((String) objects[11]);
-            dto.setLikeCheck((Integer) objects[12]);
-            return dto;
-        });
+        if(recommendation==null){
+            recommendation = new Recommendation();
+            recommendation.setAccount(account);
+            recommendation.setRegDt(LocalDateTime.now());
+            recommendationRepository.save(recommendation);
+        }
+        if(page>1 || query != null || !category.equals("base")){
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+                    query, orderStandard,pageable);
+
+            Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
+                ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+                dto.setId((int) objects[0]);
+                dto.setCategory((String) objects[1]);
+                dto.setName((String) objects[2]);
+                dto.setContent((String) objects[3]);
+                dto.setSharePrice((int) objects[4]);
+                dto.setImg((String) objects[5]);
+                dto.setUptDt((Timestamp) objects[6]);
+                dto.setShareStatus((byte) objects[7]);
+                dto.setHits((int) objects[8]);
+                dto.setLikeCount((Long) objects[9]);
+                dto.setUserId((String) objects[10]);
+                dto.setNickname((String) objects[11]);
+                dto.setLikeCheck((Integer) objects[12]);
+                return dto;
+            });
+            resultData.put("article", resultResponse);
+        }
+        //추천 받은지 30분이 지나야만 사용 가능(로딩 속도 최적화 때문)
+        else if(ChronoUnit.MINUTES.between(recommendation.getRegDt(),LocalDateTime.now())>30){
+            Map<String, Double> scoreMap = CFRecommendation(loginId);
+            List<String> keys = new ArrayList<>();
+            for (String item : scoreMap.keySet()) {
+                keys.add(item);
+            }
+            List<Object[]> sagim = new ArrayList<>();
+            if(keys.size()>=2){
+                sagim =shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(1), sigungu, dong, lat, lng);
+            }
+            else if(keys.size()==1){
+                sagim = shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(0), sigungu, dong, lat, lng);
+            }
+
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+                    query, orderStandard,pageable);
+
+            Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
+                ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+                dto.setId((int) objects[0]);
+                dto.setCategory((String) objects[1]);
+                dto.setName((String) objects[2]);
+                dto.setContent((String) objects[3]);
+                dto.setSharePrice((int) objects[4]);
+                dto.setImg((String) objects[5]);
+                dto.setUptDt((Timestamp) objects[6]);
+                dto.setShareStatus((byte) objects[7]);
+                dto.setHits((int) objects[8]);
+                dto.setLikeCount((Long) objects[9]);
+                dto.setUserId((String) objects[10]);
+                dto.setNickname((String) objects[11]);
+                dto.setLikeCheck((Integer) objects[12]);
+                return dto;
+            });
+
+            List<ShareArticleRecommendationResponseDTO> resultRecmmendation = new ArrayList<>();
+            if(sagim.size()==1){
+                for(int i=0;i<resultResponse.getSize();i++){
+                    if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0]){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
+                        break;
+                    }
+                }
+                recommendation.setReco1((int)sagim.get(0)[0]);
+            }
+            else if(sagim.size()==2){
+                int forCount = 0;
+                for(int i=0;i<resultResponse.getSize();i++){
+                    if(resultResponse.getContent().get(i).getId()==(int)sagim.get(0)[0] || resultResponse.getContent().get(i).getId()==(int)sagim.get(1)[0]){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
+                        forCount++;
+                    }
+                    if(forCount==2){
+                        break;
+                    }
+                }
+                recommendation.setReco1((int)sagim.get(0)[0]);
+                recommendation.setReco2((int)sagim.get(1)[0]);
+            }
+
+            recommendation.setRegDt(LocalDateTime.now());
+            recommendationRepository.save(recommendation);
+
+            resultData.put("article", resultResponse);
+            resultData.put("CFRecommendation", resultRecmmendation);
+        }
+        else{
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+                    query, orderStandard,pageable);
+
+            Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
+                ShareArticleResponseDTO dto = new ShareArticleResponseDTO();
+                dto.setId((int) objects[0]);
+                dto.setCategory((String) objects[1]);
+                dto.setName((String) objects[2]);
+                dto.setContent((String) objects[3]);
+                dto.setSharePrice((int) objects[4]);
+                dto.setImg((String) objects[5]);
+                dto.setUptDt((Timestamp) objects[6]);
+                dto.setShareStatus((byte) objects[7]);
+                dto.setHits((int) objects[8]);
+                dto.setLikeCount((Long) objects[9]);
+                dto.setUserId((String) objects[10]);
+                dto.setNickname((String) objects[11]);
+                dto.setLikeCheck((Integer) objects[12]);
+                return dto;
+            });
+            List<ShareArticleRecommendationResponseDTO> resultRecmmendation = new ArrayList<>();
+            if(recommendation.getReco2()!=null){
+                int forCount = 0;
+                for(int i=0;i<resultResponse.getSize();i++){
+                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1() || resultResponse.getContent().get(i).getId()==recommendation.getReco2()){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
+                        forCount++;
+                    }
+                    if(forCount==2){
+                        break;
+                    }
+                }
+            }
+            else if(recommendation.getReco1()!=null){
+                for(int i=0;i<resultResponse.getSize();i++){
+                    if(resultResponse.getContent().get(i).getId()==recommendation.getReco1()){
+                        ShareArticleResponseDTO dto = resultResponse.getContent().get(i);
+                        ShareArticleRecommendationResponseDTO targetDto = new ShareArticleRecommendationResponseDTO();
+                        BeanUtils.copyProperties(dto, targetDto);
+                        targetDto.setRecommendation(true);
+                        resultRecmmendation.add(targetDto);
+                        break;
+                    }
+                }
+            }
+
+            resultData.put("article", resultResponse);
+            resultData.put("CFRecommendation", resultRecmmendation);
+        }
+        return resultData;
+    }
+
+    //협업 필터링
+    public Map<String, Double> CFRecommendation(String accountId){
+        Map<String, List<String>> userHistoryMap = new HashMap<>();
+
+        List<Object[]> cfrgm = shareReturnRepository.getCFR(ShareReturnUtils.RETURN);
+        // 모든 아이템간의 유사도 점수를 저장한 데이터
+        Map<String, Map<String, Double>> similarityMap = new HashMap<>();
+
+        for (int i=0;i<cfrgm.size();i++) {
+            String userId = cfrgm.get(i)[0].toString();
+            String item = cfrgm.get(i)[1].toString();
+            if (userHistoryMap.containsKey(userId)) {
+                userHistoryMap.get(userId).add(item);
+            } else {
+                List<String> itemList = new ArrayList<>();
+                itemList.add(item);
+                userHistoryMap.put(userId, itemList);
+            }
+        }
+
+        List<Account> account = accountRepository.findByRole(Role.ROLE_USER);
+
+        for (int i=0;i<account.size();i++) {
+            String userId = account.get(i).getUserId();
+            if (!userHistoryMap.containsKey(userId)) {
+                List<String> itemList = new ArrayList<>();
+                itemList.add("없음");
+                userHistoryMap.put(userId, itemList);
+            }
+        }
+
+        // 협업 필터링을 위한 모든 아이템간의 코사인 유사도 점수 계산
+        for (String user : userHistoryMap.keySet()) {
+            List<String> itemList = userHistoryMap.get(user);
+            for (String item : itemList) {
+                for (String otherUser : userHistoryMap.keySet()) {
+                    if (!user.equals(otherUser)) {
+                        List<String> otherItemList = userHistoryMap.get(otherUser);
+                        for (String otherItem : otherItemList) {
+                            if (!item.equals(otherItem)) {
+                                String key = item.compareTo(otherItem) < 0 ? item + "-" + otherItem : otherItem + "-" + item;
+                                if (similarityMap.containsKey(key)) {
+                                    similarityMap.get(key).put(user + "-" + otherUser, 1.0);
+                                } else {
+                                    Map<String, Double> value = new HashMap<>();
+                                    value.put(user + "-" + otherUser, 1.0);
+                                    similarityMap.put(key, value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 유사도 점수가 높은 항목을 기반으로 추천 아이템 예측
+        String myUser = accountId;
+        List<String> myItemList = userHistoryMap.get(myUser);
+        Map<String, Double> scoreMap = new HashMap<>();
+        Map<String, Double> weightMap = new HashMap<>();
+        for (String user : userHistoryMap.keySet()) {
+            if (!user.equals(myUser)) {
+                for (String item : userHistoryMap.get(user)) {
+                    if (!myItemList.contains(item)) {
+                        for (String myItem : myItemList) {
+                            String key = item.compareTo(myItem) < 0 ? item + "-" + myItem : myItem + "-" + item;
+                            if (similarityMap.containsKey(key)) {
+                                Map<String, Double> value = similarityMap.get(key);
+                                for (String users : value.keySet()) {
+                                    String[] usersArray = users.split("-");
+                                    double score = value.get(users);
+                                    if (usersArray[0].equals(myUser)) {
+                                        if (scoreMap.containsKey(item)) {
+                                            scoreMap.put(item, scoreMap.get(item) + score);
+                                        } else {
+                                            scoreMap.put(item, score);
+                                        }
+                                        if (weightMap.containsKey(item)) {
+                                            weightMap.put(item, weightMap.get(item) + 1.0);
+                                        } else {
+                                            weightMap.put(item, 1.0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (String item : scoreMap.keySet()) {
+            scoreMap.put(item, scoreMap.get(item) / weightMap.get(item));
+        }
+        return scoreMap;
     }
 }

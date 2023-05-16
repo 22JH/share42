@@ -27,4 +27,6 @@ public class KeepDTO {
     private String img;
 
     private LocalDateTime regDt;
+
+    private byte keepType;
 }

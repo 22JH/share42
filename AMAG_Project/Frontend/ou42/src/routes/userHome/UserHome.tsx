@@ -444,6 +444,7 @@ function UserHome() {
   const [sortNum, setSortNum] = useState<number>(0);
 
   useEffect(() => {
+    // select box value
     if (value === "최신순") {
       setSortNum(0);
     } else if (value === "가격순") {

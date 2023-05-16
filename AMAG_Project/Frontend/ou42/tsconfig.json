@@ -19,5 +19,5 @@
     "typeRoots": ["./node_modules/@types", "@types"]
   },
   "types": ["react", "react-dom", "node", "react-kakao-maps-sdk"],
-  "include": ["src", "src/global.d.ts"]
+  "include": ["src", "src/global.d.ts", "public/service-worker.ts"]
 }

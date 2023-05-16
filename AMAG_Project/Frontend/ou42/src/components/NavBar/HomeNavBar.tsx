@@ -123,8 +123,6 @@ export default function HomeNavBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isScroll]);
 
-  console.log(window.scrollY, isScroll);
-
   // 사용자 정보 받는 API 함수
   const userInfo = () => {
     return axios({

@@ -38,6 +38,10 @@ import AdminLogin from "./routes/auth/AdminLogin";
 import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useGetUserToken } from "./hooks/useGetToken";
 
 const globalStyle = css`
   body {
@@ -48,6 +52,39 @@ const globalStyle = css`
 `;
 
 function App() {
+  const [permissionStatus, setPermissionStatus] = useState(null);
+  const TOKEN = useGetUserToken();
+
+  useEffect(() => {
+    // pwa 권한 설정
+    async function requestNotificationPermission() {
+      try {
+        const permission: any = await Notification.requestPermission();
+        setPermissionStatus(permission);
+      } catch (error) {
+        console.error("Error while requesting notification permission:", error);
+      }
+    }
+
+    if ("Notification" in window) {
+      requestNotificationPermission();
+    } else {
+      console.error("This browser does not support notifications.");
+    }
+
+    if (permissionStatus === "granted") {
+      const notification = new Notification("알림 예제입니다", {
+        body: "Wrtn 봇 측으로부터 오는 알림입니다.",
+      });
+      axios({
+        method: "get",
+        url: `https://www.share42-together.com/api/common/pwa`,
+      }).then(console.log);
+    } else {
+      console.error("알림 권한을 허용해주세요.");
+    }
+  }, [permissionStatus]);
+
   return (
     <>
       <Global styles={globalStyle} />

@@ -23,26 +23,26 @@ public class LockerControlHandler extends TextWebSocketHandler {
 
     private List<WebSocketSession> sessionList = new ArrayList<>();
 
-    public WebSocketSession getSession() throws IOException {
+    public void getSession(int lockerNum) throws IOException {
         //열려있는 세션 탐색 후 메시지 전송
         boolean flag = false;
         for (WebSocketSession session : sessionList){
             if (session.isOpen()){
                 log.info("열려있는 세션 : {}",session);
-                session.sendMessage(new TextMessage(11 + " " + "open"));
+                session.sendMessage(new TextMessage(lockerNum + " " + "open"));
                 flag = true;
             }
         }
-        if (flag){
+        if (!flag){
             log.info("열려있는 세션이 없음");
         }
 
         // 세션을 원하는 방식으로 선택하여 반환
         // 일단 현재 연결된 첫 번째 세션 반환
-        if (!sessionList.isEmpty()) {
-            return sessionList.get(0);
-        }
-        return null;
+//        if (!sessionList.isEmpty()) {
+//            return sessionList.get(0);
+//        }
+//        return null;
     }
 
     private int getShareStatus(int lockerNum){

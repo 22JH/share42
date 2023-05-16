@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,22 @@ public class LockerControlHandler extends TextWebSocketHandler {
 
     private List<WebSocketSession> sessionList = new ArrayList<>();
 
-    public WebSocketSession getSession() {
+    public WebSocketSession getSession() throws IOException {
+        //열려있는 세션 탐색 후 메시지 전송
+        boolean flag = false;
+        for (WebSocketSession session : sessionList){
+            if (session.isOpen()){
+                log.info("열려있는 세션 : {}",session);
+                session.sendMessage(new TextMessage(11 + " " + "open"));
+                flag = true;
+            }
+        }
+        if (flag){
+            log.info("열려있는 세션이 없음");
+        }
+
         // 세션을 원하는 방식으로 선택하여 반환
-        // 예: 현재 연결된 첫 번째 세션 반환
+        // 일단 현재 연결된 첫 번째 세션 반환
         if (!sessionList.isEmpty()) {
             return sessionList.get(0);
         }

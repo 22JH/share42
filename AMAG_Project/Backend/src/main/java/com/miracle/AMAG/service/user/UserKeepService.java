@@ -14,6 +14,7 @@ import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.KeepUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -78,10 +79,11 @@ public class UserKeepService {
         keepDTO.setShareArticleName(shareArticle.getName());
         keepDTO.setLockerLockerNumber(locker.getLockerNumber());
         keepDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+        keepDTO.setKeepType(KeepUtils.KEEP);
         keepDTO.setImg(fileName);
 
         // 블록체인 관련 항목
-        String alias = "k0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String alias = "kd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
         String metadataUri = klaytnService.getUri(keepDTO);
         klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
 
@@ -91,6 +93,7 @@ public class UserKeepService {
         keep.setAccount(account);
         keep.setImg(fileName);
         keep.setRegDt(curTime);
+        keep.setKeepType(KeepUtils.KEEP);
         keep.setContractHash(alias);
         keep.setMetadataUri(metadataUri);
         keepRepository.save(keep);

@@ -1,15 +1,11 @@
 package com.miracle.AMAG.controller.user;
 
-import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.UserKeepRequestDTO;
 import com.miracle.AMAG.service.user.UserKeepService;
 import com.miracle.AMAG.util.network.CUDResponse;
 import com.miracle.AMAG.util.network.ErrorResponse;
 import com.miracle.AMAG.util.network.NormalResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,12 +16,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
 @Tag(name = "UserPut", description = "물건 수납 관련 API")
-@RequestMapping("/api/user/share/keep")
+@RequestMapping("/api/user/share/keep/put")
 @RequiredArgsConstructor
 @RestController
 public class UserKeepController {

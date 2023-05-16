@@ -94,6 +94,21 @@ public class AdminLockerController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminApplyCollect(lockerId));
     }
 
+    @PostMapping("/collect/cancel/{lockerId}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "관리자 물품 회수 신청취소 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "관리자 물품 회수 신청취소 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "관리자 물품 회수 신청취소", description = "관리자가 회수 신청 했던 공유 물품에 대해서 신청취소를 진행합니다.")
+    @Parameters({
+            @Parameter(name = "lockerId", description = "대여 물품 게시글 ID", in = ParameterIn.PATH),
+    })
+    public ResponseEntity<?> adminCancelKeep(@PathVariable("lockerId") int lockerId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCancelCollect(lockerId));
+    }
+
 
     @PostMapping("/collect/receive/{lockerId}")
     @ApiResponses(value = {

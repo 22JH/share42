@@ -146,6 +146,60 @@ public class AdminLockerService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String adminCancelCollect(int lockerId) throws IOException {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+        Account account = accountRepository.findByUserId(loginId);
+
+        if (!account.getRole().value().equals("ROLE_ADMIN")){
+            throw new RuntimeException("권한이 없습니다");
+        }
+
+        Locker locker = lockerRepository.findById(lockerId);
+        ShareArticle shareArticle = locker.getShareArticle();
+        Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
+
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY || collectRecord.getCollectType() != CollectUtils.COLLECT_READY) {
+            throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        // 회수 신청취소 처리
+        Collect collect = new Collect();
+        BeanUtils.copyProperties(collectRecord, collect);
+        collect.setId(0);
+        LocalDateTime curTime = LocalDateTime.now();
+        collect.setRegDt(curTime);
+        collect.setCollectType(CollectUtils.COLLECT_CANCEL);
+
+        CollectDTO collectDTO = new CollectDTO();
+        BeanUtils.copyProperties(collect,collectDTO);
+        collectDTO.setAccountUserId(account.getUserId());
+        collectDTO.setAccountNickname(account.getNickname());
+        collectDTO.setShareArticleId(shareArticle.getId());
+        collectDTO.setShareArticleCategory(shareArticle.getCategory());
+        collectDTO.setShareArticleName(shareArticle.getName());
+        collectDTO.setLockerLockerNumber(locker.getLockerNumber());
+        collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+
+        // 블록체인 관련 항목
+        String alias = "cc1-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(collectDTO);
+        klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
+        collect.setContractHash(alias);
+        collect.setMetadataUri(metadataUri);
+        collectRepository.save(collect);
+
+        shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
+        shareArticle.setUptDt(curTime);
+        shareArticleRepository.save(shareArticle);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
+
     public String adminCollectProduct(int lockerId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);

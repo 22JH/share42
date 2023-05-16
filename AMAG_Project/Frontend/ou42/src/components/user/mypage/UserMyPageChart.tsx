@@ -2,25 +2,26 @@
 import { css } from "@emotion/react";
 
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useQueryClient, useQuery } from "react-query";
 import { scaleLinear, select, arc, pie, interpolate } from "d3";
 
+import { L, pipe, takeAll } from "../../../custom/FxJS";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useGetUserToken } from "../../../hooks/useGetToken";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
-const data = [
-  [50, "전국"],
-  [150, "서울"],
-  [100, "대전"],
-  [200, "인천"],
-  [250, "대구"],
-  [30, "광주"],
-  [170, "부산"],
-  [230, "울산"],
-];
+// const data = [
+//   [50, "전국"],
+//   [150, "서울"],
+//   [100, "대전"],
+//   [200, "인천"],
+//   [250, "대구"],
+//   [30, "광주"],
+//   [170, "부산"],
+//   [230, "울산"],
+// ];
 
 const info = css`
   display: flex;
@@ -80,26 +81,86 @@ const title = css`
   font-weight: 900;
 `;
 
+const empty = css`
+  height: 15vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  p {
+    font-weight: 900;
+    margin-bottom: 10%;
+    span {
+      color: #ffabab;
+    }
+  }
+`;
+
+const table = css`
+  display: flex;
+  justify-content: center;
+
+  .table {
+    height: "7vh";
+    animation-name: show;
+    animation-duration: 1s;
+
+    th {
+      background-color: #ffabab;
+      color: white;
+    }
+
+    td {
+      width: 25vw;
+      background-color: #ffecec;
+      text-align: center;
+    }
+
+    @keyframes show {
+      0% {
+        transform: translate(0, -50px);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+    }
+  }
+`;
+
 type Data = [number, string];
 
 const DURATION: 1000 = 1000;
-
 const DATE = new Date();
-
 function UserMyPageChart() {
   const COLORINDEX = 0.1;
   const TOKEN = useGetUserToken();
+  const queryClient = useQueryClient();
   const canvas = useRef<HTMLDivElement>(null);
   const [year, setYear] = useState<number>(DATE.getFullYear());
+  const [month, setMonth] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [cost, setCost] = useState<number>(0);
 
-  const test = useQuery(["user-mypage-circle-chart"], () => {
+  const apiFnc = () => {
     return axios({
       method: "get",
-      url: `https://www.share42-together.com/api/user/mypage/profits/{year}`,
+      url: `https://www.share42-together.com/api/user/mypage/profits/${year}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
     });
+  };
+
+  const { data } = useQuery(["user-mypage-circle-chart"], apiFnc, {
+    select: (data: any) => {
+      const newData = pipe(L.map, takeAll);
+      return newData(
+        (d: { month: string; price: number }) => [d.price, `${+d.month}월`],
+        data.data.message
+      );
+    },
   });
 
   const color = scaleLinear()
@@ -113,7 +174,7 @@ function UserMyPageChart() {
     const svg = canv.append("svg").attr("width", "100%").attr("height", "30vh");
     // .style("padding-left", "8%");
 
-    const g = svg.append("g").attr("transform", "translate(170, 150)");
+    const g = svg.append("g").attr("transform", "translate(210, 150)");
 
     const f: any = arc()
       .innerRadius(45)
@@ -134,6 +195,11 @@ function UserMyPageChart() {
       })
       .attr("stroke-width", "2px")
       .attr("d", f)
+      .on("click", (event: any, d: any) => {
+        setCost(d.data[0]);
+        setMonth(d.data[1]);
+        setIsOpen((isOpen) => !isOpen);
+      })
       .transition()
       .duration(DURATION)
       .attrTween("d", (d: any) => {
@@ -141,53 +207,115 @@ function UserMyPageChart() {
         return (t: any) => f(i(t));
       });
 
+    function midAngle(d: any) {
+      return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    }
+
+    // g.selectAll("text")
+    //   .data(pieGraph(data))
+    //   .enter()
+    //   .append("text")
+    //   .text((d: any, i) => d.data[1]) // 텍스트를 원하는 데이터로 바꾸며, 이 예시에서는 d.data[1]을 사용했습니다.
+    //   .attr("transform", (d) => {
+    //     const [x, y] = f.centroid(d);
+    //     return `translate(${x},${y})`;
+    //   })
+    //   .style("text-anchor", (d) => (midAngle(d) < Math.PI ? "start" : "end"))
+    //   .attr("dy", ".35rem");
+
     g.selectAll("text")
       .data(pieGraph(data))
       .enter()
       .append("text")
-      .attr(
-        "transform",
-        (d: any) => `translate(${f.centroid(d)[0] - 10}, ${f.centroid(d)[1]})`
-      )
       .attr("fill", "black")
-      .attr("dy", "5.35rem")
+      .attr("dy", "0.35rem")
       .attr("font-size", "0.8rem")
       .attr("font-weight", "900")
-      .attr("transform", "rotate(-20)")
+      .style("text-anchor", (d) => (midAngle(d) < Math.PI ? "start" : "end"))
       .text((d: any) => {
-        if (Math.abs(d.endAngle - d.startAngle) >= 1) {
-          return d.data[1];
-        }
-        return;
+        return d.data[1];
+      })
+      .on("click", (event: any, d: any) => {
+        setCost(d.data[0]);
+        setMonth(d.data[1]);
+        setIsOpen((isOpen) => !isOpen);
       })
       .transition()
       .duration(DURATION)
+      .attr("transform", (d) => {
+        const [x, y] = f.centroid(d);
+        return `translate(${x},${y})`;
+      })
       .attr("fill", "white");
-  }, []);
+  }, [data]);
+
+  useLayoutEffect(() => {
+    queryClient.prefetchQuery(["user-mypage-circle-chart"], apiFnc);
+  }, [year]);
 
   const getYear = (e: any) => {
-    console.log(e.$y);
+    setYear(e.$y);
   };
+
+  const showTable = (index: number) => {
+    setCost(data[index][0]);
+    setMonth(data[index][1]);
+    setIsOpen((isOpen) => !isOpen);
+  };
+
   return (
     <div style={{ position: "relative" }}>
       <p css={title}>수익</p>
-      <div className="canvas" ref={canvas}></div>{" "}
+      {data?.length !== 0 ? (
+        <div className="canvas" ref={canvas}></div>
+      ) : (
+        <div css={empty}>
+          <p>
+            <span>거래</span>가 없어요...
+          </p>
+        </div>
+      )}
+
       <div css={date}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker label={'"year"'} views={["year"]} onChange={getYear} />
         </LocalizationProvider>
       </div>
-      <div css={info}>
-        <div css={outer}>
-          {data?.map((d: any, index: number) => {
-            return (
-              <div className="container" key={index}>
-                {/* <div css={box(color(index * COLORINDEX))}></div> */}
-              </div>
-            );
-          })}
+
+      {data?.length !== 0 ? (
+        <div css={info}>
+          <div css={outer}>
+            {data?.map((d: any, index: number) => {
+              return (
+                <div className="container" key={index}>
+                  <div css={box(color(index * COLORINDEX))}></div>
+                  <p onClick={() => showTable(index)}>{d[1]}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ) : null}
+
+      {isOpen ? (
+        <div css={table}>
+          <table className="table">
+            <thead>
+              <th>년</th>
+              <th>월</th>
+              <th>수익</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{year}</td>
+                <td>{month}</td>
+                <td>{cost}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+
       <hr css={hr} />
     </div>
   );

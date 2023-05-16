@@ -256,25 +256,39 @@ function UserHomeList(props: Partial<Props>) {
   const ImgUrl = process.env.REACT_APP_IMAGE_URL;
   const TOKEN = useGetUserToken();
 
-  const { mutate: setLike } = useMutation((id) => {
-    return axios({
-      method: "post",
-      url: `https://www.share42-together.com/api/user/share/share-articles/like/${id}`,
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
+  const { mutate: setLike } = useMutation(
+    (id) => {
+      return axios({
+        method: "post",
+        url: `https://www.share42-together.com/api/user/share/share-articles/like/${id}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(["get-object-list"], { exact: true });
       },
-    });
-  });
+    }
+  );
 
-  const { mutate: setUnLike } = useMutation((id) => {
-    return axios({
-      method: "post",
-      url: `https://www.share42-together.com/api/user/share/share-articles/unlike/${id}`,
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
+  const { mutate: setUnLike } = useMutation(
+    (id) => {
+      return axios({
+        method: "post",
+        url: `https://www.share42-together.com/api/user/share/share-articles/unlike/${id}`,
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(["get-object-list"], { exact: true });
       },
-    });
-  });
+    }
+  );
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -300,10 +314,8 @@ function UserHomeList(props: Partial<Props>) {
   const like = (id: any, likeCheck: null | number) => {
     if (likeCheck) {
       setUnLike(id);
-      queryClient.invalidateQueries();
     } else {
       setLike(id);
-      queryClient.invalidateQueries();
     }
   };
 

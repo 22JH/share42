@@ -26,4 +26,6 @@ public class CollectDTO {
     private String shareArticleName;
     
     private LocalDateTime regDt;
+
+    private byte collectType;
 }

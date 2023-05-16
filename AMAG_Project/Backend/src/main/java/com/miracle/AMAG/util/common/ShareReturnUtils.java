@@ -3,7 +3,7 @@ package com.miracle.AMAG.util.common;
 public class ShareReturnUtils {
 
     // 반납신청
-    public static final byte RETURN_APPLY = 0;
+    public static final byte RETURN_READY = 0;
 
     // 반납
     public static final byte RETURN= 1;

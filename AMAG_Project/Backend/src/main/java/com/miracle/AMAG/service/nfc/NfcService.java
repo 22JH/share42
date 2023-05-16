@@ -1,7 +1,6 @@
 package com.miracle.AMAG.service.nfc;
 
 import com.miracle.AMAG.config.SecurityUtil;
-import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.mapping.nfc.NfcShareArticleMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
@@ -41,9 +40,8 @@ public class NfcService {
     public List<NfcShareArticleMapping> getWaitingKeepOrCollectList() {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
-        Account account = accountRepository.findByUserId(loginId);
 
-        List<NfcShareArticleMapping> waitingKeepOrCollectList = lockerRepository.getWaitingKeepOrCollectList(account);
+        List<NfcShareArticleMapping> waitingKeepOrCollectList = lockerRepository.getWaitingKeepOrCollectList(loginId);
         return waitingKeepOrCollectList;
     }
 }

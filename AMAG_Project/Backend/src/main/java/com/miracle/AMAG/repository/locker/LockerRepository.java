@@ -1,6 +1,5 @@
 package com.miracle.AMAG.repository.locker;
 
-import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.mapping.locker.LockerGetListMapping;
@@ -59,7 +58,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
           l.LOCKER_NUMBER as lockerNumber,
           l.NFC as nfc,
           t.USE_TYPE as useType,
-          0 AS reqeustType
+          0 AS requestType
         FROM(
           select
              *
@@ -118,7 +117,75 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
     """, nativeQuery = true)
     List<NfcShareArticleMapping> getWaitingBorrowOrReturnList(@Param("userId") String userId);
 
-    @Query("SELECT sa FROM ShareArticle sa WHERE sa.account = :account AND sa.status = false AND sa.shareStatus = 0 OR sa.shareStatus = 4")
-    List<NfcShareArticleMapping> getWaitingKeepOrCollectList(@Param("account") Account account);
+    @Query(value = """
+        (select
+          sa.ID as shareArticleId,
+          sa.NAME as shareArticleName,
+          sa.PRICE as shareArticlePrice,
+          sa.SHARE_PRICE as shareArticleSharePrice,
+          sa.status as shareArticleShareStatus,
+          ls.NAME as lockerStationName,
+          ls.ID as lockerStationId,
+          l.LOCKER_NUMBER as lockerNumber,
+          l.NFC as nfc,
+          t.KEEP_TYPE as keepType,
+          0 AS requestType
+        FROM(
+          select
+             *
+          from KEEP
+          where (SHARE_ARTICLE_ID, REG_DT) in (
+             select SHARE_ARTICLE_ID, max(REG_DT) as REG_DT
+             from KEEP group by SHARE_ARTICLE_ID
+          )
+        ) t
+        inner join LOCKER l
+        on t.LOCKER_ID = l.ID
+        inner join ACCOUNT a
+        on t.ACCOUNT_ID = a.ID
+        inner join SHARE_ARTICLE sa
+        ON l.SHARE_ARTICLE_ID = sa.ID
+        inner join LOCKER_STATION ls
+        on ls.ID = l.LOCKER_STATION_ID
+        WHERE a.USER_ID = :userId
+        group by t.SHARE_ARTICLE_ID
+        HAVING keepType = 0)
+
+        UNION
+
+           (select
+          sa.ID as shareArticleId,
+          sa.NAME as shareArticleName,
+          sa.PRICE as shareArticlePrice,
+          sa.SHARE_PRICE as shareArticleSharePrice,
+          sa.status as shareArticleShareStatus,
+          ls.NAME as lockerStationName,
+          ls.ID as lockerStationId,
+          l.LOCKER_NUMBER as lockerNumber,
+          l.NFC as nfc,
+          t.COLLECT_TYPE as collectType,
+          1 AS requestType
+        FROM(
+          select
+             *
+          from COLLECT
+          where (SHARE_ARTICLE_ID, REG_DT) in (
+             select SHARE_ARTICLE_ID, max(REG_DT) as REG_DT
+             from COLLECT group by SHARE_ARTICLE_ID
+          )
+        ) t
+        inner join LOCKER l
+        on t.LOCKER_ID = l.ID
+        inner join ACCOUNT a
+        on t.ACCOUNT_ID = a.ID
+        inner join SHARE_ARTICLE sa
+        on l.SHARE_ARTICLE_ID = sa.ID
+        inner join LOCKER_STATION ls
+        on ls.ID = l.LOCKER_STATION_ID
+        WHERE a.USER_ID = :userId
+        group by t.SHARE_ARTICLE_ID
+        HAVING collectType=0);
+    """, nativeQuery = true)
+    List<NfcShareArticleMapping> getWaitingKeepOrCollectList(@Param("userId") String userId);
 
 }

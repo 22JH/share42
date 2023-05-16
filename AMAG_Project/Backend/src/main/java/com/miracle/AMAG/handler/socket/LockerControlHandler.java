@@ -93,7 +93,7 @@ public class LockerControlHandler extends TextWebSocketHandler {
         //0: 수납대기, 1:공유대기중, 2:공유중, 3:반납대기, 4:회수대기, 5:회수 -> 반입 : 0,3 / 반출 : 1,4
         int shareStatus = getShareStatus(lockerNum);
         // 보관
-        if (shareStatus == ShareArticleUtils.KEEP_STAY || shareStatus == ShareArticleUtils.RETURN_STAY){
+        if (shareStatus == ShareArticleUtils.KEEP_READY || shareStatus == ShareArticleUtils.RETURN_READY){
 //            String[] messageInfo = request.split(" ");
             int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
             //물건이 안들어옴

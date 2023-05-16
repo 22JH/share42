@@ -46,6 +46,8 @@ public class Keep {
 
     private LocalDateTime regDt;
 
+    private byte keepType;
+
     @Column(name="CONTRACT_HASH",length = 200)
     private String contractHash;
 

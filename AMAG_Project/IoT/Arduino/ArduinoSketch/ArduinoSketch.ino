@@ -1,4 +1,4 @@
-#include <stdio.h>
+
 
 // 1번 박스
 int val1 = 0;
@@ -19,9 +19,8 @@ bool isLocked1 = true;
 void loop() {
   String Data = Serial.readStringUntil('\n');
   Data.trim(); // 라즈베리파이로부터 받아옴
-
   mag_sensor1 = digitalRead(mag1);
-
+  Serial.println(mag_sensor1);
   if (Data == "1open" && isLocked1) {
     digitalWrite(sol1, HIGH);
     delay(2000);
@@ -35,9 +34,9 @@ void loop() {
   // 변수 isLocked가 열려있다는데, 마그네틱 센서로부터 닫혔다는 신호를 받을 때
   if (!isLocked1 && mag_sensor1 == LOW) {
     val1 = analogRead(FSRsensor1);     
+    Serial.println(val1);
     Serial.println(String("1close ").concat(val1));
     isLocked1 = true;
-    val1 = 0;
   }
 
 // #include <ArduinoUniqueID.h>
@@ -82,5 +81,6 @@ void loop() {
 //       delay(100);
 //     }
 //   }
+  delay(200);
 }
 

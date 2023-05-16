@@ -5,15 +5,18 @@ import com.miracle.AMAG.dto.klaytn.BorrowDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.Borrow;
+import com.miracle.AMAG.entity.user.Collect;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.BorrowRepository;
+import com.miracle.AMAG.repository.user.CollectRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
 import com.miracle.AMAG.util.common.BorrowUtils;
+import com.miracle.AMAG.util.common.CollectUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +45,9 @@ public class UserBorrowService {
     private BorrowRepository borrowRepository;
 
     @Autowired
+    private CollectRepository collectRepository;
+
+    @Autowired
     private LockerRepository lockerRepository;
 
     @Autowired
@@ -56,6 +62,14 @@ public class UserBorrowService {
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
+
+        Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
+        if(collectRecord != null) {
+            if(collectRecord.getCollectType() == CollectUtils.COLLECT_READY){
+                throw new RuntimeException("회수 신청된 물품입니다.");
+            }
+        }
+
         if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY) {
             throw new RuntimeException("대여 가능한 물품이 아닙니다.");
         }

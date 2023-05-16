@@ -4,15 +4,18 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.klaytn.CollectDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
+import com.miracle.AMAG.entity.user.Borrow;
 import com.miracle.AMAG.entity.user.Collect;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
+import com.miracle.AMAG.repository.user.BorrowRepository;
 import com.miracle.AMAG.repository.user.CollectRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.BorrowUtils;
 import com.miracle.AMAG.util.common.CollectUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
@@ -45,6 +48,9 @@ public class UserCollectService {
     private CollectRepository collectRepository;
 
     @Autowired
+    private BorrowRepository borrowRepository;
+
+    @Autowired
     private KlaytnService klaytnService;
 
     public String applyCollect(int shareArticleId) throws IOException {
@@ -55,6 +61,14 @@ public class UserCollectService {
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
+
+        Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
+        if(borrowRecord != null) {
+            if(borrowRecord.getUseType() == BorrowUtils.BORROW_READY){
+                throw new RuntimeException("대여 신청된 물품입니다.");
+            }
+        }
+
         if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY) {
             throw new RuntimeException("회수 가능한 물품이 아닙니다.");
         }

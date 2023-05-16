@@ -13,6 +13,7 @@ import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.CollectUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class UserCollectService {
 
         Account account = accountRepository.findByUserId(loginId);
 
-        // 대여 신청처리
+        // 회수 신청처리
         Collect collect = new Collect();
         Locker locker = lockerRepository.findByShareArticle(shareArticle);
         LocalDateTime curTime = LocalDateTime.now();
@@ -71,6 +72,7 @@ public class UserCollectService {
         collect.setAccount(account);
         collect.setShareArticle(shareArticle);
         collect.setRegDt(curTime);
+        collect.setCollectType(CollectUtils.COLLECT_READY);
 
         CollectDTO collectDTO = new CollectDTO();
         BeanUtils.copyProperties(collect, collectDTO);
@@ -116,6 +118,7 @@ public class UserCollectService {
         BeanUtils.copyProperties(collectRecord, collect);
         LocalDateTime curTime = LocalDateTime.now();
         collect.setRegDt(curTime);
+        collect.setCollectType(CollectUtils.COLLECT);
         collect.setId(0);
 
         Locker locker = lockerRepository.findByShareArticle(shareArticle);
@@ -158,7 +161,8 @@ public class UserCollectService {
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
 
         if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY ||
-                !collectRecord.getAccount().getUserId().equals(loginId)) {
+                !collectRecord.getAccount().getUserId().equals(loginId) ||
+                collectRecord.getCollectType() != CollectUtils.COLLECT_READY) {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 

@@ -1,10 +1,12 @@
 package com.miracle.AMAG.repository.locker;
 
+import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.mapping.locker.LockerGetListMapping;
 import com.miracle.AMAG.mapping.locker.LockerListMapping;
 import com.miracle.AMAG.mapping.locker.ReportLockerGetListMapping;
+import com.miracle.AMAG.mapping.nfc.WaitingBorrowOrReturnMapping;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,4 +46,13 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
     Page<ReportLockerGetListMapping> findAllByLockerStation_Id(@Param("lockerStationId") int lockerStationId, Pageable pageable);
 
     Locker findByNfc(@Param("Nfc") String Nfc);
+
+
+    @Query("SELECT sa FROM ShareArticle sa WHERE sa.account = :account AND sa.status = false AND sa.shareStatus = 1 OR sa.shareStatus = 3")
+    List<WaitingBorrowOrReturnMapping> getWaitingBorrowOrReturnList(@Param("account") Account account);
+
+    @Query("SELECT sa FROM ShareArticle sa WHERE sa.account = :account AND sa.status = false AND sa.shareStatus = 0 OR sa.shareStatus = 4")
+    List<ShareArticle> getWaitingKeepAndCollect(@Param("account") Account account);
+
+
 }

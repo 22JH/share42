@@ -98,4 +98,19 @@ public class UserInfoController {
     public ResponseEntity<?> updateUserInfo(@ModelAttribute @Valid UserInfoRequestDTO userInfoRequestDTO) {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userInfoService.updateUserInfo(userInfoRequestDTO));
     }
+
+    @GetMapping("/chat/user-img/{userId}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용자 프로필 사진 반환 성공", content = @Content(schema = @Schema(implementation = NormalResponse.class))),
+            @ApiResponse(responseCode = "500", description = "사용자 프로필 사진 반환 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "사용자 프로필 사진 반환", description = "입력 받은 사용자의 아이디에 해당하는 프로필 사진을 조회합니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "프로필 사진을 조회할 사용자 아이디", in = ParameterIn.PATH)
+    })
+    public ResponseEntity<?> getUserImg(@PathVariable("userId") String userId) {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userInfoService.getUserImg(userId));
+    }
 }

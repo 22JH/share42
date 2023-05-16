@@ -138,5 +138,7 @@ public class LockerControlHandler extends TextWebSocketHandler {
         // 클라이언트와 연결을 끊었을 때 실행되는 메소드
         sessionList.remove(session);
         log.info("{} 연결 끊김",session.getId());
+        log.info("끊긴 이유 : {}",status.getReason());
+        log.info("끊긴 이유 가 뭐냐면 {}",status.toString());
     }
 }

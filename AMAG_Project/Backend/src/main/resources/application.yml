@@ -52,6 +52,8 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  websocket:
+    buffer-size : 1048576
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8

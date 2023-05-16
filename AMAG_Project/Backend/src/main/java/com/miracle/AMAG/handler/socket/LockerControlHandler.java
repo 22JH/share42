@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,11 @@ public class LockerControlHandler extends TextWebSocketHandler {
         //메시지 전달받기
         String request = message.getPayload();
         log.info("Server received: {}", request);
+
+        // 수신된 메시지의 크기 로깅
+        int messageSize = request.getBytes(StandardCharsets.UTF_8).length;
+        log.info("Received message size: {} bytes", messageSize);
+
         String[] messageInfo = request.split(" ");
         int lockerNum = Integer.parseInt(messageInfo[0]);
         log.info("{}번 사물함에 접근 : ", lockerNum);

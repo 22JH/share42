@@ -43,6 +43,8 @@ public class Collect {
 
     private LocalDateTime regDt;
 
+    private byte collectType;
+
     @Column(name="CONTRACT_HASH",length = 200)
     private String contractHash;
 

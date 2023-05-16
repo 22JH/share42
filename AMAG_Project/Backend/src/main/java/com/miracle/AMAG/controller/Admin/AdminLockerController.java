@@ -80,10 +80,10 @@ public class AdminLockerController {
     }
 
 
-    @PostMapping("/collect/{lockerId}")
+    @PostMapping("/collect/get/{lockerId}")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
-            @ApiResponse(responseCode = "500", description = "공유 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "관리자 공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "관리자 공유 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})

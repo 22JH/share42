@@ -16,14 +16,13 @@ import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.CollectUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -80,13 +79,11 @@ public class AdminLockerService {
         return lockerRepository.findByLockerStation_IdOrderByLockerNumber(lockerStationId);
     }
 
-
     public String adminCollectProduct(int lockerId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
         Account account = accountRepository.findByUserId(loginId);
-        if(account == null){
-            throw new NullPointerException("로그인 정보가 없습니다");
-        }
+
         if (!account.getRole().value().equals("ROLE_ADMIN")){
             throw new RuntimeException("권한이 없습니다");
         }
@@ -95,10 +92,15 @@ public class AdminLockerService {
         ShareArticle shareArticle = locker.getShareArticle();
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
 
+        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY) {
+            throw new RuntimeException("해당 물품은 회수 처리를 진행할 수 없는 물품입니다.");
+        }
+
         Collect collect = new Collect();
         BeanUtils.copyProperties(collectRecord, collect);
         LocalDateTime curTime = LocalDateTime.now();
         collect.setRegDt(curTime);
+        collect.setCollectType(CollectUtils.COLLECT);
         collect.setId(0);
 
         CollectDTO collectDTO = new CollectDTO();
@@ -111,8 +113,8 @@ public class AdminLockerService {
         collectDTO.setLockerLockerNumber(locker.getLockerNumber());
         collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
-        //블록체인 관련 항목
-        String alias = "cd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        // 블록체인 관련 항목
+        String alias = "cd1-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
         String metadataUri = klaytnService.getUri(collectDTO);
         klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
         collect.setContractHash(alias);

@@ -58,6 +58,8 @@ dependencies {
 	implementation 'com.microsoft.onnxruntime:onnxruntime:1.13.1' //yolov5를 위한 라이브러리 2개
 	implementation 'org.openpnp:opencv:4.5.5-1'
 
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'

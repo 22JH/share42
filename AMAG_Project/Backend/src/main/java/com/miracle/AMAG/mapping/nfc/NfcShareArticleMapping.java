@@ -1,10 +1,8 @@
 package com.miracle.AMAG.mapping.nfc;
 
-public interface WaitingBorrowOrReturnMapping {
+public interface NfcShareArticleMapping {
 
     int getShareArticleId();
-
-    String getShareArticleCategory();
 
     String getShareArticleName();
 
@@ -21,4 +19,6 @@ public interface WaitingBorrowOrReturnMapping {
     int getLockerNumber();
 
     String getNfc();
+
+    Integer getRequestType();
 }

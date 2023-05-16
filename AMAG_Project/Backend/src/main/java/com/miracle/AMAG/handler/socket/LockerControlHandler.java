@@ -80,7 +80,8 @@ public class LockerControlHandler extends TextWebSocketHandler {
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         //메시지 전달받기
-        String request = String.valueOf(message.getPayload());
+        byte[] payload = message.getPayload().array();
+        String request = new String(payload, StandardCharsets.UTF_8);
         log.info("Server received: {}", request);
 
         // 수신된 메시지의 크기 로깅

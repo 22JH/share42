@@ -41,7 +41,15 @@ public class LockerControlHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 2 * 1024 * 1024;
+        // 서버로부터 받을 수 있는 바이너리 메시지 크기 로깅
+        long binaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
+        log.info("Binary message size limit: {} bytes", binaryMessageSizeLimit);
+
+        // 서버로부터 받을 수 있는 텍스트 메시지 크기 로깅
+        long textMessageSizeLimit = session.getTextMessageSizeLimit();
+        log.info("Text message size limit: {} bytes", textMessageSizeLimit);
+
+        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 1024 * 1024;
         if (session.getTextMessageSizeLimit() < MINIMUM_WEBSOCKET_MESSAGE_SIZE) {
             session.setTextMessageSizeLimit(MINIMUM_WEBSOCKET_MESSAGE_SIZE);
         }

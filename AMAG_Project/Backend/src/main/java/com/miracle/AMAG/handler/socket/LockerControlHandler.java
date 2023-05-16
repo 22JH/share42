@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +23,26 @@ public class LockerControlHandler extends TextWebSocketHandler {
 
     private List<WebSocketSession> sessionList = new ArrayList<>();
 
-    public WebSocketSession getSession() {
-        // 세션을 원하는 방식으로 선택하여 반환
-        // 예: 현재 연결된 첫 번째 세션 반환
-        if (!sessionList.isEmpty()) {
-            return sessionList.get(0);
+    public void getSession(int lockerNum) throws IOException {
+        //열려있는 세션 탐색 후 메시지 전송
+        boolean flag = false;
+        for (WebSocketSession session : sessionList){
+            if (session.isOpen()){
+                log.info("열려있는 세션 : {}",session);
+                session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                flag = true;
+            }
         }
-        return null;
+        if (!flag){
+            log.info("열려있는 세션이 없음");
+        }
+
+        // 세션을 원하는 방식으로 선택하여 반환
+        // 일단 현재 연결된 첫 번째 세션 반환
+//        if (!sessionList.isEmpty()) {
+//            return sessionList.get(0);
+//        }
+//        return null;
     }
 
     private int getShareStatus(int lockerNum){
@@ -79,7 +93,7 @@ public class LockerControlHandler extends TextWebSocketHandler {
         //0: 수납대기, 1:공유대기중, 2:공유중, 3:반납대기, 4:회수대기, 5:회수 -> 반입 : 0,3 / 반출 : 1,4
         int shareStatus = getShareStatus(lockerNum);
         // 보관
-        if (shareStatus == ShareArticleUtils.KEEP_STAY || shareStatus == ShareArticleUtils.RETURN_STAY){
+        if (shareStatus == ShareArticleUtils.KEEP_READY || shareStatus == ShareArticleUtils.RETURN_READY){
 //            String[] messageInfo = request.split(" ");
             int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
             //물건이 안들어옴

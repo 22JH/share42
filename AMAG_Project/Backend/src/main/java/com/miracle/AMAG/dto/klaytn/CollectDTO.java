@@ -27,4 +27,5 @@ public class CollectDTO {
     
     private LocalDateTime regDt;
 
+    private byte collectType;
 }

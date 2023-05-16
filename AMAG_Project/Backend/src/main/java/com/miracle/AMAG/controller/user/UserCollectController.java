@@ -48,6 +48,21 @@ public class UserCollectController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userCollectService.applyCollect(shareArticleId));
     }
 
+    @PostMapping("/cancel/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "물품 회수 신청취소 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "물품 회수 신청취소 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "물품 회수 신청취소", description = "회수 신청 했던 공유 물품에 대해서 신청취소를 진행합니다.")
+    @Parameters({
+            @Parameter(name = "share_article_id", description = "대여 물품 게시글 ID", in = ParameterIn.PATH),
+    })
+    public ResponseEntity<?> cancelKeep(@PathVariable("share_article_id") int shareArticleId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userCollectService.cancelCollect(shareArticleId));
+    }
+
     @PostMapping("/put/{share_article_id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),

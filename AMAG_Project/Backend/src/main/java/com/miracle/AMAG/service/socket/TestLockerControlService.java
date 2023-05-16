@@ -19,9 +19,11 @@ public class TestLockerControlService {
     private final LockerControlHandler lockerControlHandler;
 
     public void sendMessageToSocket(String message) throws IOException {
-        WebSocketSession session = lockerControlHandler.getSession();
+        log.info("서비스로는 넘어갔다 : {}",message);
         int lockerNum = 1;
-        session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+        lockerControlHandler.getSession(lockerNum);
+//        WebSocketSession session = lockerControlHandler.getSession(lockerNum);
+//        session.sendMessage(new TextMessage(lockerNum + " " + "open"));
     }
 
 }

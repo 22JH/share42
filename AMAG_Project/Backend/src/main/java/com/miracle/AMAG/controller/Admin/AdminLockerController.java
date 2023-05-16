@@ -79,6 +79,21 @@ public class AdminLockerController {
         return NormalResponse.toResponseEntity(HttpStatus.OK,adminLockerService.getLockerList(lockerStationId));
     }
 
+    @PostMapping("/collect/{lockerId}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "관리자 물품 회수 신청 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "관리자 물품 회수 신청 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "관리자 물품 회수 신청", description = "공유했던 물품을 회수 신청하는 기능입니다.")
+    @Parameters({
+            @Parameter(name = "lockerId", description = "회수 신청을 진행할 대여함 ID", in = ParameterIn.PATH),
+    })
+    public ResponseEntity<?> adminApplyCollect(@PathVariable("lockerId") int lockerId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminApplyCollect(lockerId));
+    }
+
 
     @PostMapping("/collect/receive/{lockerId}")
     @ApiResponses(value = {
@@ -89,7 +104,7 @@ public class AdminLockerController {
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "관리자 공유 물품 회수", description = "관리자가 공유 물품 회수를 진행합니다.")
     @Parameters({
-            @Parameter(name = "share_article_id", description = "회수할 대여 물품 게시글 ID", in = ParameterIn.PATH)
+            @Parameter(name = "lockerId", description = "회수를 진행할 대여함 ID", in = ParameterIn.PATH)
     })
     public ResponseEntity<?> adminCollectProduct(@PathVariable("lockerId") int lockerId) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCollectProduct(lockerId));

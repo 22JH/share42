@@ -4,6 +4,7 @@ import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.klaytn.CollectDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
+import com.miracle.AMAG.entity.user.Borrow;
 import com.miracle.AMAG.entity.user.Collect;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.mapping.locker.LockerListMapping;
@@ -11,11 +12,13 @@ import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.locker.LockerStationRepository;
+import com.miracle.AMAG.repository.user.BorrowRepository;
 import com.miracle.AMAG.repository.user.CollectRepository;
 import com.miracle.AMAG.repository.user.ShareArticleRepository;
 import com.miracle.AMAG.service.common.KlaytnService;
 import com.miracle.AMAG.util.board.BoardUtils;
 import com.miracle.AMAG.util.common.AccountUtils;
+import com.miracle.AMAG.util.common.BorrowUtils;
 import com.miracle.AMAG.util.common.CollectUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import jakarta.transaction.Transactional;
@@ -52,6 +55,9 @@ public class AdminLockerService {
     private CollectRepository collectRepository;
 
     @Autowired
+    private BorrowRepository borrowRepository;
+
+    @Autowired
     private KlaytnService klaytnService;
 
 
@@ -77,6 +83,67 @@ public class AdminLockerService {
             throw new RuntimeException("권한이 없습니다");
         }
         return lockerRepository.findByLockerStation_IdOrderByLockerNumber(lockerStationId);
+    }
+
+    public String adminApplyCollect(int lockerId) throws IOException {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+        Account account = accountRepository.findByUserId(loginId);
+
+        if (!account.getRole().value().equals("ROLE_ADMIN")){
+            throw new RuntimeException("권한이 없습니다");
+        }
+
+        Locker locker = lockerRepository.findById(lockerId);
+        ShareArticle shareArticle = locker.getShareArticle();
+
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+
+        Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
+        if(borrowRecord != null) {
+            if(borrowRecord.getUseType() == BorrowUtils.BORROW_READY){
+                throw new RuntimeException("대여 신청된 물품입니다.");
+            }
+        }
+
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY) {
+            throw new RuntimeException("회수 가능한 물품이 아닙니다.");
+        }
+
+        // 회수 신청처리
+        Collect collect = new Collect();
+        LocalDateTime curTime = LocalDateTime.now();
+        collect.setLocker(locker);
+        collect.setAccount(account);
+        collect.setShareArticle(shareArticle);
+        collect.setRegDt(curTime);
+        collect.setCollectType(CollectUtils.COLLECT_READY);
+
+        CollectDTO collectDTO = new CollectDTO();
+        BeanUtils.copyProperties(collect, collectDTO);
+        collectDTO.setAccountUserId(account.getUserId());
+        collectDTO.setAccountNickname(account.getNickname());
+        collectDTO.setShareArticleId(shareArticle.getId());
+        collectDTO.setShareArticleCategory(shareArticle.getCategory());
+        collectDTO.setShareArticleName(shareArticle.getName());
+        collectDTO.setLockerLockerNumber(locker.getLockerNumber());
+        collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+
+        // 블록체인 관련 항목
+        String alias = "c1-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(collectDTO);
+        klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
+        collect.setContractHash(alias);
+        collect.setMetadataUri(metadataUri);
+        collectRepository.save(collect);
+
+        shareArticle.setShareStatus(ShareArticleUtils.COLLECT_READY);
+        shareArticle.setUptDt(curTime);
+        shareArticleRepository.save(shareArticle);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
     public String adminCollectProduct(int lockerId) throws IOException {
@@ -129,6 +196,4 @@ public class AdminLockerService {
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
-
-
 }

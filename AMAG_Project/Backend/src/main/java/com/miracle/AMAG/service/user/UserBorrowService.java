@@ -74,9 +74,13 @@ public class UserBorrowService {
 
         BorrowDTO borrowDTO = new BorrowDTO();
         BeanUtils.copyProperties(borrow, borrowDTO);
-        borrowDTO.setLocker(locker.getId());
-        borrowDTO.setAccount(account.getId());
-        borrowDTO.setShareArticle(shareArticle.getId());
+        borrowDTO.setAccountUserId(account.getUserId());
+        borrowDTO.setAccountNickname(account.getNickname());
+        borrowDTO.setShareArticleId(shareArticle.getId());
+        borrowDTO.setShareArticleCategory(shareArticle.getCategory());
+        borrowDTO.setShareArticleName(shareArticle.getName());
+        borrowDTO.setLockerLockerNumber(locker.getLockerNumber());
+        borrowDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "b0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
@@ -124,9 +128,13 @@ public class UserBorrowService {
         Locker locker = lockerRepository.findByShareArticle(shareArticle);
         BorrowDTO borrowDTO = new BorrowDTO();
         BeanUtils.copyProperties(borrow,borrowDTO);
-        borrowDTO.setLocker(locker.getId());
-        borrowDTO.setAccount(account.getId());
-        borrowDTO.setShareArticle(shareArticle.getId());
+        borrowDTO.setAccountUserId(account.getUserId());
+        borrowDTO.setAccountNickname(account.getNickname());
+        borrowDTO.setShareArticleId(shareArticle.getId());
+        borrowDTO.setShareArticleCategory(shareArticle.getCategory());
+        borrowDTO.setShareArticleName(shareArticle.getName());
+        borrowDTO.setLockerLockerNumber(locker.getLockerNumber());
+        borrowDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "bc0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
@@ -168,9 +176,13 @@ public class UserBorrowService {
         Locker locker = lockerRepository.findByShareArticle(shareArticle);
         BorrowDTO borrowDTO = new BorrowDTO();
         BeanUtils.copyProperties(borrow,borrowDTO);
-        borrowDTO.setLocker(locker.getId());
-        borrowDTO.setAccount(account.getId());
-        borrowDTO.setShareArticle(shareArticle.getId());
+        borrowDTO.setAccountUserId(account.getUserId());
+        borrowDTO.setAccountNickname(account.getNickname());
+        borrowDTO.setShareArticleId(shareArticle.getId());
+        borrowDTO.setShareArticleCategory(shareArticle.getCategory());
+        borrowDTO.setShareArticleName(shareArticle.getName());
+        borrowDTO.setLockerLockerNumber(locker.getLockerNumber());
+        borrowDTO.setLockerLockerStationName(locker.getLockerStation().getName());
 
         // 블록체인 관련 항목
         String alias = "bd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();

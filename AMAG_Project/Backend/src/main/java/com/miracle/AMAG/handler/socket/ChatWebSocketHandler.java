@@ -1,7 +1,7 @@
-package com.miracle.AMAG.handler.chat;
+package com.miracle.AMAG.handler.socket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.miracle.AMAG.dto.chat.ChatMessageDTO;
+import com.miracle.AMAG.dto.socket.ChatMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

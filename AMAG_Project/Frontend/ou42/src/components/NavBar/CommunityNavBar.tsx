@@ -35,7 +35,6 @@ function CommunityNavBar() {
   };
 
   useEffect(() => {
-    console.log(pathname)
     if (pathname === "/user/community/reg") {
       setPathTitle("게시글 등록하기");
     } else {
@@ -49,9 +48,12 @@ function CommunityNavBar() {
         <div
           style={{
             width: "100vw",
-            height: "5vh",
+            height: "12vh",
             marginBottom: "1rem",
             display: "flex",
+            position: 'fixed',
+            top: '0',
+            background: '#ffffff'
           }}
         >
           {isClick ? (
@@ -60,9 +62,10 @@ function CommunityNavBar() {
                 width: "100%",
                 height: "100%",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "flex-end",
                 marginRight: "4vw",
+                paddingTop: '2vh'
               }}
             >
               <BsSearch size={25} onClick={handleSearchBar} />
@@ -83,9 +86,10 @@ function CommunityNavBar() {
                 width: "100%",
                 height: "100%",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "flex-end",
                 marginRight: "4vw",
+                paddingTop: '2vh'
               }}
             >
               <BsSearch size={25} onClick={handleSearchBar} />

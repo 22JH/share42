@@ -11,12 +11,14 @@ export default function RaouterGuard() {
       const parsedLoginInfo = JSON.parse(loginInfo);
       const expire = parsedLoginInfo.expire;
 
-      if (Date.now() > expire)
+      if (Date.now() > expire) {
+        localStorage.removeItem("loginInfo");
         Alert(
           "error",
           "로그인이 만료되었습니다. 다시 로그인 해주세요.",
           navigate("/login")
         );
+      }
     } else {
       Alert("error", "로그인이 필요합니다.", navigate("/login"));
     }

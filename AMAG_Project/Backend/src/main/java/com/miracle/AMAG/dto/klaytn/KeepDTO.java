@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CollectDTO {
-
+public class KeepDTO {
     private String lockerLockerStationName;
 
     private int lockerLockerNumber;
@@ -24,7 +23,8 @@ public class CollectDTO {
     private String shareArticleCategory;
 
     private String shareArticleName;
-    
-    private LocalDateTime regDt;
 
+    private String img;
+
+    private LocalDateTime regDt;
 }

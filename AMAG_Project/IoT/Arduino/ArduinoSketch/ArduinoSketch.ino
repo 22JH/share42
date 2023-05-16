@@ -1,44 +1,43 @@
-#include <stdio.h>
-int led = 13;
-
-int val = 0;
 
 
+// 1번 박스
+int val1 = 0;
+int mag1 = 2;
+int sol1 = 13;
+int FSRsensor1 = A0;
+int mag_sensor1 = 0;
 
 int mag_sensor = 0;
 void setup() {
   Serial.begin(9600);
-  pinMode(13, INPUT_PULLUP);
-  pinMode(12, INPUT_PULLUP);
+  pinMode(mag1, INPUT_PULLUP); // 마그네틱센서1
+  pinMode(sol1, OUTPUT); // 잠금장치 1
 }
 
-int temp = 0;
+bool isLocked1 = true;
 // 붙 0 떼 1
 void loop() {
-  // put your main code here, to run repeatedly:
-  mag_sensor = digitalRead(13);
-  if(mag_sensor == LOW){
-    if (temp != 0) {
-      Serial.println(0);
-      temp = 0;
-    }
-  }else{
-    if (temp != 1) {
-      Serial.println(1);
-      temp = 1;
-    }
-  }
+  String Data = Serial.readStringUntil('\n');
+  Data.trim(); // 라즈베리파이로부터 받아옴
+  mag_sensor1 = digitalRead(mag1);
+  Serial.println(mag_sensor1);
+  if (Data == "1open" && isLocked1) {
+    digitalWrite(sol1, HIGH);
+    delay(2000);
 
-    // inputString = Serial.readString(); // 시리얼 통신으로부터 데이터 읽기
-  String inputString = Serial.readStringUntil('\r');
-  if (0 < len(inputString) <) {
-    Serial.println(inputString);
+    // 사물함 열림
+    if (mag_sensor1 == HIGH) {
+      isLocked1 = false;
+    }
+    digitalWrite(sol1, LOW);
+  } 
+  // 변수 isLocked가 열려있다는데, 마그네틱 센서로부터 닫혔다는 신호를 받을 때
+  if (!isLocked1 && mag_sensor1 == LOW) {
+    val1 = analogRead(FSRsensor1);     
+    Serial.println(val1);
+    Serial.println(String("1close ").concat(val1));
+    isLocked1 = true;
   }
-  if (inputString == "done"){
-    digitalWrite(12, HIGH);
-  }
-  delay(100);
-}
 
 // #include <ArduinoUniqueID.h>
 
@@ -82,5 +81,6 @@ void loop() {
 //       delay(100);
 //     }
 //   }
-// }
+  delay(200);
+}
 

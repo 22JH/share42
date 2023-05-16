@@ -35,7 +35,7 @@ const UserShareChoiceName = ({
             color: "#ADADAD",
           }}
         >
-          {branchChoice.name ? branchChoice.name : "장소 선택"}
+          {branchChoice?.name ? branchChoice?.name : "장소 선택"}
         </span>
         <span
           style={{

@@ -13,6 +13,13 @@ const URL = "";
 const container = css`
   width: 100%;
   height: auto;
+  .noChats {
+    width: 100%;
+    height: 82vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 interface PropType {
@@ -43,11 +50,13 @@ export default function UserChatList() {
   const getUsers = useApi("get", URL);
   return (
     <div css={container}>
-      {Object.entries(chats)
-        ?.sort((a: any, b: any) => b[1].date - a[1].date)
-        .map((chat, idx) => (
-          <ChatListDetail data={chat} key={idx} />
-        ))}
+      {chats ? (
+        Object.entries(chats)
+          ?.sort((a: any, b: any) => b[1].date - a[1].date)
+          .map((chat, idx) => <ChatListDetail data={chat} key={idx} />)
+      ) : (
+        <div className="noChats">채팅 내역이 없습니다.</div>
+      )}
       <BottomMenuBar />
     </div>
   );

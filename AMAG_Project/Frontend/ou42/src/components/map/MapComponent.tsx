@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /** @jsxImportSource @emotion/react */
 
 import { Map } from "react-kakao-maps-sdk";
@@ -5,8 +6,12 @@ import { useEffect, useState } from "react";
 import { mapStyle } from "./style/MapStyle";
 import EventMarkerComponent from "./EventMarkerComponent";
 import { MapComponentProps, positionProps } from "./type/MapType";
+import axios from "axios";
 
 const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+
   const [markersData, setMarkersData] = useState<null | any[]>(null);
   const [position, setPosition] = useState<positionProps>({
     lat: 36.107177733518384,
@@ -61,11 +66,18 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
 
   // 마커 주소 가져오기
   useEffect(() => {
-    (async () => {
-      const response = await fetch("http://localhost:3001/markers");
-      const data = await response.json();
-      setMarkersData(data);
-    })();
+    const fetchData = async () => {
+      const response = await axios({
+        method: "GET",
+        url: `https://www.share42-together.com:8088/api/common/locker/${position.lat}/${position.lng}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setMarkersData(response.data.message);
+    };
+    fetchData();
   }, []);
 
   return (
@@ -80,7 +92,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
         }}
         style={{
           // 지도의 크기
-          width: "100%",
+          width: "100vw",
           height: "100vh",
         }}
         level={3} // 지도의 확대 레벨
@@ -93,9 +105,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ setIsOpenMap }) => {
       >
         {markersData?.map((marker) => (
           <EventMarkerComponent
+            position={{
+              lat: marker.lat,
+              lng: marker.lng,
+            }}
             key={marker.id}
             marker={marker}
-            position={position}
             setIsOpenMap={setIsOpenMap}
           />
         ))}

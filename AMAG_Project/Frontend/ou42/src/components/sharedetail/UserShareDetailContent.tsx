@@ -27,7 +27,7 @@ const UserShareDetailContent = ({
           textAlign: "left",
         }}
       >
-        {data?.content}
+        {data?.article.content}
       </span>
       <span
         style={{
@@ -39,7 +39,7 @@ const UserShareDetailContent = ({
           borderBottom: "1px solid #adadad",
         }}
       >
-        관심 {likeCount} · 조회 {data?.hits}
+        관심 {likeCount} · 조회 {data?.article.hits}
       </span>
     </div>
   );

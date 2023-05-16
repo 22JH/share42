@@ -65,6 +65,6 @@ public class DetectionService {
     }
 
     public List<CategoryMapping> getArticleCategory(){
-        return categoryRepository.findDistinctBy();
+        return categoryRepository.findDistinctByOrderByCategoryAsc();
     }
 }

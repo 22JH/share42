@@ -1,5 +1,7 @@
 package com.miracle.AMAG.mapping.locker;
 
+import java.time.LocalDateTime;
+
 public interface LockerGetListMapping {
 
     int getShareArticleId();
@@ -15,5 +17,7 @@ public interface LockerGetListMapping {
     int getLockerNumber();
 
     boolean getError();
+
+    LocalDateTime getShareArticleUptDt();
 
 }

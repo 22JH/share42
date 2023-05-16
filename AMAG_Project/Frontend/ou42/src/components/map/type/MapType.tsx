@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface EventMarkerComponentProps {
   marker: markerProps;
   position: positionProps;
@@ -7,12 +9,14 @@ export interface EventMarkerComponentProps {
 export interface CustomOverlayMapComponentProps {
   marker: markerProps;
   position: positionProps;
-  setIsOpenMap?:
-    | React.Dispatch<React.SetStateAction<boolean | null>>;
+  setIsOpenMap?: React.Dispatch<React.SetStateAction<boolean | null>>;
   pathname?: string;
   isOpen: Record<string, boolean>;
   isVisible: Record<string, boolean>;
   handleMarkerInfo: (id: number) => void;
+  setIsVisible?: any
+  setIsOpen?: any
+  markerId?: any;
 }
 
 export interface positionProps {
@@ -22,12 +26,10 @@ export interface positionProps {
 
 export interface markerProps {
   id: number;
-  content: string;
+  name: string;
   address: string;
   lat: number;
   lng: number;
-  cabinetCnt: number;
-  cabinetUse: number;
 }
 
 export interface MapComponentProps {
@@ -39,33 +41,41 @@ export interface MarkerDetailShareInfoComponentProps {
   handleMarkerInfo: (id: number) => void;
   address: string;
   name: string;
+  markerInfo: any;
 }
 
 export interface CustomOverlayContentProps {
   markerInfo: {
-    id: number;
-    userid: string,
-    title: string,
-    price: number,
-    status: number,
-    branchname: string,
-    address: string
-  }
+    lockerNumber: number;
+    error: boolean;
+    shareArticleAccountNickname: string;
+    shareArticleId: number;
+    shareArticleName: string;
+    shareArticleSharePrice: number;
+    shareArticleShareStatus: number;
+    shareArticleUptDt: string;
+  };
 }
 
 export interface MarkerShareInfoComponentProps {
   marker: markerProps;
   handleMarkerInfo: (id: number) => void;
   setIsOpenMap?: React.Dispatch<React.SetStateAction<null | boolean>>;
+  name: string;
+  totalCount: number;
+  useCount: number;
+  setIsVisible?: any;
+  setIsOpen?: any;
+  markerId?: any;
+  position?: any;
 }
 
 export interface ButtonProps {
   status: number;
   text: string;
-};
-
-export interface UserShareMapProps {
-  setIsOpenMap: React.Dispatch<React.SetStateAction<null | boolean>>
+  articleId: number;
 }
 
-
+export interface UserShareMapProps {
+  setIsOpenMap: React.Dispatch<React.SetStateAction<null | boolean>>;
+}

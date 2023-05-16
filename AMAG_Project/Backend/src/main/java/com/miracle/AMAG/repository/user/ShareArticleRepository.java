@@ -1,6 +1,5 @@
 package com.miracle.AMAG.repository.user;
 
-import com.miracle.AMAG.dto.responseDTO.user.ShareArticleGetIdResponseDTO;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.mapping.user.ShareArticleGetMapping;
 import io.lettuce.core.dynamic.annotation.Param;

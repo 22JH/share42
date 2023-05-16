@@ -3,7 +3,6 @@ package com.miracle.AMAG.service.user;
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.ShareArticleUpdateRequestDTO;
-import com.miracle.AMAG.dto.responseDTO.user.RecommendationResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.user.ShareArticleRecommendationResponseDTO;
 import com.miracle.AMAG.dto.responseDTO.user.ShareArticleResponseDTO;
 import com.miracle.AMAG.entity.account.Account;
@@ -33,7 +32,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -89,7 +87,7 @@ public class UserShareArticleService {
         shareArticle.setHits(0);
         shareArticle.setRegDt(LocalDateTime.now());
         shareArticle.setUptDt(shareArticle.getRegDt());
-        shareArticle.setShareStatus(ShareArticleUtils.KEEP_STAY);
+        shareArticle.setShareStatus(ShareArticleUtils.KEEP_READY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
 
         //락커를 배정하는 부분
@@ -275,10 +273,10 @@ public class UserShareArticleService {
             }
             List<Object[]> sagim = new ArrayList<>();
             if(keys.size()>=2){
-                sagim =shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(1), sigungu, dong, lat, lng);
+                sagim =shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_READY, keys.get(0), keys.get(1), sigungu, dong, lat, lng);
             }
             else if(keys.size()==1){
-                sagim = shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_STAY, keys.get(0), keys.get(0), sigungu, dong, lat, lng);
+                sagim = shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_READY, keys.get(0), keys.get(0), sigungu, dong, lat, lng);
             }
 
             Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,

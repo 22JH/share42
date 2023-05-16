@@ -3,7 +3,7 @@ package com.miracle.AMAG.util.common;
 public class BorrowUtils {
     
     // 사용신청
-    public static final byte BORROW_APPLY = 0;
+    public static final byte BORROW_READY = 0;
 
     // 사용
     public static final byte BORROW= 1;

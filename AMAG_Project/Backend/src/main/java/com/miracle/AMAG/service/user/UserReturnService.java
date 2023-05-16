@@ -138,7 +138,7 @@ public class UserReturnService {
         shareReturnRepository.save(shareReturn);
 
         // ShareArticle 상태변경
-        shareArticle.setShareStatus(ShareArticleUtils.RETURN_STAY);
+        shareArticle.setShareStatus(ShareArticleUtils.RETURN_READY);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 
@@ -163,7 +163,7 @@ public class UserReturnService {
         }
 
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
-        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY || returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_READY || returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 
@@ -211,7 +211,7 @@ public class UserReturnService {
 
         LocalDateTime curTime = LocalDateTime.now();
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_READY
                 || returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
             throw new RuntimeException("반납이 불가능한 물품입니다.");
         }
@@ -227,7 +227,7 @@ public class UserReturnService {
             throw new RuntimeException("결제가 정상적으로 이루어지지 않았습니다.");
         }
 
-        shareArticle.setShareStatus(ShareArticleUtils.SHARE_STAY);
+        shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
         ShareReturn shareReturn = new ShareReturn();
         BeanUtils.copyProperties(returnRecord, shareReturn);
         shareReturn.setId(0);
@@ -288,7 +288,7 @@ public class UserReturnService {
         }
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_STAY ||
+        if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_READY ||
                 !returnRecord.getAccount().getUserId().equals(loginId) ||
                 returnRecord.getReturnType() != ShareReturnUtils.RETURN_APPLY) {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");

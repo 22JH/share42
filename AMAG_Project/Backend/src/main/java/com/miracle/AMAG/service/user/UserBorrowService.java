@@ -56,7 +56,7 @@ public class UserBorrowService {
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_STAY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY) {
             throw new RuntimeException("대여 가능한 물품이 아닙니다.");
         }
 
@@ -70,7 +70,7 @@ public class UserBorrowService {
         borrow.setAccount(account);
         borrow.setShareArticle(shareArticle);
         borrow.setRegDt(curTime);
-        borrow.setUseType(BorrowUtils.BORROW_APPLY);
+        borrow.setUseType(BorrowUtils.BORROW_READY);
 
         BorrowDTO borrowDTO = new BorrowDTO();
         BeanUtils.copyProperties(borrow, borrowDTO);
@@ -111,7 +111,7 @@ public class UserBorrowService {
         }
 
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_APPLY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 
@@ -144,7 +144,7 @@ public class UserBorrowService {
         borrow.setMetadataUri(metadataUri);
         borrowRepository.save(borrow);
 
-        shareArticle.setShareStatus(ShareArticleUtils.SHARE_STAY);
+        shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 
@@ -162,7 +162,7 @@ public class UserBorrowService {
             throw new RuntimeException("해당 물품을 대여 신청한 사용자와 인수 요청을 보낸 사용자가 다릅니다.");
         }
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_APPLY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("해당 물품은 인수 처리를 진행할 수 없는 물품입니다.");
         }
 
@@ -212,9 +212,9 @@ public class UserBorrowService {
         }
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_STAY ||
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY ||
                 !borrowRecord.getAccount().getUserId().equals(loginId) ||
-                borrowRecord.getUseType() != BorrowUtils.BORROW_APPLY) {
+                borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 

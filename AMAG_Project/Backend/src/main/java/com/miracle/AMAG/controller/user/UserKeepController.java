@@ -16,15 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @Tag(name = "UserPut", description = "물건 수납 관련 API")
-@RequestMapping("/api/user/share/keep/put")
+@RequestMapping("/api/user/share/keep")
 @RequiredArgsConstructor
 @RestController
 public class UserKeepController {
@@ -32,7 +29,21 @@ public class UserKeepController {
     @Autowired
     private UserKeepService userKeepService;
 
-    @PostMapping(value = "", consumes = {
+    @PostMapping("/{share_article_id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "물품 수납 신청 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "물품 수납 신청 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "공유 물품 수납 신청", description = "공유 물품 수납 신청을 진행합니다.")
+    public ResponseEntity<?> applyKeep(@PathVariable("share_article_id") int shareArticleId) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userKeepService.applyKeep(shareArticleId));
+    }
+
+
+
+    @PostMapping(value = "/put", consumes = {
             "multipart/form-data"
     })
     @ApiResponses(value = {

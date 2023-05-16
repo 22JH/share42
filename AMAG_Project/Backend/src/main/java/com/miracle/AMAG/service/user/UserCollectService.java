@@ -54,7 +54,7 @@ public class UserCollectService {
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
         }
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_STAY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY) {
             throw new RuntimeException("회수 가능한 물품이 아닙니다.");
         }
         if(!shareArticle.getAccount().getUserId().equals(loginId)) {
@@ -90,7 +90,7 @@ public class UserCollectService {
         collect.setMetadataUri(metadataUri);
         collectRepository.save(collect);
 
-        shareArticle.setShareStatus(ShareArticleUtils.COLLECT_STAY);
+        shareArticle.setShareStatus(ShareArticleUtils.COLLECT_READY);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 
@@ -108,7 +108,7 @@ public class UserCollectService {
             throw new RuntimeException("물품 회수를 신청한 사용자와 회수를 시도하는 사용자가 다릅니다.");
         }
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_STAY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY) {
             throw new RuntimeException("해당 물품은 회수 처리를 진행할 수 없는 물품입니다.");
         }
 
@@ -157,7 +157,7 @@ public class UserCollectService {
         }
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_STAY ||
+        if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY ||
                 !collectRecord.getAccount().getUserId().equals(loginId)) {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }

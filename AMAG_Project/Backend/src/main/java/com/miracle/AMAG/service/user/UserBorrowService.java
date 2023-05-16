@@ -90,7 +90,7 @@ public class UserBorrowService {
         borrow.setMetadataUri(metadataUri);
         borrowRepository.save(borrow);
 
-        shareArticle.setShareStatus(ShareArticleUtils.SHARING);
+        shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
         shareArticle.setUptDt(curTime);
         shareArticleRepository.save(shareArticle);
 
@@ -111,7 +111,7 @@ public class UserBorrowService {
         }
 
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 

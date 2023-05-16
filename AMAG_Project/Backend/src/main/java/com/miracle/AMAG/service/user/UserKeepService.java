@@ -48,7 +48,7 @@ public class UserKeepService {
     @Autowired
     private KlaytnService klaytnService;
 
-    public Object applyKeep(int shareArticleId) throws IOException {
+    public String applyKeep(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -97,6 +97,59 @@ public class UserKeepService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String cancelKeep(int shareArticleId) throws IOException {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
+        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 수납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
+        }
+
+        if(shareArticle.isStatus()){
+            throw new RuntimeException("이미 삭제된 글입니다.");
+        }
+
+        Keep keepRecord = keepRepository.findRecentKeepRecord(shareArticle);
+        if(shareArticle.getShareStatus() != ShareArticleUtils.KEEP_READY || keepRecord.getKeepType() != KeepUtils.KEEP_READY) {
+            throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        Account account = accountRepository.findByUserId(loginId);
+
+        // 수납 신청취소 처리
+        Keep keep = new Keep();
+        BeanUtils.copyProperties(keepRecord, keep);
+        keep.setId(0);
+        LocalDateTime curTime = LocalDateTime.now();
+        keep.setRegDt(curTime);
+        keep.setKeepType(KeepUtils.KEEP_CANCEL);
+
+        Locker locker = lockerRepository.findByShareArticle(shareArticle);
+        KeepDTO keepDTO = new KeepDTO();
+        BeanUtils.copyProperties(keep,keepDTO);
+        keepDTO.setAccountUserId(account.getUserId());
+        keepDTO.setAccountNickname(account.getNickname());
+        keepDTO.setShareArticleId(shareArticle.getId());
+        keepDTO.setShareArticleCategory(shareArticle.getCategory());
+        keepDTO.setShareArticleName(shareArticle.getName());
+        keepDTO.setLockerLockerNumber(locker.getLockerNumber());
+        keepDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+
+        // 블록체인 관련 항목
+        String alias = "kc0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
+        String metadataUri = klaytnService.getUri(keepDTO);
+        klaytnService.requestContract(metadataUri, account.getWalletHash(), alias);
+        keep.setContractHash(alias);
+        keep.setMetadataUri(metadataUri);
+        keepRepository.save(keep);
+
+        shareArticle.setShareStatus(ShareArticleUtils.KEEP_READY);
+        shareArticle.setUptDt(curTime);
+        shareArticleRepository.save(shareArticle);
+
+        return BoardUtils.BOARD_CRUD_SUCCESS;
+    }
 
     public String keepProduct(UserKeepRequestDTO userKeepRequestDTO) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
@@ -154,6 +207,5 @@ public class UserKeepService {
         shareArticleRepository.save(shareArticle);
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
-
 
 }

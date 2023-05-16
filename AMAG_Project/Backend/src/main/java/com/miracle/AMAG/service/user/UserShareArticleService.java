@@ -145,7 +145,7 @@ public class UserShareArticleService {
         ShareArticleGetMapping sagm = shareArticleRepository.findByIdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
         long likeCount = articleLikeRepository.countByShareArticle_IdAndStatus(shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
         ShareReturnGetImgMapping srgimReturn = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN);
-        ShareReturnGetImgMapping srgimReturnApply = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN_APPLY);
+        ShareReturnGetImgMapping srgimReturnApply = shareReturnRepository.findTopByShareArticle_IdAndReturnTypeOrderByRegDtDesc(shareArticleId, ShareReturnUtils.RETURN_READY);
         KeepGetImgMapping kgim = keepRepository.findTopByShareArticle_IdOrderByRegDtDesc(shareArticleId);
         ArticleLike like = articleLikeRepository.findByAccountAndShareArticle_IdAndStatus(account, shareArticleId, BoardUtils.BOARD_STATUS_FALSE);
         List<ShareReturnGetImgMapping> returnImg = new ArrayList<>();

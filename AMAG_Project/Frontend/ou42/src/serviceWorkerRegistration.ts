@@ -1,6 +1,8 @@
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
+import VAPIDKeyStore from "./store/VAPIDKeyStore";
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -179,10 +181,12 @@ export function unregister() {
 export async function requestPushPermission(registration: any) {
   const permission = await Notification.requestPermission();
 
+  const { VAPID } = VAPIDKeyStore();
+
   if (permission === "granted") {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array("YOUR_PUBLIC_VAPID_KEY"),
+      applicationServerKey: urlBase64ToUint8Array(VAPID),
     });
 
     const response = await fetch("/api/subscribe", {

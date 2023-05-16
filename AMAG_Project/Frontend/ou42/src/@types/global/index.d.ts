@@ -17,3 +17,4 @@ declare global {
 }
 
 declare module "bootpay-js";
+declare module "firebase/app";

@@ -5,11 +5,11 @@ interface Key {
   setVAPID: (VAPID: string) => void;
 }
 
-const adminStore = create<Key>((set) => ({
+const VAPIDKeyStore = create<Key>((set) => ({
   VAPID: "",
   setVAPID: (VAPID) => {
     set(() => ({ VAPID: VAPID }));
   },
 }));
 
-export default adminStore;
+export default VAPIDKeyStore;

@@ -22,4 +22,7 @@ public class Category {
 
     @Column(length = 20)
     private String productName;
+
+    @Column(length = 30)
+    private String img;
 }

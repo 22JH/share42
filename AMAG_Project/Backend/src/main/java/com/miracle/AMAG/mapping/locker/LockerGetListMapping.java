@@ -18,6 +18,6 @@ public interface LockerGetListMapping {
 
     boolean getError();
 
-    LocalDateTime ShareArticleUptDt();
+    LocalDateTime getShareArticleUptDt();
 
 }

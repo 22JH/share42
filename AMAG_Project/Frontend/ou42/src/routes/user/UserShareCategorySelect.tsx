@@ -41,13 +41,11 @@ const UserShareCategorySelect = () => {
 
   const handleCategorySelector = (category: string) => {
     navigate("/user/share-reg", {
-      state: category,
+      state: {
+        category
+      }
     });
   };
-
-  useEffect(() => {
-    console.log(options);
-  }, [options]);
 
   return (
     <>

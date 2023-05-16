@@ -134,6 +134,16 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
               X
             </div> */}
           </div>
+        ) : state.editStatus === true ? (
+          <img
+            style={{
+              width: "250px",
+              height: "250px",
+              borderRadius: "20px",
+            }}
+            src={`${process.env.REACT_APP_IMAGE_URL}${state?.data?.img}`}
+            alt="기존이미지"
+          />
         ) : (
           <img
             style={{

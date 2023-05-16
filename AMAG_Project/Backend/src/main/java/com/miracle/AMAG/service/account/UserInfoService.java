@@ -214,5 +214,10 @@ public class UserInfoService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
+    public String getUserImg(String userId){
+        Account account = accountRepository.findByUserId(userId);
+
+        return account.getImg();
+    }
 
 }

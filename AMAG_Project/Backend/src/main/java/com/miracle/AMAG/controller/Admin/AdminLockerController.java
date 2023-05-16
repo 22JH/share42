@@ -109,7 +109,6 @@ public class AdminLockerController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCancelCollect(lockerId));
     }
 
-
     @PostMapping("/collect/receive/{lockerId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "관리자 공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
@@ -125,6 +124,20 @@ public class AdminLockerController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.adminCollectProduct(lockerId));
     }
 
+    @PostMapping("/collect/nfc/open/{nfc_data}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "대여함 오픈 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
+            @ApiResponse(responseCode = "500", description = "대여함 오픈 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "관리자가 물품을 회수하기 위한 대여함 오픈", description = "관리자가 공유 물품을 회수하기 위해 대여함을 오픈하는 API")
+    @Parameters({
+            @Parameter(name = "nfc_data", description = "NFC 시리얼 번호", in = ParameterIn.PATH),
+    })
+    public ResponseEntity<?> adminOpenLockerForCollect(@PathVariable("nfc_data") String nfcData) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, adminLockerService.openLocker(nfcData));
+    }
 
 }
 

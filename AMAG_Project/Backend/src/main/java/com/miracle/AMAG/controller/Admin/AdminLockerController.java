@@ -80,7 +80,7 @@ public class AdminLockerController {
     }
 
 
-    @PostMapping("/collect/get/{lockerId}")
+    @PostMapping("/collect/receive/{lockerId}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "관리자 공유 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "관리자 공유 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),

@@ -63,7 +63,7 @@ public class UserCollectController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userCollectService.cancelCollect(shareArticleId));
     }
 
-    @PostMapping("/put/{share_article_id}")
+    @PostMapping("/receive/{share_article_id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "사용자 물품 회수 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "사용자 물품 회수 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),

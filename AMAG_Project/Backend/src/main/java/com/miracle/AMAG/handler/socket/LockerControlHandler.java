@@ -81,7 +81,7 @@ public class LockerControlHandler implements WebSocketHandler{
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         String request = (String) message.getPayload();
         log.info("Server received: {}", request);
-        
+
         // 수신된 메시지의 크기 로깅
         int messageSize = request.getBytes(StandardCharsets.UTF_8).length;
         log.info("Received message size: {} bytes", messageSize);
@@ -193,7 +193,8 @@ public class LockerControlHandler implements WebSocketHandler{
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-
+        // WebSocket 통신 중 에러가 발생할 때 실행되는 메서드
+        System.out.println("error");
     }
 
     @Override

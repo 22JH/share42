@@ -61,10 +61,10 @@ public class LockerControlHandler extends TextWebSocketHandler {
         log.info("Binary message size limit: {} bytes", binaryMessageSizeLimit);
 
 
-        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 1 * 1024 * 1024;
-        if (session.getTextMessageSizeLimit() < MINIMUM_WEBSOCKET_MESSAGE_SIZE) {
-            session.setTextMessageSizeLimit(MINIMUM_WEBSOCKET_MESSAGE_SIZE);
-        }
+//        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 1 * 1024 * 1024;
+//        if (session.getTextMessageSizeLimit() < MINIMUM_WEBSOCKET_MESSAGE_SIZE) {
+//            session.setTextMessageSizeLimit(MINIMUM_WEBSOCKET_MESSAGE_SIZE);
+//        }
 
         // 서버로부터 받을 수 있는 바이너리 메시지 크기 로깅
         long changeBinaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
@@ -77,9 +77,10 @@ public class LockerControlHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
+//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         //메시지 전달받기
-        String request = message.getPayload();
+        String request = String.valueOf(message.getPayload());
         log.info("Server received: {}", request);
 
         // 수신된 메시지의 크기 로깅
@@ -99,12 +100,20 @@ public class LockerControlHandler extends TextWebSocketHandler {
             //물건이 안들어옴
             if (weight <= 0){ // 초기값 받아야함
                 log.info("무게 {}로, 물건이 보관되지 않았습니다", weight);
-                session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                try {
+                    session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             //물건이 정상적으로 들어옴
             else {
                 log.info("무게 {}로, 물건이 보관됬습니다", weight);
-                session.sendMessage(new TextMessage("true"));
+                try {
+                    session.sendMessage(new TextMessage("true"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 //공유상태(물건 및 사물함정보) 변경 로직
             }
         }
@@ -116,7 +125,11 @@ public class LockerControlHandler extends TextWebSocketHandler {
                     // 물건이 그대로 있음
                     if (weight >= 0){// 초기값 받아야함
                         log.info("무게 {}로, 물건을 회수하지 않았습니다", weight);
-                        session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     //물건이 정상적으로 들어옴
                     else {
@@ -124,19 +137,31 @@ public class LockerControlHandler extends TextWebSocketHandler {
                         //공유상태(물건 및 사물함정보) 변경 로직
 
                         //사진촬영 전송
-                        session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     break;
                 case "cam":
                     // 사진이 안들어온 경우
                     if (messageInfo.length == 2){
                         log.info("사진 데이터가 없습니다");
-                        session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     //물건이 정상적으로 들어옴
                     else {
                         log.info("물품이 정상적으로 보관되었습니다");
-                        session.sendMessage(new TextMessage("true"));
+                        try {
+                            session.sendMessage(new TextMessage("true"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         //사진 저장 로직
                     }
                     break;

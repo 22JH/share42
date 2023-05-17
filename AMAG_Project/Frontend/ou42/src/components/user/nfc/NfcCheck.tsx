@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import AlertDialogSlide from "../../UI/AlertDialog";
 import NfcSvg from "./NfcSvg";
+import axios from "axios";
+import { useGetUserToken } from "../../../hooks/useGetToken";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -19,16 +22,25 @@ interface Res {
 }
 
 export default function NfcCheck({ open, setOpen, status }: PropType) {
-  cons url = (status : number) => {
-    if status == 1:
-
-  }
-
   const [nfcSupported, setNfcSupported] = useState(false);
   const [nfcReading, setNfcReading] = useState(false);
   const [nfcData, setNfcData] = useState("");
 
-  const startNfcReading = async () => {s
+  const navigate = useNavigate();
+
+  const TOKEN = useGetUserToken();
+  const url = (status: number) => {
+    if (status == 0) {
+      return `/api/user/share/borrow/nfc/open/${nfcData}`;
+    } else if (status == 1) {
+      return `/api/user/share/return/nfc/open/${nfcData}`;
+    } else if (status == 2) {
+      return `/api/user/share/keep/nfc/open/${nfcData}`;
+    } else if (status == 3)
+      return `/api/user/share/collect/nfc/open/${nfcData}`;
+  };
+
+  const startNfcReading = async () => {
     try {
       const reader = new window.NDEFReader();
       await reader.scan();
@@ -37,8 +49,7 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       reader.addEventListener("reading", (res: Res) => {
         // NFC 태그를 읽은 후 처리할 코드를 작성합니다.
         console.log(res.serialNumber);
-        // const nfcData = message.records[0].data;
-        setNfcData(nfcData);
+        setNfcData(res.serialNumber);
       });
     } catch (error: any) {
       console.error(error);
@@ -47,11 +58,23 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
 
   useEffect(() => {
     // 브라우저가 Web NFC API를 지원하는지 확인합니다.
-    console.log(status);
-
     if ("NDEFReader" in window) {
       setNfcSupported(true);
-      startNfcReading();
+      startNfcReading().then(() => {
+        axios({
+          method: "post",
+          url: `https://www.share42-together.com${url(status)}`,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        })
+          .then(() => {
+            navigate("/home");
+          })
+          .catch((err) => {
+            console.log(err, "nfc post 요청 실패");
+          });
+      });
     }
   }, []);
   useEffect((): any => {

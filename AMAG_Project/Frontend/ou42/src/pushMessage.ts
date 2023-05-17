@@ -48,3 +48,16 @@ messaging.onBackgroundMessage((payload: any) => {
   console.log("백그라운드 메시지 수신:", payload);
   // 포그라운드에서 알림 처리, 페이지 새로고침 등
 });
+
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const express = require("express");
+const app = express();
+
+admin.initializeApp();
+
+app.post("/api/subscribe", (req: any, res: any) => {
+  // 알림 구독 정보를 저장하고 응답 보냄
+});
+
+exports.app = functions.https.onRequest(app);

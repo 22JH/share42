@@ -42,7 +42,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useGetUserToken } from "./hooks/useGetToken";
-import VAPIDKeyStore from "./store/VAPIDKeyStore";
 
 const globalStyle = css`
   body {
@@ -54,7 +53,6 @@ const globalStyle = css`
 
 function App() {
   const [permissionStatus, setPermissionStatus] = useState(null);
-  const { VAPID, setVAPID } = VAPIDKeyStore();
   const TOKEN = useGetUserToken();
 
   useEffect(() => {
@@ -81,7 +79,9 @@ function App() {
       axios({
         method: "get",
         url: `https://www.share42-together.com/api/common/pwa`,
-      }).then((res) => setVAPID(res.data.message.publicKey));
+      }).then((res) =>
+        localStorage.setItem("VAPID", res.data.message.publicKey)
+      );
     } else {
       console.error("알림 권한을 허용해주세요.");
     }

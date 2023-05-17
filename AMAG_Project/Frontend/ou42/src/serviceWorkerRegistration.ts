@@ -60,27 +60,15 @@ export function register(config?: Config) {
 
   // 서비스 워커 등록
   if ("serviceWorker" in navigator && "PushManager" in window) {
-    // navigator.serviceWorker
-    //   .register("/service-worker.ts")
-    //   .then(async function (registration) {
-    //     console.log("서비스 워커 등록 성공:", registration.scope);
-
-    //     // push 알림 코드
-    //     const permission = await Notification.requestPermission();
-    //     requestPushPermission(permission);
-    //   })
-    //   .catch(function (error) {
-    //     console.error("서비스 워커 등록 실패:", error);
-    //   });
     window.addEventListener("load", () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
       navigator.serviceWorker
         .register(swUrl) // serviceWorker 파일 경로
         .then(async function (registration) {
           console.log("서비스 워커 등록 성공:", registration.scope);
+          await requestPushPermission(registration);
 
           // push 알림 코드
-          requestPushPermission(registration);
         })
         .catch(function (error) {
           console.error("서비스 워커 등록 실패:", error);
@@ -175,6 +163,7 @@ export function unregister() {
   }
 }
 
+// 구독
 export async function requestPushPermission(registration: any) {
   const permission = await Notification.requestPermission();
   const TOKEN = process.env.REACT_APP_FIREBASE_PUBLIC_KEY;
@@ -213,3 +202,22 @@ function urlBase64ToUint8Array(base64String: any) {
   }
   return outputArray;
 }
+
+// 구독 취소
+export const unsubscribePushNotification = async () => {
+  const serviceWorker = await navigator.serviceWorker.ready;
+  const subscription = await serviceWorker.pushManager.getSubscription();
+
+  if (subscription) {
+    await subscription.unsubscribe();
+
+    // 구독을 서버에서 삭제
+    await fetch("/api/subscription", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ endpoint: subscription.endpoint }),
+    });
+  }
+};

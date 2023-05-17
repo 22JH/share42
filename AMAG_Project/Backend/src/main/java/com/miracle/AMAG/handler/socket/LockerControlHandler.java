@@ -50,6 +50,7 @@ public class LockerControlHandler implements WebSocketHandler{
 //        int lockerNum = Integer.parseInt(messages[0]);
 //        log.info("{}번 사물함에 접근 : ", lockerNum);
         int shareStatus = lockerRepository.findById(lockerNum).getShareArticle().getShareStatus();
+        log.info("shareStatus : {}",shareStatus);
         return shareStatus;
     }
 

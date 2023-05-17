@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { FaRegComment, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -5,18 +6,44 @@ export interface UserCommunityPostsProps {
   data: any;
   divRef: React.MutableRefObject<any>;
   getTimeAgo: (timestamp: string) => string;
+  hasNextPage?: boolean;
+  fetchNextPage: any;
 }
 
 const UserCommunityPosts = ({
   data,
   divRef,
   getTimeAgo,
+  hasNextPage,
+  fetchNextPage,
 }: UserCommunityPostsProps) => {
   const navigate = useNavigate();
 
-  const handleDetailNavigate = (id:number) => {
-    navigate(`/user/community/${id}`)
-  }
+  const handleDetailNavigate = (id: number) => {
+    navigate(`/user/community/${id}`);
+  };
+
+  // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
+  const intersection = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        observer.disconnect();
+        if (hasNextPage) {
+          fetchNextPage();
+        }
+      }
+    });
+  });
+
+  // data가 변경될 떄마다 새로운 요소를 감시한다.
+  useEffect(() => {
+    if (divRef?.current && data?.pages?.length) {
+      const lastIndex = data?.pages?.length - 1;
+      intersection.observe(divRef?.current[lastIndex]);
+    }
+  }, [data]);
+
+  console.log(data);
 
   return (
     <div
@@ -26,10 +53,10 @@ const UserCommunityPosts = ({
         flexDirection: "column",
         alignItems: "center",
         marginBottom: "7vh",
-        marginTop: "11vh"
+        marginTop: "11vh",
       }}
     >
-      {data?.pages[0]?.content.map((item: any, index: number) => {
+      {data?.pages?.map((item: any, index: number) => {
         return (
           <div
             ref={(ref) => (divRef.current[index] = ref)}
@@ -100,7 +127,7 @@ const UserCommunityPosts = ({
                 height: "100%",
                 display: "flex",
                 alignItems: "flex-end",
-                justifyContent: 'end',
+                justifyContent: "end",
               }}
             >
               <div

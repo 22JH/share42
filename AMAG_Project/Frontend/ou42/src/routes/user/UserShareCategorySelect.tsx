@@ -3,16 +3,18 @@ import { css } from "@emotion/react";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { GoPrimitiveDot } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 
 const CategoryDiv = css`
   &:nth-of-type(odd) {
-    margin-right: 8vw;
+    margin-right: 7vw;
+    margin-left: 7vw;
   }
 
   &:nth-of-type(7),
   &:nth-of-type(8) {
-    margin-bottom: "0vh";
+    margin-bottom: 3vh;
   }
 `;
 
@@ -34,6 +36,7 @@ const UserShareCategorySelect = () => {
       },
     })
       .then((res) => {
+        console.log(res.data.message);
         setOptions(res.data.message);
       })
       .catch((error) => console.log(error));
@@ -42,8 +45,8 @@ const UserShareCategorySelect = () => {
   const handleCategorySelector = (category: string) => {
     navigate("/user/share-reg", {
       state: {
-        category
-      }
+        category,
+      },
     });
   };
 
@@ -54,12 +57,22 @@ const UserShareCategorySelect = () => {
           height: "6vh",
         }}
       ></div>
+      <h2
+        style={{
+          marginTop: '5vh',
+          marginBottom: '5vh',
+          textAlign: 'center',
+          fontSize: '1.2rem'
+        }}
+      >공유하실 물품의 종류를 선택해주세요</h2>
       <div
         css={{ CategoryDiv }}
         style={{
           margin: "3vh",
           display: "flex",
           flexWrap: "wrap",
+          backgroundColor: "#fcc8d181",
+          borderRadius: '12px'
         }}
       >
         {options.map((item, index) => (
@@ -67,27 +80,40 @@ const UserShareCategorySelect = () => {
             key={index}
             css={CategoryDiv}
             style={{
-              marginBottom: "2vh",
-              backgroundColor: "#FFABAB",
-              color: "white",
+              marginTop: "3vh",
+              backgroundColor: "#ffffff",
               borderRadius: "12px",
               textAlign: "center",
               cursor: "pointer",
-              width: "39.3vw",
+              width: "32vw",
               height: "19.3vh",
-              lineHeight: "19.3vh",
               fontSize: "1.5rem",
               fontWeight: "900",
+              display:'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+              boxShadow: '3px 3px 0px #8f8f8f50'
             }}
             onClick={() => handleCategorySelector(item.category)}
           >
-            <span
+            <div
               style={{
-                whiteSpace: "nowrap",
+                width: '100%',
+                textAlign: 'center',
+
               }}
             >
-              {item.category}
-            </span>
+            </div>
+            <img
+              src={`${process.env.REACT_APP_IMAGE_URL}${item.img}`}
+              alt={`${item.img}`}
+            />
+            <span
+              style={{
+                fontSize: '1.2rem'
+              }}
+            >{item.category}</span>
           </div>
         ))}
       </div>

@@ -14,6 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.nio.ByteBuffer;
+import java.util.Base64;
+
+
+
 @Slf4j
 @Component
 //public class LockerControlHandler extends TextWebSocketHandler {
@@ -80,6 +89,32 @@ public class LockerControlHandler implements WebSocketHandler{
 //        }
         Object tmp = message.getPayload();
         log.info("tmp{} : ",String.valueOf(tmp));
+        String className = tmp.getClass().getName();
+        if ("java.nio.HeapByteBuffer".equals(className)) {
+            ByteBuffer buffer = (ByteBuffer) tmp;
+            byte[] bytes = new byte[buffer.capacity()];
+            buffer.get(bytes);
+
+            // base64 디코딩
+            byte[] decodedBytes = Base64.getDecoder().decode(bytes);
+
+            try {
+                // 바이트 배열을 이미지로 변환
+                ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+                BufferedImage image = ImageIO.read(bis);
+                bis.close();
+
+                // 이미지 파일로 저장 (여기서는 PNG 형식 사용)
+                File outputFile = new File("output_image.png");
+                ImageIO.write(image, "png", outputFile);
+
+            } catch (IOException e) {
+                System.err.println("이미지 변환 및 저장 중 오류가 발생했습니다: " + e.getMessage());
+            }
+        } else {
+            System.err.println("버퍼에 대한 예상되지 않은 형식: " + className);
+        }
+
 
         //메시지 전달받기
         String request = (String) message.getPayload();

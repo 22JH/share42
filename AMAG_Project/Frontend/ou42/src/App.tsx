@@ -42,7 +42,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useGetUserToken } from "./hooks/useGetToken";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const globalStyle = css`
   body {
@@ -106,6 +106,10 @@ function App() {
             console.log("An error occurred while retrieving token. ", err);
             // ...
           });
+        onMessage(messaging, (payload) => {
+          console.log("Message received. ", payload);
+          // ...
+        });
       });
     } else {
       console.error("알림 권한을 허용해주세요.");

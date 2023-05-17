@@ -6,6 +6,8 @@ import avocado from "../../../assets/avocado.jpg";
 import { useQuery } from "react-query";
 import { useApi } from "../../../hooks/useApi";
 import { useGetUserToken } from "../../../hooks/useGetToken";
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../..";
 
 const container = css`
   width: 100%;

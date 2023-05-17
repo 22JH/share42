@@ -202,8 +202,8 @@ public class UserReturnService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String returnProduct(int shareArticleId) throws IOException {
-        ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
+    public String returnProduct(UserReturnRequestDTO userReturnRequestDTO) throws IOException {
+        ShareArticle shareArticle = shareArticleRepository.findById(userReturnRequestDTO.getShareArticleId());
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
         Locker locker = returnRecord.getLocker();
         Account account = returnRecord.getAccount();
@@ -226,11 +226,18 @@ public class UserReturnService {
             throw new RuntimeException("결제가 정상적으로 이루어지지 않았습니다.");
         }
 
+
         shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
         ShareReturn shareReturn = new ShareReturn();
         BeanUtils.copyProperties(returnRecord, shareReturn);
         shareReturn.setId(0);
         shareReturn.setReturnType(ShareReturnUtils.RETURN);
+
+        // 이미지를 저장하는 로직
+        if (userReturnRequestDTO.getImgFile() != null) {
+            String fileName = BoardUtils.singleFileSave((userReturnRequestDTO).getImgFile());
+            shareReturn.setImg(fileName);
+        }
 
         Payment payment = new Payment();
         payment.setShareReturn(shareReturn);
@@ -295,9 +302,6 @@ public class UserReturnService {
 
         //////// 대여함 오픈 로직 추가 필요 //////////////
 
-
-        // 실제 반납 처리
-        returnProduct(shareArticle.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

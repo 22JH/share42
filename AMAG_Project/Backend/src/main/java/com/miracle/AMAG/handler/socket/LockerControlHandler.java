@@ -1,25 +1,25 @@
 package com.miracle.AMAG.handler.socket;
 
+import com.miracle.AMAG.dto.requestDTO.user.UserKeepRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.user.UserReturnRequestDTO;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.locker.LockerRepository;
+import com.miracle.AMAG.service.user.*;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import javax.imageio.ImageIO;
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 
 
@@ -30,6 +30,24 @@ public class LockerControlHandler implements WebSocketHandler{
 
     @Autowired
     LockerRepository lockerRepository;
+
+    @Autowired
+    UserBorrowService userBorrowService;
+
+    @Autowired
+    UserCollectService userCollectService;
+
+    @Autowired
+    UserKeepService userKeepService;
+
+    @Autowired
+    UserReportService userReportService;
+
+    @Autowired
+    UserReturnService userReturnService;
+
+    @Autowired
+    UserShareArticleService userShareArticleService;
 
     private List<WebSocketSession> sessionList = new ArrayList<>();
 
@@ -84,55 +102,35 @@ public class LockerControlHandler implements WebSocketHandler{
 //    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-//        if (message.getPayload().getClass().getName() == String){
-//
+//        Map<String, Object> dataMap = (Map<String, Object>) message.getPayload();
+//        String a = (String) dataMap.get("");
+//        String b = (ByteBuffer) dataMap.get("");
+
+//        Object k = message.getPayload();
+//        System.out.println(k);
+
+//        Map<String, Object> dataMap = (Map<String, Object>) message.getPayload();
+
+//        if (((String)k).contains("null") == false) {
+//            String a = "";
+//        } else {
+//            session.sendMessage(new TextMessage("1 cam"));
 //        }
-        Object tmp = message.getPayload();
-        log.info("tmp{} : ",String.valueOf(tmp));
-        String className = tmp.getClass().getName();
-        if ("java.nio.HeapByteBuffer".equals(className)) {
-            ByteBuffer buffer = (ByteBuffer) tmp;
-            byte[] bytes = new byte[buffer.capacity()];
-            buffer.get(bytes);
 
-            // base64 디코딩
-            byte[] decodedBytes = Base64.getDecoder().decode(bytes);
+        String payload = (String) message.getPayload();
+        JSONParser jsonParser = new JSONParser();
+        JSONObject returnObject = (JSONObject)jsonParser.parse(payload);
 
-            try {
-                // 바이트 배열을 이미지로 변환
-                ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
-                BufferedImage image = ImageIO.read(bis);
-                bis.close();
-
-                // 이미지 파일로 저장 (여기서는 PNG 형식 사용)
-                File outputFile = new File("output_image.png");
-                ImageIO.write(image, "png", outputFile);
-
-            } catch (IOException e) {
-                System.err.println("이미지 변환 및 저장 중 오류가 발생했습니다: " + e.getMessage());
-            }
-        } else {
-            System.err.println("버퍼에 대한 예상되지 않은 형식: " + className);
-        }
-
-
-        //메시지 전달받기
-        String request = (String) message.getPayload();
-        log.info("Server received: {}", request);
-
-        // 수신된 메시지의 크기 로깅
-        int messageSize = request.getBytes(StandardCharsets.UTF_8).length;
-        log.info("Received message size: {} bytes", messageSize);
-
-        String[] messageInfo = request.split(" ");
-        int lockerNum = Integer.parseInt(messageInfo[0]);
+//        String[] messageInfo = request.split(" ");
+        int lockerNum = Integer.parseInt((String)returnObject.get("number"));
+        ShareArticle shareArticle = lockerRepository.findById(lockerNum).getShareArticle();
         log.info("{}번 사물함에 접근 : ", lockerNum);
 
         //0: 수납대기, 1:공유대기중, 2:공유중, 3:반납대기, 4:회수대기, 5:회수 -> 반입 : 0,3 / 반출 : 1,4
         int shareStatus = getShareStatus(lockerNum);
         // 반출
-        if (shareStatus == ShareArticleUtils.SEARCH_TYPE_PRICE || shareStatus == ShareArticleUtils.COLLECT_READY){
-            int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
+        if (shareStatus == ShareArticleUtils.SHARE_READY || shareStatus == ShareArticleUtils.COLLECT_READY){
+            int weight = Integer.parseInt((String)returnObject.get("weight"));
             //물건이 안 나감
             if (weight > 0){ // 초기값 받아야함
                 log.info("무게 {}로, 물건이 회수되지 않았습니다", weight);
@@ -142,22 +140,27 @@ public class LockerControlHandler implements WebSocketHandler{
                     throw new RuntimeException(e);
                 }
             }
-            //물건이 정상적으로 회수됨
+            //물건이 정상적으로 반출됨
             else {
-                log.info("물건이 회수되었습니다");
+                log.info("물건이 반출되었습니다");
                 try {
                     session.sendMessage(new TextMessage("true"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 //공유상태(물건 및 사물함정보) 변경 로직
+                if(shareStatus == ShareArticleUtils.SHARE_READY) {
+                    userBorrowService.receiveProduct(shareArticle.getId());
+                } else {
+                    userCollectService.collectProduct(shareArticle.getId());
+                }
             }
         }
         // 반입
         else {
-            switch (messageInfo[1]){
+            switch ((String)returnObject.get("command")){
                 case "close":
-                    int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
+                    int weight = Integer.parseInt((String)returnObject.get("weight"));
                     // 물건이 안들어옴
                     if (weight <= 0){// 초기값 받아야함
                         log.info("물건이 들어오지 않았습니다");
@@ -170,8 +173,6 @@ public class LockerControlHandler implements WebSocketHandler{
                     //물건이 정상적으로 들어옴
                     else {
                         log.info("무게 {}로, 물건이 보관되었습니다", weight);
-                        //공유상태(물건 및 사물함정보) 변경 로직
-
                         //사진촬영 전송
                         try {
                             session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
@@ -182,7 +183,7 @@ public class LockerControlHandler implements WebSocketHandler{
                     break;
                 case "cam":
                     // 사진이 안들어온 경우
-                    if (messageInfo.length == 2){
+                    if (returnObject.get("cam") == null){
                         log.info("사진 데이터가 없습니다");
                         try {
                             session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
@@ -199,6 +200,26 @@ public class LockerControlHandler implements WebSocketHandler{
                             throw new RuntimeException(e);
                         }
                         //사진 저장 로직
+                        // Base64를 디코딩하여 byte 배열로 변환
+                        byte[] decodedBytes = Base64.getDecoder().decode((String)returnObject.get("cam"));
+
+                        // 임시 디렉토리에 이미지 파일 생성
+                        File tempFile = File.createTempFile("temp_image", ".jpg");
+                        tempFile.deleteOnExit();
+                        FileUtils.writeByteArrayToFile(tempFile, decodedBytes);
+
+                        //공유상태(물건 및 사물함정보) 변경 로직
+                        if(shareArticle.getShareStatus() == ShareArticleUtils.KEEP_READY){
+                            UserKeepRequestDTO userKeepRequestDTO = new UserKeepRequestDTO();
+                            userKeepRequestDTO.setShareArticleId(shareArticle.getId());
+                            userKeepRequestDTO.setImgFile(new MockMultipartFile("file", tempFile.getName(), "image/jpeg", FileUtils.readFileToByteArray(tempFile)));
+                            userKeepService.keepProduct(userKeepRequestDTO);
+                        } else {
+                            UserReturnRequestDTO userReturnRequestDTO = new UserReturnRequestDTO();
+                            userReturnRequestDTO.setShareArticleId(shareArticle.getId());
+                            userReturnRequestDTO.setImgFile(new MockMultipartFile("file", tempFile.getName(), "image/jpeg", FileUtils.readFileToByteArray(tempFile)));
+                            userReturnService.returnProduct(userReturnRequestDTO);
+                        }
                     }
                     break;
             }

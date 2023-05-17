@@ -176,7 +176,7 @@ public class UserBorrowService {
             throw new RuntimeException("해당 물품을 대여 신청한 사용자와 인수 요청을 보낸 사용자가 다릅니다.");
         }
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("해당 물품은 인수 처리를 진행할 수 없는 물품입니다.");
         }
 

@@ -124,9 +124,9 @@ public class LockerControlHandler implements WebSocketHandler{
 //        String[] messageInfo = request.split(" ");
         log.debug("returnObject: {}", returnObject);
         log.debug("returnObject.get(number): {}", returnObject.get("number"));
-        log.debug("returnObject.get(number) instanceof Integer: {}", returnObject.get("number") instanceof Integer);
+        log.debug("returnObject.get(number) instanceof Long: {}", returnObject.get("number") instanceof Long);
         log.debug("returnObject.get(number) instacneof String: {}", returnObject.get("number") instanceof String);
-        int lockerNum = (Integer)(returnObject.get("number"));
+        int lockerNum = ((Long)(returnObject.get("number"))).intValue();
         ShareArticle shareArticle = lockerRepository.findById(lockerNum).getShareArticle();
         log.info("{}번 사물함에 접근 : ", lockerNum);
 
@@ -134,7 +134,7 @@ public class LockerControlHandler implements WebSocketHandler{
         int shareStatus = getShareStatus(lockerNum);
         // 반출
         if (shareStatus == ShareArticleUtils.SHARE_READY || shareStatus == ShareArticleUtils.COLLECT_READY){
-            int weight = (Integer)returnObject.get("weight");
+            int weight = ((Long)returnObject.get("weight")).intValue();
             //물건이 안 나감
             if (weight > 0){ // 초기값 받아야함
                 log.info("무게 {}로, 물건이 회수되지 않았습니다", weight);
@@ -164,7 +164,7 @@ public class LockerControlHandler implements WebSocketHandler{
         else {
             switch ((String)returnObject.get("command")){
                 case "close":
-                    int weight = (Integer)returnObject.get("weight");
+                    int weight = ((Long)returnObject.get("weight")).intValue();
                     // 물건이 안들어옴
                     if (weight <= 0){// 초기값 받아야함
                         log.info("물건이 들어오지 않았습니다");

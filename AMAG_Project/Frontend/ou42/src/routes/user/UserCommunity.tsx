@@ -9,6 +9,7 @@ import UserCommunityBtns from "../../components/community/UserCommunityBtns";
 import UserCommunityPosts from "../../components/community/UserCommunityPosts";
 import UserCommunityBottomBar from "../../components/community/UserCommunityBottomBar";
 import { getTimeAgo } from "../../utils/getTimeAgo";
+import { L, pipe, takeAll } from "../../custom/FxJS";
 
 export const UserCommunityBtnStyle = css`
   & > .sort-button-recent,
@@ -80,31 +81,51 @@ const UserCommunity = () => {
     return `https://www.share42-together.com/api/user/community/posts/list?page=${page}&size=${SIZE}&sort=${sort}&category=${category.num}&search=${search}`;
   };
 
-  const fetchRepositories = async (page: number = 1) => {
-    const response = await axios({
-      method: "GET",
+  // API 요청
+  // const fetchRepositories = async (page: number = 1) => {
+  //   const response = await axios({
+  //     method: "GET",
+  // url: search
+  //   ? SEARCH_API(sort, category, search, page)
+  //   : SORT_API(sort, category, page),
+  // headers: {
+  //   "Content-Type": "application/json",
+  //   Authorization: `Bearer ${token}`,
+  // },
+  //   });
+
+  //   return response.data.message;
+  // };
+
+  const fetchRepositories = ({ pageParam = 1 }) => {
+    return axios({
+      method: "get",
       url: search
-        ? SEARCH_API(sort, category, search, page)
-        : SORT_API(sort, category, page),
+        ? SEARCH_API(sort, category, search, pageParam)
+        : SORT_API(sort, category, pageParam),
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
-
-    return response.data.message;
   };
 
   const { data, hasNextPage, fetchNextPage } = useInfiniteQuery(
     ["getCommunity", sort, category, search],
-    ({ pageParam }) => fetchRepositories(pageParam),
+    fetchRepositories,
     {
-      getNextPageParam: (lastPage, allPages: any[]) => {
-        const maxPages = lastPage.totalPages;
-        const nextPages = Math.floor(
-          allPages[0].totalElements / allPages[0].size
-        );
-        return nextPages <= maxPages ? nextPages : undefined;
+      getNextPageParam: (lastPage, allPages: any) => {
+        if (allPages[0].data.message.totalPages > allPages.length) {
+          return allPages.length + 1;
+        }
+      },
+      select: (data) => {
+        const newData = pipe(L.map, L.flatten, takeAll);
+
+        return {
+          pages: newData((d: any) => d.data.message.content, data.pages),
+          // pages: data.pages,
+          pageParams: data?.pageParams,
+        };
       },
       suspense: false,
     }
@@ -165,26 +186,6 @@ const UserCommunity = () => {
     }
   }, [sort, category.idx]);
 
-  useEffect(() => {
-    let fetching = false;
-    const onScroll = async (event: any) => {
-      const { scrollHeight, scrollTop, clientHeight } =
-        event.target.scrollingElement;
-
-      if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
-        fetching = true;
-        if (hasNextPage) {
-          await fetchNextPage();
-          fetching = false;
-        }
-      }
-    };
-    document.addEventListener("scroll", onScroll);
-    return () => {
-      document.removeEventListener("scroll", onScroll);
-    };
-  }, [hasNextPage, fetchNextPage]);
-
   return (
     <>
       <UserCommunityBtns
@@ -199,7 +200,13 @@ const UserCommunity = () => {
         share={share}
         all={all}
       />
-      <UserCommunityPosts data={data} divRef={divRef} getTimeAgo={getTimeAgo} />
+      <UserCommunityPosts
+        data={data}
+        divRef={divRef}
+        hasNextPage={hasNextPage}
+        fetchNextPage={fetchNextPage}
+        getTimeAgo={getTimeAgo}
+      />
       <UserCommunityBottomBar />
     </>
   );

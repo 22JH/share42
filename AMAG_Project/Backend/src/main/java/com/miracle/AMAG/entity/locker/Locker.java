@@ -29,7 +29,7 @@ public class Locker {
     @JoinColumn(name = "LOCKER_STATION_ID", nullable = false)
     private LockerStation lockerStation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SHARE_ARTICLE_ID", nullable = false)
     private ShareArticle shareArticle;
 

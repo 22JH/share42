@@ -20,7 +20,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://k8d102.p.ssafy.io:3306/SHARE42_TOGETHER?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
     username: ssafy
-    password: ssafy123!@#
+    password: RHDdbtkdl0312!@#
 
   data:
     redis:

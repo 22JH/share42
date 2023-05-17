@@ -47,7 +47,7 @@ export default function UserChatList() {
   }, [userId]);
   return (
     <div css={container}>
-      {!chats || chats.length > 0 ? (
+      {!chats || chats[0] == undefined ? (
         <div className="noChats">채팅 내역이 없습니다.</div>
       ) : (
         Object.entries(chats)

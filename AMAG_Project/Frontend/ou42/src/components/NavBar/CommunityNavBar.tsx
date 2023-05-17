@@ -38,7 +38,7 @@ function CommunityNavBar() {
     if (pathname === "/user/community/reg") {
       setPathTitle("게시글 등록하기");
     } else {
-      setPathTitle("")
+      setPathTitle("");
     }
   }, [pathname]);
 
@@ -51,61 +51,36 @@ function CommunityNavBar() {
             height: "12vh",
             marginBottom: "1rem",
             display: "flex",
-            position: 'fixed',
-            top: '0',
-            background: '#ffffff'
+            position: "fixed",
+            top: "0",
+            background: "#ffffff",
           }}
         >
-          {isClick ? (
-            <div
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "start",
+              justifyContent: "flex-end",
+              marginRight: "4vw",
+              paddingTop: "2vh",
+            }}
+          >
+            <BsSearch size={25} onClick={handleSearchBar} />
+            <input
               style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "start",
-                justifyContent: "flex-end",
-                marginRight: "4vw",
-                paddingTop: '2vh'
+                marginLeft: "0.5rem",
+                height: "1.5rem",
+                // border: isClick ? 0 : "1px",
+                width: isClick ? 0 : "50vw",
+                transition: "all 0.5s",
               }}
-            >
-              <BsSearch size={25} onClick={handleSearchBar} />
-              <input
-                style={{
-                  marginLeft: "0.5rem",
-                  height: "1.5rem",
-                  display: "none",
-                  width: "0%",
-                  transition: "all 1s",
-                }}
-                type="text"
-              />
-            </div>
-          ) : (
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "start",
-                justifyContent: "flex-end",
-                marginRight: "4vw",
-                paddingTop: '2vh'
-              }}
-            >
-              <BsSearch size={25} onClick={handleSearchBar} />
-              <input
-                style={{
-                  marginLeft: "0.5rem",
-                  height: "1.5rem",
-                  width: "40vw",
-                  transition: "all 1s",
-                }}
-                type="text"
-                onChange={handleSearchInfo}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
-          )}
+              type="text"
+              onChange={handleSearchInfo}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
         </div>
       ) : null}
       {pathname === "/user/community" ? null : (

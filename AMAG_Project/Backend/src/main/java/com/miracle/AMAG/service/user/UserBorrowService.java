@@ -215,7 +215,7 @@ public class UserBorrowService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String openLocker(String nfcData) {
+    public String openLocker(String nfcData) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -233,6 +233,10 @@ public class UserBorrowService {
         }
 
         //////// 대여함 오픈 로직 추가 필요 //////////////
+
+        
+        // 실제 대여처리
+        receiveProduct(shareArticle.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

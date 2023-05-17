@@ -129,7 +129,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
           l.LOCKER_NUMBER as lockerNumber,
           l.NFC as nfc,
           t.KEEP_TYPE as keepType,
-          0 AS requestType
+          2 AS requestType
         FROM(
           select
              *
@@ -164,7 +164,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
           l.LOCKER_NUMBER as lockerNumber,
           l.NFC as nfc,
           t.COLLECT_TYPE as collectType,
-          1 AS requestType
+          3 AS requestType
         FROM(
           select
              *

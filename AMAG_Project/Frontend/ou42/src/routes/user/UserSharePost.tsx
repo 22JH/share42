@@ -78,8 +78,6 @@ const UserSharePost = () => {
       .catch((e) => console.log(e));
   }, []);
 
-  console.log(billing);
-
   // 점 클릭하면 넘어가게 일단 기능 구현
   const handleDotClick = (idx: number) => {
     if (slideRef.current) {
@@ -256,8 +254,6 @@ const UserSharePost = () => {
       suspense: false,
     }
   );
-
-  console.log(data);
 
   // 사용 신청 상태 저장
   useEffect(() => {

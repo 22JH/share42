@@ -5,17 +5,40 @@ import DropDown from "../../components/UI/DropDown";
 import Btn from "./../../components/UI/Btn";
 import pinkBox from "../../assets/pinkBox.png";
 import AlertDialogSlide from "../../components/UI/AlertDialog";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import Alert from "./../../components/UI/Alert";
 import NfcCheck from "../../components/user/nfc/NfcCheck";
+import BottomMenuBar from "../../components/BottomMenuBar";
+import { useApi } from "../../hooks/useApi";
+import { useGetUserToken } from "../../hooks/useGetToken";
+import { useQuery } from "react-query";
 
+const useURL =
+  "https://www.share42-together.com/api/user/share/nfc/keep/collect";
+const returnURL =
+  "https://www.share42-together.com/api/user/share/nfc/borrow/return";
+
+const prePro = (data: any) => {
+  const temp = data.reduce((pre: any, ele: any) => {
+    const status: number = ele.shareArticleShareStatus;
+    let statusName;
+    if (status === 0) statusName = "수납 대기";
+    else if (status === 1) statusName = "공유 대기 중";
+    else if (status === 2) statusName = "공유 중";
+    else if (status === 3) statusName = "반납 대기";
+    else if (status === 4) statusName = "회수 대기";
+    else if (status === 5) statusName = "회수";
+
+    return [...pre, `${ele.shareArticleName} (${statusName})`];
+  }, []);
+  return temp;
+};
 const container = (selectType: boolean, selectItem: string) => css`
   width: 100%;
   height: 85vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 7vh;
   .selectType {
     flex: 0.8;
     width: 85%;
@@ -67,15 +90,15 @@ const container = (selectType: boolean, selectItem: string) => css`
     flex: 7;
     justify-content: center;
     align-items: center;
-    background-color: ${selectItem ? "#fef2f4" : "white"};
+    /* background-color: ${selectItem ? "#fef2f4" : "white"}; */
 
     width: 85%;
   }
 `;
 //임시데이터
-const tempData = ["asdf", "sdf", "1", "234234"];
 
 export default function UserNfc() {
+  const [items, setItems] = useState<string[]>();
   // false == 사용 반납, true == 보관 회수
   const [selectType, setSelectType] = useState<boolean>(false);
   // 선택한 물품
@@ -84,9 +107,12 @@ export default function UserNfc() {
   const [open, setOpen] = useState<boolean>(false);
   const handleUseReturn = () => {
     setSelectType(() => false);
+    setSelectItem("");
   };
+
   const handleKeepTakeOut = () => {
     setSelectType(() => true);
+    setSelectItem("");
   };
 
   const handleBtnClick = () => {
@@ -96,6 +122,32 @@ export default function UserNfc() {
       Alert("error", "물품을 선택해 주세요");
     }
   };
+
+  const options = {
+    headers: { Authorization: `Bearer ${useGetUserToken()}` },
+  };
+  const getUseItems = useApi("get", useURL, options);
+  const getReturnItems = useApi("get", returnURL, options);
+
+  useQuery("getUseItems", getUseItems, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => {
+      console.log(res);
+      setItems(res);
+    },
+    enabled: !!selectType,
+    suspense: false,
+  });
+
+  useQuery("getReturnItems", getReturnItems, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => {
+      console.log("반납", res);
+      setItems(res);
+    },
+    enabled: !selectType,
+    suspense: false,
+  });
   return (
     <div css={container(selectType, selectItem)}>
       <div className="selectType">
@@ -109,7 +161,7 @@ export default function UserNfc() {
       <div className="selectItme">
         <DropDown
           content={"물품을 선택해 주세요"}
-          data={tempData}
+          data={items && prePro(items)}
           setValue={setSelectItem}
           width={"100%"}
           marginTop={"10px"}
@@ -131,6 +183,7 @@ export default function UserNfc() {
         ) : null}
       </div>
       {open ? <NfcCheck open={open} setOpen={setOpen} /> : null}
+      <BottomMenuBar />
     </div>
   );
 }

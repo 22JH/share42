@@ -42,6 +42,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useGetUserToken } from "./hooks/useGetToken";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const globalStyle = css`
   body {
@@ -79,9 +80,33 @@ function App() {
       axios({
         method: "get",
         url: `https://www.share42-together.com/api/common/pwa`,
-      }).then((res) =>
-        localStorage.setItem("VAPID", res.data.message.publicKey)
-      );
+      }).then((res) => {
+        localStorage.setItem("VAPID", res.data.message.publicKey);
+
+        const messaging = getMessaging();
+
+        getToken(messaging, {
+          vapidKey: process.env.REACT_APP_FIREBASE_PUBLIC_KEY,
+        })
+          .then((currentToken) => {
+            console.log("여기온다.");
+            if (currentToken) {
+              // Send the token to your server and update the UI if necessary
+              // ...
+              console.log(currentToken, "==============");
+            } else {
+              // Show permission request UI
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+              // ...
+            }
+          })
+          .catch((err) => {
+            console.log("An error occurred while retrieving token. ", err);
+            // ...
+          });
+      });
     } else {
       console.error("알림 권한을 허용해주세요.");
     }

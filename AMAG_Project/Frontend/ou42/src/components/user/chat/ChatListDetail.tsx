@@ -2,15 +2,10 @@
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import avocado from "../../../assets/avocado.jpg";
 import { useQuery } from "react-query";
-import { useApi } from "./../../../hooks/useApi";
-
-interface PropType {
-  profile: string;
-  nickName: string;
-  lastChat: string;
-  chatNumber: string;
-}
+import { useApi } from "../../../hooks/useApi";
+import { useGetUserToken } from "../../../hooks/useGetToken";
 
 const container = css`
   width: 100%;
@@ -60,22 +55,24 @@ const container = css`
 export default function ChatListDetail({ data }: any) {
   const navigate = useNavigate();
   const [otherUserProfile, setOtherUserProfile] = useState<any>();
-  const loginObject = localStorage.getItem("loginInfo");
-  const { token } = loginObject ? JSON.parse(loginObject) : null;
-
-  // const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${data[1]?.userInfo?.id}`;
-  const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${data[1]?.userInfo?.id}`;
   const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { Authorization: `Bearer ${useGetUserToken()}` },
   };
+  const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${otherUserProfile}`;
   const getUserProfile = useApi("get", URL, options);
+  useEffect(() => {
+    (async () => {
+      const otherUser: any = await getDoc(
+        doc(db, "users", data[1]?.userInfo?.id)
+      );
+      setOtherUserProfile(otherUser.data().profile);
+    })();
+  }, []);
 
-  useQuery(["getUserProfile", data[1]?.userInfo?.id], getUserProfile, {
-    select: (res) => res.data.message,
-    onSuccess: (res) => setOtherUserProfile(res),
-    suspense: false,
+  useQuery(["getUserProfile", otherUserProfile], getUserProfile, {
+    select: (res) => res,
+    onSuccess: (res) => console.log(res),
+    enabled: !!otherUserProfile,
   });
   return (
     <div
@@ -87,7 +84,11 @@ export default function ChatListDetail({ data }: any) {
       <div className="imgSection">
         <div className="imgBox">
           <img
-            src={`${process.env.REACT_APP_IMAGE_URL}${otherUserProfile}`}
+            src={
+              otherUserProfile
+                ? `https://www.share42-together.com/images/${otherUserProfile}`
+                : avocado
+            }
             alt="profile"
             className="profile"
           />

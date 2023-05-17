@@ -2,7 +2,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import cameraDefault from "../../assets/cameraDefault.png";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
@@ -36,7 +36,7 @@ const RETURN_SUBMIT_API = () => {
   return `https://www.share42-together.com:8088/api/user/share/return`;
 };
 
-const RETURN_DELETE_API = (id:string) => {
+const RETURN_DELETE_API = (id: string) => {
   return `https://www.share42-together.com:8088/api/user/share/return/cancel/${id}`;
 };
 
@@ -57,11 +57,10 @@ const UserReturn = () => {
   const formData = useMemo(() => new FormData(), []);
 
   const handleSelectProduct = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value
+    const value = e.target.value;
     setSelectId(value);
   };
 
-  
   const { data } = useQuery(
     ["getReturnCategory"],
     async () => {
@@ -96,17 +95,17 @@ const UserReturn = () => {
     {
       suspense: false,
     }
-    );
+  );
 
-    useEffect(() => {
-      const ans = data?.find((item) => item.shareArticleId === Number(selectId))
-      setReturnStatus(String(ans?.shareArticleShareStatus))
-      if (String(ans?.shareArticleShareStatus) === '3') {
-        setDeleteBtn(true)
-      }
-    }, [data, selectId])
-    
-    const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const ans = data?.find((item) => item.shareArticleId === Number(selectId));
+    setReturnStatus(String(ans?.shareArticleShareStatus));
+    if (String(ans?.shareArticleShareStatus) === "3") {
+      setDeleteBtn(true);
+    }
+  }, [data, selectId]);
+
+  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files != null && files.length > 0) {
       setPreview(files[0]);
@@ -121,8 +120,8 @@ const UserReturn = () => {
       formData.append("selectId", selectId);
     }
 
-    if (preview && state && selectId && returnStatus === '2') {
-      setIsBtn(true)
+    if (preview && state && selectId && returnStatus === "2") {
+      setIsBtn(true);
     }
   }, [preview, state, selectId, formData, returnStatus]);
 
@@ -136,53 +135,53 @@ const UserReturn = () => {
   // 반납 신청하기
   const handleSubmit = async () => {
     await fetch(RETURN_SUBMIT_API(), {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formData
+      body: formData,
     })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data)
-      if(data.status === 200) {
-        setDeleteBtn(true)
-        swal("신청 성공", "반납 신청이 완료되었습니다.", "success");
-      } else {
-        swal("신청 실패", "반납 신청이 실패되었습니다.", "error");
-      }
-    })
-    .catch((e) => {
-      console.log(e)
-      swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
-    })
-  }
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.status === 200) {
+          setDeleteBtn(true);
+          swal("신청 성공", "반납 신청이 완료되었습니다.", "success");
+        } else {
+          swal("신청 실패", "반납 신청이 실패되었습니다.", "error");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+      });
+  };
 
   // 반납 취소하기
   const handleCancel = async (selectId: string) => {
     await axios({
-      method: 'POST',
+      method: "POST",
       url: RETURN_DELETE_API(selectId),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((res) => {
-      console.log(res)
-      if (res.data.status === 200) {
-        setDeleteBtn(false)
-        swal("취소 성공", "반납 취소가 완료되었습니다.", "success");
-      } else {
-        swal("취소 실패", "반납 취소가 실패되었습니다.", "error");
-      }
-      return res.data.message
-    })
-    .catch((e) => {
-      console.log(e)
-      swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
-    })
-  }  
+      .then((res) => {
+        console.log(res);
+        if (res.data.status === 200) {
+          setDeleteBtn(false);
+          swal("취소 성공", "반납 취소가 완료되었습니다.", "success");
+        } else {
+          swal("취소 실패", "반납 취소가 실패되었습니다.", "error");
+        }
+        return res.data.message;
+      })
+      .catch((e) => {
+        console.log(e);
+        swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
+      });
+  };
 
   return (
     <>
@@ -238,8 +237,7 @@ const UserReturn = () => {
             fontWeight: "900",
             textAlign: "left",
           }}
-        >
-        </div>
+        ></div>
         <div
           style={{
             width: "100vw",
@@ -248,7 +246,7 @@ const UserReturn = () => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: '3vh'
+            marginTop: "3vh",
           }}
         >
           <label
@@ -298,42 +296,44 @@ const UserReturn = () => {
             onChange={handleFileSelection}
           />
         </div>
-        {deleteBtn ?
+        {deleteBtn ? (
           <button
-          style={{
-            width: "100%",
-            height: "7vh",
-            position: 'fixed',
-            bottom: '0px',
-            fontSize: "1.3rem",
-            fontWeight: "900",
-            textAlign: "center",
-            border: 'none',
-            backgroundColor: '#ff2f00',
-            color: '#ffffff',
-          }}
-          onClick={(e) => handleCancel(selectId)}
-        >
+            style={{
+              width: "100%",
+              height: "7vh",
+              position: "fixed",
+              bottom: "0px",
+              fontSize: "1.3rem",
+              fontWeight: "900",
+              textAlign: "center",
+              border: "none",
+              backgroundColor: "#ff2f00",
+              color: "#ffffff",
+            }}
+            onClick={(e) => handleCancel(selectId)}
+          >
             반납 취소
-        </button>
-        : <button
-          style={{
-            width: "100%",
-            height: "7vh",
-            position: 'fixed',
-            bottom: '0px',
-            fontSize: "1.3rem",
-            fontWeight: "900",
-            textAlign: "center",
-            border: 'none',
-            backgroundColor: isBtn ? '#FFABAB' : '#c9c9c9',
-            color: isBtn ? '#ffffff' : '#343434',
-          }}
-          disabled={!isBtn}
-          type="submit"
-        >
+          </button>
+        ) : (
+          <button
+            style={{
+              width: "100%",
+              height: "7vh",
+              position: "fixed",
+              bottom: "0px",
+              fontSize: "1.3rem",
+              fontWeight: "900",
+              textAlign: "center",
+              border: "none",
+              backgroundColor: isBtn ? "#FFABAB" : "#c9c9c9",
+              color: isBtn ? "#ffffff" : "#343434",
+            }}
+            disabled={!isBtn}
+            type="submit"
+          >
             반납 신청
-        </button>}
+          </button>
+        )}
       </form>
     </>
   );

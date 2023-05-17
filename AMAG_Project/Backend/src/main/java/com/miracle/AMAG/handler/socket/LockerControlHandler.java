@@ -75,6 +75,12 @@ public class LockerControlHandler implements WebSocketHandler{
 //    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+//        if (message.getPayload().getClass().getName() == String){
+//
+//        }
+        Object tmp = message.getPayload();
+        log.info("tmp{} : ",String.valueOf(tmp));
+
         //메시지 전달받기
         String request = (String) message.getPayload();
         log.info("Server received: {}", request);

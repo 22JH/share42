@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "@firebase/firestore";
-import { db } from "../../..";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { useApi } from "./../../../hooks/useApi";
 
 interface PropType {
   profile: string;
@@ -60,14 +60,23 @@ const container = css`
 export default function ChatListDetail({ data }: any) {
   const navigate = useNavigate();
   const [otherUserProfile, setOtherUserProfile] = useState<any>();
-  useEffect(() => {
-    (async () => {
-      const otherUser: any = await getDoc(
-        doc(db, "users", data[1]?.userInfo?.id)
-      );
-      setOtherUserProfile(otherUser.data().profile);
-    })();
-  }, []);
+  const loginObject = localStorage.getItem("loginInfo");
+  const { token } = loginObject ? JSON.parse(loginObject) : null;
+
+  // const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${data[1]?.userInfo?.id}`;
+  const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${data[1]?.userInfo?.id}`;
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const getUserProfile = useApi("get", URL, options);
+
+  useQuery(["getUserProfile", data[1]?.userInfo?.id], getUserProfile, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => setOtherUserProfile(res),
+    suspense: false,
+  });
   return (
     <div
       css={container}
@@ -78,7 +87,7 @@ export default function ChatListDetail({ data }: any) {
       <div className="imgSection">
         <div className="imgBox">
           <img
-            src={`https://www.share42-together.com/images/${otherUserProfile}`}
+            src={`${process.env.REACT_APP_IMAGE_URL}${otherUserProfile}`}
             alt="profile"
             className="profile"
           />

@@ -82,7 +82,10 @@ function App() {
           {/* 공유 등록 페이지, 등록된 공유 상세 페이지*/}
           <Route element={<SharePageNavBar />}>
             <Route path="/user/share-reg" element={<UserShareReg />} />
-            <Route path="/user/share-category" element={<UserShareCategorySelect />} />
+            <Route
+              path="/user/share-category"
+              element={<UserShareCategorySelect />}
+            />
             <Route path="/user/return" element={<UserReturn />} />
             <Route path="/user/share-post/:id" element={<UserSharePost />} />
           </Route>
@@ -95,9 +98,8 @@ function App() {
             />
           </Route>
 
-          <Route path="/login" element={<Login />} />
-          
           <Route element={<LoginRaouterGuard />}>
+            <Route path="/login" element={<Login />} />
             <Route path="/admin/login" element={<AdminLogin />} />
           </Route>
           <Route path="/" element={<UserWelcome />} />

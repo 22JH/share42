@@ -4,13 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../..";
 import { useEffect, useState } from "react";
-
-interface PropType {
-  profile: string;
-  nickName: string;
-  lastChat: string;
-  chatNumber: string;
-}
+import avocado from "../../../assets/avocado.jpg";
+import { useQuery } from "react-query";
+import { useApi } from "../../../hooks/useApi";
+import { useGetUserToken } from "../../../hooks/useGetToken";
 
 const container = css`
   width: 100%;
@@ -60,6 +57,11 @@ const container = css`
 export default function ChatListDetail({ data }: any) {
   const navigate = useNavigate();
   const [otherUserProfile, setOtherUserProfile] = useState<any>();
+  const options = {
+    headers: { Authorization: `Bearer ${useGetUserToken()}` },
+  };
+  const URL = `https://www.share42-together.com/api/user/info/chat/user-img/${otherUserProfile}`;
+  const getUserProfile = useApi("get", URL, options);
   useEffect(() => {
     (async () => {
       const otherUser: any = await getDoc(
@@ -68,6 +70,12 @@ export default function ChatListDetail({ data }: any) {
       setOtherUserProfile(otherUser.data().profile);
     })();
   }, []);
+
+  useQuery(["getUserProfile", otherUserProfile], getUserProfile, {
+    select: (res) => res,
+    onSuccess: (res) => console.log(res),
+    enabled: !!otherUserProfile,
+  });
   return (
     <div
       css={container}
@@ -78,7 +86,11 @@ export default function ChatListDetail({ data }: any) {
       <div className="imgSection">
         <div className="imgBox">
           <img
-            src={`https://www.share42-together.com/images/${otherUserProfile}`}
+            src={
+              otherUserProfile
+                ? `https://www.share42-together.com/images/${otherUserProfile}`
+                : avocado
+            }
             alt="profile"
             className="profile"
           />

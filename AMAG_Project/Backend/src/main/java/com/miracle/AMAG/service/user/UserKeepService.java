@@ -208,7 +208,7 @@ public class UserKeepService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String openLocker(String nfcData) {
+    public String openLocker(String nfcData) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -226,6 +226,13 @@ public class UserKeepService {
         }
 
         //////// 대여함 오픈 로직 추가 필요 //////////////
+
+
+        // 물품 수납 처리전 이미지와 shareArticleId를 받아야 함.
+        UserKeepRequestDTO userKeepRequestDTO = new UserKeepRequestDTO();
+        userKeepRequestDTO.setShareArticleId(shareArticle.getId());
+        userKeepRequestDTO.setImgFile(null);    // 수정해야함.
+        keepProduct(userKeepRequestDTO);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

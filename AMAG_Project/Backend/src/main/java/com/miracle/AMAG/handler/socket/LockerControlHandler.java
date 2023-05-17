@@ -1,5 +1,6 @@
 package com.miracle.AMAG.handler.socket;
 
+import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.nio.ByteBuffer;
+import java.util.Base64;
+
 
 
 @Slf4j
@@ -36,22 +46,20 @@ public class LockerControlHandler implements WebSocketHandler{
         if (!flag){
             log.info("열려있는 세션이 없음");
         }
-
-        // 세션을 원하는 방식으로 선택하여 반환
-        // 일단 현재 연결된 첫 번째 세션 반환
-//        if (!sessionList.isEmpty()) {
-//            return sessionList.get(0);
-//        }
-//        return null;
     }
 
     private int getShareStatus(int lockerNum){
-//        String[] messages = message.split(" ");
-//        int lockerNum = Integer.parseInt(messages[0]);
-//        log.info("{}번 사물함에 접근 : ", lockerNum);
-        int shareStatus = lockerRepository.findById(lockerNum).getShareArticle().getShareStatus();
-        log.info("shareStatus : {}",shareStatus);
-        return shareStatus;
+        ShareArticle shareArticle = lockerRepository.findById(lockerNum).getShareArticle();
+        //반납일 경우 사물함이 비어있어야 함(빈사물함이면 -1값  return)
+        if (shareArticle == null){
+            log.info("{}번 사물함이 비어있음",lockerNum);
+            return -1;
+        }
+        else {
+            int shareStatus = shareArticle.getShareStatus();
+            log.info("shareStatus : {}",shareStatus);
+            return shareStatus;
+        }
     }
 
     @Override
@@ -61,11 +69,6 @@ public class LockerControlHandler implements WebSocketHandler{
         long binaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
         log.info("Binary message size limit: {} bytes", binaryMessageSizeLimit);
 
-
-//        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 1 * 1024 * 1024;
-//        if (session.getTextMessageSizeLimit() < MINIMUM_WEBSOCKET_MESSAGE_SIZE) {
-//            session.setTextMessageSizeLimit(MINIMUM_WEBSOCKET_MESSAGE_SIZE);
-//        }
 
         // 서버로부터 받을 수 있는 바이너리 메시지 크기 로깅
         long changeBinaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
@@ -81,6 +84,38 @@ public class LockerControlHandler implements WebSocketHandler{
 //    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+//        if (message.getPayload().getClass().getName() == String){
+//
+//        }
+        Object tmp = message.getPayload();
+        log.info("tmp{} : ",String.valueOf(tmp));
+        String className = tmp.getClass().getName();
+        if ("java.nio.HeapByteBuffer".equals(className)) {
+            ByteBuffer buffer = (ByteBuffer) tmp;
+            byte[] bytes = new byte[buffer.capacity()];
+            buffer.get(bytes);
+
+            // base64 디코딩
+            byte[] decodedBytes = Base64.getDecoder().decode(bytes);
+
+            try {
+                // 바이트 배열을 이미지로 변환
+                ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+                BufferedImage image = ImageIO.read(bis);
+                bis.close();
+
+                // 이미지 파일로 저장 (여기서는 PNG 형식 사용)
+                File outputFile = new File("output_image.png");
+                ImageIO.write(image, "png", outputFile);
+
+            } catch (IOException e) {
+                System.err.println("이미지 변환 및 저장 중 오류가 발생했습니다: " + e.getMessage());
+            }
+        } else {
+            System.err.println("버퍼에 대한 예상되지 않은 형식: " + className);
+        }
+
+
         //메시지 전달받기
         String request = (String) message.getPayload();
         log.info("Server received: {}", request);
@@ -168,7 +203,7 @@ public class LockerControlHandler implements WebSocketHandler{
                     break;
             }
         }
-        log.info("끝까지 내려온다.");
+        log.info("끝까지 내려옴");
     }
 
 

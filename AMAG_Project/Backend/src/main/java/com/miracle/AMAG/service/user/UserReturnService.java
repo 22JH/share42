@@ -276,7 +276,7 @@ public class UserReturnService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String openLocker(String nfcData) {
+    public String openLocker(String nfcData) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
 
@@ -294,6 +294,10 @@ public class UserReturnService {
         }
 
         //////// 대여함 오픈 로직 추가 필요 //////////////
+
+
+        // 실제 반납 처리
+        returnProduct(shareArticle.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

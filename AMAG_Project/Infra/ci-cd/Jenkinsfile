@@ -25,7 +25,7 @@ pipeline {
         REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
         REACT_CONTAINER_NAME = 'react-server'
         REACT_CONTAINER_PORT = '3000'
-        SPRING_CONTAINER_IP = '172.42.1.2'
+        REACT_CONTAINER_IP = '172.42.1.2'
 
         NGINX_PICTURE_PATH = '/usr/share/nginx/html/images/'
     }

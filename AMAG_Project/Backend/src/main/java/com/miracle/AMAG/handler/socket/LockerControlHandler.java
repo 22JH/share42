@@ -1,5 +1,6 @@
 package com.miracle.AMAG.handler.socket;
 
+import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -36,22 +37,20 @@ public class LockerControlHandler implements WebSocketHandler{
         if (!flag){
             log.info("열려있는 세션이 없음");
         }
-
-        // 세션을 원하는 방식으로 선택하여 반환
-        // 일단 현재 연결된 첫 번째 세션 반환
-//        if (!sessionList.isEmpty()) {
-//            return sessionList.get(0);
-//        }
-//        return null;
     }
 
     private int getShareStatus(int lockerNum){
-//        String[] messages = message.split(" ");
-//        int lockerNum = Integer.parseInt(messages[0]);
-//        log.info("{}번 사물함에 접근 : ", lockerNum);
-        int shareStatus = lockerRepository.findById(lockerNum).getShareArticle().getShareStatus();
-        log.info("shareStatus : {}",shareStatus);
-        return shareStatus;
+        ShareArticle shareArticle = lockerRepository.findById(lockerNum).getShareArticle();
+        //반납일 경우 사물함이 비어있어야 함(빈사물함이면 -1값  return)
+        if (shareArticle == null){
+            log.info("{}번 사물함이 비어있음",lockerNum);
+            return -1;
+        }
+        else {
+            int shareStatus = shareArticle.getShareStatus();
+            log.info("shareStatus : {}",shareStatus);
+            return shareStatus;
+        }
     }
 
     @Override
@@ -61,11 +60,6 @@ public class LockerControlHandler implements WebSocketHandler{
         long binaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
         log.info("Binary message size limit: {} bytes", binaryMessageSizeLimit);
 
-
-//        int MINIMUM_WEBSOCKET_MESSAGE_SIZE = 1 * 1024 * 1024;
-//        if (session.getTextMessageSizeLimit() < MINIMUM_WEBSOCKET_MESSAGE_SIZE) {
-//            session.setTextMessageSizeLimit(MINIMUM_WEBSOCKET_MESSAGE_SIZE);
-//        }
 
         // 서버로부터 받을 수 있는 바이너리 메시지 크기 로깅
         long changeBinaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
@@ -168,7 +162,7 @@ public class LockerControlHandler implements WebSocketHandler{
                     break;
             }
         }
-        log.info("끝까지 내려온다.");
+        log.info("끝까지 내려옴");
     }
 
 

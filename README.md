@@ -1,6 +1,6 @@
 # 공유사이
 <div align="left">
-<img width="300" src="image/cb-logo.png">
+<img width="300" src="image/s42-logo.png">
 </div>
 <br/>
 
@@ -25,9 +25,9 @@
 
 ### Back-end
 
-| 한상우() | 정명관([@rhalsemd](https://github.com/rhalsemd)) | 김지현([@potatohyun](https://github.com/potatohyun)) |
+| 한상우([@miracle3070](https://github.com/miracle3070)) | 정명관([@rhalsemd](https://github.com/rhalsemd)) | 김지현([@potatohyun](https://github.com/potatohyun)) |
 |:----:|:----:|:----:|
-|<img width="200" src="">|<img width="200" src="">|<img width="200" src="">|
+|<img width="200" src="image/s42-swhan.png">|<img width="200" src="image/s42-mkjeong.png">|<img width="200" src="image/s42-jhkim.png">|
 
 <br/>
 
@@ -35,7 +35,7 @@
 
 | 이주형([@22JH](https://github.com/22JH)) | 한승준([@hanseungjune](https://github.com/hanseungjune)) | 김태헌([@gangnamssal](https://github.com/gangnamssal)) |
 |:----:|:----:|:----:|
-|<img width="200" src="">|<img width="200" src="">|<img width="200" src="">|
+|<img width="200" src="image/s42-jhlee.png">|<img width="200" src="image/s42-sjhan.png">|<img width="200" src="image/s42-thkim.png">|
 
 <br/>
 

@@ -72,8 +72,8 @@ public class UserReturnController {
     @Parameters({
             @Parameter(name = "share_article_id", description = "반납할 공유 글 번호", in = ParameterIn.PATH)
     })
-    public ResponseEntity<?> returnProduct(@PathVariable("share_article_id") int shareArticleId) throws IOException {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(shareArticleId));
+    public ResponseEntity<?> returnProduct(@PathVariable("share_article_id") UserReturnRequestDTO userReturnRequestDTO) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(userReturnRequestDTO));
     }
 
     @PostMapping("/nfc/open/{nfc_data}")

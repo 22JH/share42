@@ -8,10 +8,9 @@ import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../..";
 
-const URL = "";
-
 const container = css`
   width: 100%;
+  margin-top: 6vh;
   height: auto;
   .noChats {
     width: 100%;
@@ -47,7 +46,6 @@ export default function UserChatList() {
     userId && getChats();
   }, [userId]);
 
-  const getUsers = useApi("get", URL);
   return (
     <div css={container}>
       {chats ? (

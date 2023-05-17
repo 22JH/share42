@@ -11,18 +11,24 @@ declare global {
 interface PropType {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  status: number;
 }
 
 interface Res {
   serialNumber: string;
 }
 
-export default function NfcCheck({ open, setOpen }: PropType) {
+export default function NfcCheck({ open, setOpen, status }: PropType) {
+  cons url = (status : number) => {
+    if status == 1:
+
+  }
+
   const [nfcSupported, setNfcSupported] = useState(false);
   const [nfcReading, setNfcReading] = useState(false);
   const [nfcData, setNfcData] = useState("");
 
-  const startNfcReading = async () => {
+  const startNfcReading = async () => {s
     try {
       const reader = new window.NDEFReader();
       await reader.scan();
@@ -41,6 +47,8 @@ export default function NfcCheck({ open, setOpen }: PropType) {
 
   useEffect(() => {
     // 브라우저가 Web NFC API를 지원하는지 확인합니다.
+    console.log(status);
+
     if ("NDEFReader" in window) {
       setNfcSupported(true);
       startNfcReading();

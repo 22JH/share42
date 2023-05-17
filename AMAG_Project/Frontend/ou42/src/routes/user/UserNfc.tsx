@@ -4,34 +4,19 @@ import { useEffect, useState } from "react";
 import DropDown from "../../components/UI/DropDown";
 import Btn from "./../../components/UI/Btn";
 import pinkBox from "../../assets/pinkBox.png";
-import AlertDialogSlide from "../../components/UI/AlertDialog";
 import Alert from "./../../components/UI/Alert";
 import NfcCheck from "../../components/user/nfc/NfcCheck";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import { useApi } from "../../hooks/useApi";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import { useQuery } from "react-query";
+import DropDownNFC from "../../components/UI/DropDownNFC";
 
 const useURL =
   "https://www.share42-together.com/api/user/share/nfc/keep/collect";
 const returnURL =
   "https://www.share42-together.com/api/user/share/nfc/borrow/return";
 
-const prePro = (data: any) => {
-  const temp = data.reduce((pre: any, ele: any) => {
-    const status: number = ele.shareArticleShareStatus;
-    let statusName;
-    if (status === 0) statusName = "수납 대기";
-    else if (status === 1) statusName = "공유 대기 중";
-    else if (status === 2) statusName = "공유 중";
-    else if (status === 3) statusName = "반납 대기";
-    else if (status === 4) statusName = "회수 대기";
-    else if (status === 5) statusName = "회수";
-
-    return [...pre, `${ele.shareArticleName} (${statusName})`];
-  }, []);
-  return temp;
-};
 const container = (selectType: boolean, selectItem: string) => css`
   width: 100%;
   height: 85vh;
@@ -95,9 +80,10 @@ const container = (selectType: boolean, selectItem: string) => css`
     width: 85%;
   }
 `;
-//임시데이터
 
 export default function UserNfc() {
+  const [status, setStatus] = useState<number>(0);
+
   const [items, setItems] = useState<string[]>();
   // false == 사용 반납, true == 보관 회수
   const [selectType, setSelectType] = useState<boolean>(false);
@@ -132,7 +118,6 @@ export default function UserNfc() {
   useQuery("getUseItems", getUseItems, {
     select: (res) => res.data.message,
     onSuccess: (res) => {
-      console.log(res);
       setItems(res);
     },
     enabled: !!selectType,
@@ -142,12 +127,12 @@ export default function UserNfc() {
   useQuery("getReturnItems", getReturnItems, {
     select: (res) => res.data.message,
     onSuccess: (res) => {
-      console.log("반납", res);
       setItems(res);
     },
     enabled: !selectType,
     suspense: false,
   });
+  console.log(items);
   return (
     <div css={container(selectType, selectItem)}>
       <div className="selectType">
@@ -159,10 +144,11 @@ export default function UserNfc() {
         </div>
       </div>
       <div className="selectItme">
-        <DropDown
+        <DropDownNFC
           content={"물품을 선택해 주세요"}
-          data={items && prePro(items)}
+          data={items!}
           setValue={setSelectItem}
+          setStatus={setStatus}
           width={"100%"}
           marginTop={"10px"}
           marginBottom={"30px"}
@@ -182,7 +168,7 @@ export default function UserNfc() {
           <img src={pinkBox} alt="logo" height="auto" width="30%" />
         ) : null}
       </div>
-      {open ? <NfcCheck open={open} setOpen={setOpen} /> : null}
+      {open ? <NfcCheck open={open} setOpen={setOpen} status={status} /> : null}
       <BottomMenuBar />
     </div>
   );

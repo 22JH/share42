@@ -20,13 +20,13 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://k8d102.p.ssafy.io:3306/SHARE42_TOGETHER?serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8
     username: ssafy
-    password: ssafy123!@#
+    password: RHDdbtkdl0312!@#
 
   data:
     redis:
       port: 6379
       host: k8d102.p.ssafy.io
-      password: ssafy123!@#
+      password: RHDdbtkdl0312!@#
     mongodb:
       uri: mongodb://share42:ssafy8@52.79.216.253:27017/share42?authSource=admin
 

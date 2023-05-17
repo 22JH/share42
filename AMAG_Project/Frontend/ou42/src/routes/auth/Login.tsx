@@ -54,6 +54,7 @@ const container = css`
 
     .signUp {
       margin-top: 10px;
+      font-weight: bold;
     }
   }
 `;
@@ -139,7 +140,7 @@ export default function Login() {
       <div className="btn">
         <Btn
           width="35%"
-          height="15%"
+          height="12%"
           content="로그인"
           borderR={10}
           marginTop={20}

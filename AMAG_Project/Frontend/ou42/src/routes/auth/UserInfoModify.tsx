@@ -15,10 +15,11 @@ import Alert from "./../../components/UI/Alert";
 
 const container = css`
   width: 100%;
-  height: 85vh;
+  height: 82vh;
   flex-direction: column;
   display: flex;
   align-items: center;
+  margin-top: 7vh;
   .imgSection,
   .nickNameSection,
   .addrSection {
@@ -155,9 +156,7 @@ export default function UserInfoModify() {
       setNickName(() => res.nickname);
       setAddr(() => res.address);
       if (res.img) {
-        setCurrentImg(
-          () => `https://www.share42-together.com/images/${res.img}`
-        );
+        setCurrentImg(() => `${process.env.REACT_APP_IMAGE_URL}${res.img}`);
       }
       // setSi(() => res.sido);
       // setGoon(() => res.sigungu);

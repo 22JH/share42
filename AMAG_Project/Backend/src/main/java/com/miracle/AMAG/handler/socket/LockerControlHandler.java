@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -51,6 +50,7 @@ public class LockerControlHandler implements WebSocketHandler{
 //        int lockerNum = Integer.parseInt(messages[0]);
 //        log.info("{}번 사물함에 접근 : ", lockerNum);
         int shareStatus = lockerRepository.findById(lockerNum).getShareArticle().getShareStatus();
+        log.info("shareStatus : {}",shareStatus);
         return shareStatus;
     }
 
@@ -78,7 +78,10 @@ public class LockerControlHandler implements WebSocketHandler{
     }
 
     @Override
+//    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
+//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        //메시지 전달받기
         String request = (String) message.getPayload();
         log.info("Server received: {}", request);
 
@@ -90,105 +93,83 @@ public class LockerControlHandler implements WebSocketHandler{
         int lockerNum = Integer.parseInt(messageInfo[0]);
         log.info("{}번 사물함에 접근 : ", lockerNum);
 
+        //0: 수납대기, 1:공유대기중, 2:공유중, 3:반납대기, 4:회수대기, 5:회수 -> 반입 : 0,3 / 반출 : 1,4
+        int shareStatus = getShareStatus(lockerNum);
+        // 반출
+        if (shareStatus == ShareArticleUtils.SEARCH_TYPE_PRICE || shareStatus == ShareArticleUtils.COLLECT_READY){
+            int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
+            //물건이 안 나감
+            if (weight > 0){ // 초기값 받아야함
+                log.info("무게 {}로, 물건이 회수되지 않았습니다", weight);
+                try {
+                    session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //물건이 정상적으로 회수됨
+            else {
+                log.info("물건이 회수되었습니다");
+                try {
+                    session.sendMessage(new TextMessage("true"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                //공유상태(물건 및 사물함정보) 변경 로직
+            }
+        }
+        // 반입
+        else {
+            switch (messageInfo[1]){
+                case "close":
+                    int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
+                    // 물건이 안들어옴
+                    if (weight <= 0){// 초기값 받아야함
+                        log.info("물건이 들어오지 않았습니다");
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "open"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    //물건이 정상적으로 들어옴
+                    else {
+                        log.info("무게 {}로, 물건이 보관되었습니다", weight);
+                        //공유상태(물건 및 사물함정보) 변경 로직
+
+                        //사진촬영 전송
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    break;
+                case "cam":
+                    // 사진이 안들어온 경우
+                    if (messageInfo.length == 2){
+                        log.info("사진 데이터가 없습니다");
+                        try {
+                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    //사진이 정상적으로 들어옴
+                    else {
+                        log.info("물품이 정상적으로 보관되었습니다");
+                        try {
+                            session.sendMessage(new TextMessage("true"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        //사진 저장 로직
+                    }
+                    break;
+            }
+        }
+        log.info("끝까지 내려온다.");
     }
-
-
-//    @Override
-//    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
-////    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-//        //메시지 전달받기
-//        byte[] payload = message.getPayload().array();
-//        String request = new String(payload, StandardCharsets.UTF_8);
-//        log.info("Server received: {}", request);
-//
-//        // 수신된 메시지의 크기 로깅
-//        int messageSize = request.getBytes(StandardCharsets.UTF_8).length;
-//        log.info("Received message size: {} bytes", messageSize);
-//
-//        String[] messageInfo = request.split(" ");
-//        int lockerNum = Integer.parseInt(messageInfo[0]);
-//        log.info("{}번 사물함에 접근 : ", lockerNum);
-//
-//        //0: 수납대기, 1:공유대기중, 2:공유중, 3:반납대기, 4:회수대기, 5:회수 -> 반입 : 0,3 / 반출 : 1,4
-//        int shareStatus = getShareStatus(lockerNum);
-//        // 보관
-//        if (shareStatus == ShareArticleUtils.KEEP_READY || shareStatus == ShareArticleUtils.RETURN_READY){
-////            String[] messageInfo = request.split(" ");
-//            int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
-//            //물건이 안들어옴
-//            if (weight <= 0){ // 초기값 받아야함
-//                log.info("무게 {}로, 물건이 보관되지 않았습니다", weight);
-//                try {
-//                    session.sendMessage(new TextMessage(lockerNum + " " + "open"));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            //물건이 정상적으로 들어옴
-//            else {
-//                log.info("무게 {}로, 물건이 보관됬습니다", weight);
-//                try {
-//                    session.sendMessage(new TextMessage("true"));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//                //공유상태(물건 및 사물함정보) 변경 로직
-//            }
-//        }
-//        // 반출
-//        else {
-//            switch (messageInfo[1]){
-//                case "close":
-//                    int weight = Integer.parseInt(messageInfo[messageInfo.length-1]);
-//                    // 물건이 그대로 있음
-//                    if (weight >= 0){// 초기값 받아야함
-//                        log.info("무게 {}로, 물건을 회수하지 않았습니다", weight);
-//                        try {
-//                            session.sendMessage(new TextMessage(lockerNum + " " + "open"));
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                    //물건이 정상적으로 들어옴
-//                    else {
-//                        log.info("무게 {}로, 물건이 회수되었습니다", weight);
-//                        //공유상태(물건 및 사물함정보) 변경 로직
-//
-//                        //사진촬영 전송
-//                        try {
-//                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                    break;
-//                case "cam":
-//                    // 사진이 안들어온 경우
-//                    if (messageInfo.length == 2){
-//                        log.info("사진 데이터가 없습니다");
-//                        try {
-//                            session.sendMessage(new TextMessage(lockerNum + " " + "cam"));
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                    //물건이 정상적으로 들어옴
-//                    else {
-//                        log.info("물품이 정상적으로 보관되었습니다");
-//                        try {
-//                            session.sendMessage(new TextMessage("true"));
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                        //사진 저장 로직
-//                    }
-//                    break;
-//            }
-//        }
-////        //백으로 사물함 너머를 받았다고 친다.(이건 어디서 하는가)
-////        int lockerNum = 1;
-////        session.sendMessage(new TextMessage(lockerNum + " " + "open"));
-//    }
 
 
     @Override

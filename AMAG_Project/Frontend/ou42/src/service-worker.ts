@@ -82,12 +82,15 @@ self.addEventListener("message", (event) => {
 self.addEventListener("push", (event: any) => {
   const data = event.data.json();
   const options = {
-    body: data.body,
-    icon: data.icon,
-    image: data.image,
-    badge: data.badge,
-    tag: data.tag,
+    body: data.notification.body,
+    icon: data.notification.icon,
+    image: data.notification.image,
+    badge: data.notification.badge,
+    tag: data.notification.tag,
   };
 
-  event.waitUntil(self.registration.showNotification(data.title, options));
+  console.log(data, options, "==============");
+  event.waitUntil(
+    self.registration.showNotification(data.notification.title, options)
+  );
 });

@@ -177,11 +177,12 @@ export function unregister() {
 
 export async function requestPushPermission(registration: any) {
   const permission = await Notification.requestPermission();
+  const TOKEN = process.env.REACT_APP_FIREBASE_PUBLIC_KEY;
 
   if (permission === "granted") {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(null),
+      applicationServerKey: urlBase64ToUint8Array(TOKEN),
     });
 
     const response = await fetch("/api/subscribe", {

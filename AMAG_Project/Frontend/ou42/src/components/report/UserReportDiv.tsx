@@ -18,6 +18,7 @@ const UserReportDiv = ({
         borderBottom: "1px solid #CDCDCD",
         lineHeight: "8vh",
         paddingLeft: "4vw",
+        marginTop: "6vh",
       }}
     >
       <label

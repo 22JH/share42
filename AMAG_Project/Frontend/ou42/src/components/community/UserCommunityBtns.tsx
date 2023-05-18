@@ -30,15 +30,16 @@ const UserCommunityBtns = ({
   news,
   need,
   share,
-  all
+  all,
 }: UserCommunityBtnsProps) => {
   return (
     <div
       style={{
+        height: "7vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: "2vh",
+        marginBottom: "1vh",
         position: "fixed",
         top: "6vh",
         left: "7vw",
@@ -57,20 +58,20 @@ const UserCommunityBtns = ({
             value={item.title}
             className={
               item.category === "recent"
-              ? `sort-button-recent ${recent ? "active" : ""}`
-              : item.category === "popular"
-              ? `sort-button-popular ${popular ? "active" : ""}`
-              : item.category === "news"
-              ? `sort-button-news ${news ? "active" : ""}`
-              : item.category === "need"
-              ? `sort-button-need ${need ? "active" : ""}`
-              : item.category === "share"
-              ? `sort-button-share ${share ? "active" : ""}`
-              : ``
+                ? `sort-button-recent ${recent ? "active" : ""}`
+                : item.category === "popular"
+                ? `sort-button-popular ${popular ? "active" : ""}`
+                : item.category === "news"
+                ? `sort-button-news ${news ? "active" : ""}`
+                : item.category === "need"
+                ? `sort-button-need ${need ? "active" : ""}`
+                : item.category === "share"
+                ? `sort-button-share ${share ? "active" : ""}`
+                : ``
             }
             onClick={(event) => handleCommunitySort(event)}
           >
-            {item.title} {item.category}
+            {item.title}
           </button>
         );
       })}

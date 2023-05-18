@@ -56,6 +56,21 @@ function CommunityNavBar() {
             background: '#ffffff'
           }}
         >
+          <div
+            style={{
+              position:'absolute',
+              top: '25px',
+              left: '25px'
+            }}
+          >
+            <MdArrowBackIosNew
+              size={25}
+              onClick={() => navigate(-1)}
+              style={{
+                marginRight: "1rem",
+              }}
+            />
+          </div>
           {isClick ? (
             <div
               style={{

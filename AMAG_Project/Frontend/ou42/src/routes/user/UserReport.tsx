@@ -205,6 +205,8 @@ const UserReport = () => {
     }
   }, [stationSelect, token]);
 
+  console.log(typeSelect)
+
   return (
     <>
       <UserReportDiv

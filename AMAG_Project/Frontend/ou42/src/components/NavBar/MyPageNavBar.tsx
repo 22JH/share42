@@ -44,7 +44,7 @@ function MyPageNavBar() {
   const { pathname } = useLocation();
   const { pathTitle } = navStore();
   const navigate = useNavigate();
-
+  
   return (
     <>
       <div css={nav}>

@@ -46,8 +46,8 @@ const UserShareReg = () => {
       formData.append("imgFile", preview);
     }
     formData.append("name", title);
-    formData.append("sharePrice", price);
-    formData.append("price", sharePrice);
+    formData.append("sharePrice", String(price));
+    formData.append("price", String(sharePrice));
     formData.append(
       "category",
       location?.state?.data?.category
@@ -111,7 +111,7 @@ const UserShareReg = () => {
     e.preventDefault();
     if (location?.state?.editStatus === true) {
       await fetch(
-        `https://www.share42-together.com:8088/api/user/share/share-articles/${location?.state?.id}`,
+        `https://www.share42-together.com/api/user/share/share-articles/${location?.state?.id}`,
         {
           method: "PATCH",
           body: formData,
@@ -136,7 +136,7 @@ const UserShareReg = () => {
         });
     } else {
       await fetch(
-        `https://www.share42-together.com:8088/api/user/share/share-articles`,
+        `https://www.share42-together.com/api/user/share/share-articles`,
         {
           method: "POST",
           body: formData,

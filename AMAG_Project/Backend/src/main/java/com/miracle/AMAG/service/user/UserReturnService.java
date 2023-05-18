@@ -3,6 +3,7 @@ package com.miracle.AMAG.service.user;
 import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.klaytn.PaymentDTO;
 import com.miracle.AMAG.dto.klaytn.ShareReturnDTO;
+import com.miracle.AMAG.dto.requestDTO.user.UserReturnProductDTO;
 import com.miracle.AMAG.dto.requestDTO.user.UserReturnRequestDTO;
 import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.account.PaymentMethod;
@@ -202,8 +203,8 @@ public class UserReturnService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String returnProduct(UserReturnRequestDTO userReturnRequestDTO) throws IOException {
-        ShareArticle shareArticle = shareArticleRepository.findById(userReturnRequestDTO.getShareArticleId());
+    public String returnProduct(UserReturnProductDTO userReturnProductDTO) throws IOException {
+        ShareArticle shareArticle = shareArticleRepository.findById(userReturnProductDTO.getShareArticleId());
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
         Locker locker = returnRecord.getLocker();
         Account account = returnRecord.getAccount();
@@ -235,8 +236,8 @@ public class UserReturnService {
         shareReturn.setReturnType(ShareReturnUtils.RETURN);
 
         // 이미지를 저장하는 로직
-        if (userReturnRequestDTO.getImgFile() != null) {
-            String fileName = BoardUtils.singleFileSave((userReturnRequestDTO).getImgFile());
+        if (userReturnProductDTO.getImgFile() != null) {
+            String fileName = BoardUtils.singleFileSave((userReturnProductDTO).getImgFile());
             shareReturn.setImg(fileName);
         }
 

@@ -17,6 +17,7 @@ public class UserReturnRequestDTO {
     private int shareArticleId;
 
     @Schema(title = "반납할 물품을 보관할 대여함 지점의 ID", description = "반납할 물품을 보관할 대여함 지점의 ID입니다.")
+    @NotNull
     private int lockerStationId;
 
     @Schema(title = "반납할 공유 물품 이미지 파일", description = "반납할 물품의 사진 파일입니다.")

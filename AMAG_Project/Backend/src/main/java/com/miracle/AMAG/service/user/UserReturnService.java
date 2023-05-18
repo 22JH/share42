@@ -80,9 +80,6 @@ public class UserReturnService {
 
         Account account = accountRepository.findByUserId(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(userReturnRequestDTO.getShareArticleId());
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
-            throw new RuntimeException("해당 물품을 대여한 사용자와 반납 요청을 보낸 사용자가 다릅니다.");
-        }
 
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
@@ -91,6 +88,10 @@ public class UserReturnService {
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
         if(shareArticle.getShareStatus() != ShareArticleUtils.SHARING || borrowRecord.getUseType() != BorrowUtils.BORROW) {
             throw new RuntimeException("반납 가능한 물품이 아닙니다.");
+        }
+
+        if(!borrowRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 대여한 사용자와 반납 요청을 보낸 사용자가 다릅니다.");
         }
 
         ShareReturn shareReturn = new ShareReturn();
@@ -158,9 +159,6 @@ public class UserReturnService {
 
         Account account = accountRepository.findByUserId(loginId);
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
-            throw new RuntimeException("해당 물품을 반납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
-        }
 
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
@@ -169,6 +167,10 @@ public class UserReturnService {
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
         if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_READY || returnRecord.getReturnType() != ShareReturnUtils.RETURN_READY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        if(!returnRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 반납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
         }
 
         LocalDateTime curTime = LocalDateTime.now();
@@ -208,6 +210,9 @@ public class UserReturnService {
     }
 
     public String returnProduct(UserReturnProductDTO userReturnProductDTO) throws IOException {
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
+
         ShareArticle shareArticle = shareArticleRepository.findById(userReturnProductDTO.getShareArticleId());
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);
         Locker locker = returnRecord.getLocker();
@@ -218,6 +223,10 @@ public class UserReturnService {
         if(shareArticle.getShareStatus() != ShareArticleUtils.RETURN_READY
                 || returnRecord.getReturnType() != ShareReturnUtils.RETURN_READY) {
             throw new RuntimeException("반납이 불가능한 물품입니다.");
+        }
+
+        if(!returnRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 반납 신청한 사용자와 반납 처리 요청을 보낸 사용자가 다릅니다.");
         }
 
         // 결제 처리

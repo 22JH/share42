@@ -63,6 +63,9 @@ public class UserKeepService {
         if(shareArticle.getShareStatus() != ShareArticleUtils.KEEP_READY) {
             throw new RuntimeException("수납 가능한 물품이 아닙니다.");
         }
+        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 등록한 사용자와 수납 신청을 보낸 사용자가 다릅니다.");
+        }
 
         Account account = accountRepository.findByUserId(loginId);
 
@@ -106,9 +109,6 @@ public class UserKeepService {
         AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
-            throw new RuntimeException("해당 물품을 수납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
-        }
 
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
@@ -117,6 +117,10 @@ public class UserKeepService {
         Keep keepRecord = keepRepository.findRecentKeepRecord(shareArticle);
         if(shareArticle.getShareStatus() != ShareArticleUtils.KEEP_READY || keepRecord.getKeepType() != KeepUtils.KEEP_READY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        if(!keepRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 수납 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
         }
 
         Account account = accountRepository.findByUserId(loginId);
@@ -160,12 +164,13 @@ public class UserKeepService {
         AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(userKeepRequestDTO.getShareArticleId());
-        if(!shareArticle.getAccount().getUserId().equals(loginId)){
-            throw new RuntimeException("물품을 등록한 사용자와 수납을 요청한 사용자가 다릅니다.");
+        Keep keepRecord = keepRepository.findRecentKeepRecord(shareArticle);
+        if(shareArticle.getShareStatus() != ShareArticleUtils.KEEP_READY || keepRecord.getKeepType() != KeepUtils.KEEP_READY) {
+            throw new RuntimeException("수납 처리할 수 없는 물건입니다.");
         }
 
-        if(shareArticle.getShareStatus() != ShareArticleUtils.KEEP_READY) {
-            throw new RuntimeException("수납 처리할 수 없는 물건입니다.");
+        if(!keepRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("수납을 신청한 사용자와 수납 처리를 요청한 사용자가 다릅니다.");
         }
 
         Account account = accountRepository.findByUserId(loginId);

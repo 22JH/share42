@@ -122,9 +122,6 @@ public class UserCollectService {
         AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
-            throw new RuntimeException("해당 물품을 회수 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
-        }
 
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
@@ -133,6 +130,10 @@ public class UserCollectService {
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
         if(shareArticle.getShareStatus() != ShareArticleUtils.COLLECT_READY || collectRecord.getCollectType() != CollectUtils.COLLECT_READY) {
             throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        if(!collectRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 회수 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
         }
 
         Account account = accountRepository.findByUserId(loginId);
@@ -179,7 +180,8 @@ public class UserCollectService {
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);
         Account account = accountRepository.findByUserId(loginId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+
+        if(!collectRecord.getAccount().getUserId().equals(loginId)) {
             throw new RuntimeException("물품 회수를 신청한 사용자와 회수를 시도하는 사용자가 다릅니다.");
         }
 

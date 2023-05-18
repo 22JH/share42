@@ -5,6 +5,12 @@ export const content = (value: string) => css`
   position: absolute;
   overflow: auto;
   height: auto;
+  width: 100%;
+
+  .recommend {
+    position: absolute;
+    right: 5%;
+  }
 
   .sort-bar {
     display: flex;

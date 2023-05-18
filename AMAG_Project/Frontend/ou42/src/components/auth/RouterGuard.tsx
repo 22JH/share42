@@ -10,8 +10,11 @@ export default function RaouterGuard() {
     if (loginInfo) {
       const parsedLoginInfo = JSON.parse(loginInfo);
       const expire = parsedLoginInfo.expire;
+      console.log("123", expire);
+      console.log("123", Date.now());
 
       if (Date.now() > expire) {
+        console.log("123");
         localStorage.removeItem("loginInfo");
         Alert(
           "error",

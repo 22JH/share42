@@ -144,6 +144,8 @@ function App() {
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
               <Route path="/user/payment" element={<UserPay />} />
               <Route path="/user/report" element={<UserReport />} />
+              <Route path="/user/map" element={<UserMap />} />
+              <Route path="/admin/map" element={<AdminMap />} />
             </Route>
           </Route>
 
@@ -176,10 +178,8 @@ function App() {
           <Route path="/admin/report" element={<AdminReport />} />
           <Route path="/admin/log" element={<AdminLog />} />
           <Route path="/admin/operation" element={<AdminOperation />} />
-          <Route path="/user/map" element={<UserMap />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin/map" element={<AdminMap />} />
         </Routes>
       </Router>
     </>

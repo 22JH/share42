@@ -75,7 +75,6 @@ public class UserShareArticleService {
 
         ShareArticle shareArticle = new ShareArticle();
         BeanUtils.copyProperties(shareArticleRequestDTO, shareArticle);
-
         //이미지 유효성 검사 부분
 
         if (shareArticleRequestDTO.getImgFile() != null) {
@@ -89,9 +88,11 @@ public class UserShareArticleService {
         shareArticle.setUptDt(shareArticle.getRegDt());
         shareArticle.setShareStatus(ShareArticleUtils.KEEP_READY);
         shareArticle.setStatus(BoardUtils.BOARD_STATUS_FALSE);
+        shareArticle.setPrice(Integer.parseInt(shareArticleRequestDTO.getPrice()));
+        shareArticle.setSharePrice(Integer.parseInt(shareArticleRequestDTO.getSharePrice()));
 
         //락커를 배정하는 부분
-        Locker locker = lockerRepository.getLockerToStore(shareArticleRequestDTO.getLockerStationId());
+        Locker locker = lockerRepository.getLockerToStore(Integer.parseInt(shareArticleRequestDTO.getLockerStationId()));
         shareArticle.setSido(locker.getLockerStation().getSido());
         shareArticle.setSigungu(locker.getLockerStation().getSigungu());
         shareArticle.setDong(locker.getLockerStation().getDong());

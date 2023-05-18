@@ -1,10 +1,15 @@
 package com.miracle.AMAG.handler.socket;
 
+import com.miracle.AMAG.config.SecurityUtil;
 import com.miracle.AMAG.dto.requestDTO.user.UserKeepRequestDTO;
 import com.miracle.AMAG.dto.requestDTO.user.UserReturnProductDTO;
+import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
+import com.miracle.AMAG.service.admin.AdminLockerService;
 import com.miracle.AMAG.service.user.*;
+import com.miracle.AMAG.util.common.AccountUtils;
 import com.miracle.AMAG.util.common.ShareArticleUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -41,13 +46,13 @@ public class LockerControlHandler implements WebSocketHandler{
     UserKeepService userKeepService;
 
     @Autowired
-    UserReportService userReportService;
+    AccountRepository accountRepository;
 
     @Autowired
     UserReturnService userReturnService;
 
     @Autowired
-    UserShareArticleService userShareArticleService;
+    AdminLockerService adminLockerService;
 
     private List<WebSocketSession> sessionList = new ArrayList<>();
 
@@ -63,6 +68,7 @@ public class LockerControlHandler implements WebSocketHandler{
         }
         if (!flag){
             log.info("열려있는 세션이 없음");
+            throw new RuntimeException("통신할 수 있는 웹소켓 세션이 없습니다");
         }
     }
 
@@ -87,41 +93,18 @@ public class LockerControlHandler implements WebSocketHandler{
         long binaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
         log.info("Binary message size limit: {} bytes", binaryMessageSizeLimit);
 
-
-        // 서버로부터 받을 수 있는 바이너리 메시지 크기 로깅
-        long changeBinaryMessageSizeLimit = session.getBinaryMessageSizeLimit();
-        log.info("Change Binary message size limit: {} bytes", changeBinaryMessageSizeLimit);
-
-
         // 클라이언트와 연결 이후에 실행되는 메서드
         sessionList.add(session);
         log.info("{} 연결됨",session.getId());
     }
 
     @Override
-//    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
-//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-//        Map<String, Object> dataMap = (Map<String, Object>) message.getPayload();
-//        String a = (String) dataMap.get("");
-//        String b = (ByteBuffer) dataMap.get("");
-
-//        Object k = message.getPayload();
-//        System.out.println(k);
-
-//        Map<String, Object> dataMap = (Map<String, Object>) message.getPayload();
-
-//        if (((String)k).contains("null") == false) {
-//            String a = "";
-//        } else {
-//            session.sendMessage(new TextMessage("1 cam"));
-//        }
 
         String payload = (String) message.getPayload();
         JSONParser jsonParser = new JSONParser();
         JSONObject returnObject = (JSONObject)jsonParser.parse(payload);
 
-//        String[] messageInfo = request.split(" ");
         log.debug("returnObject: {}", returnObject);
         log.debug("returnObject.get(number): {}", returnObject.get("number"));
         log.debug("returnObject.get(number) instanceof Long: {}", returnObject.get("number") instanceof Long);
@@ -136,7 +119,7 @@ public class LockerControlHandler implements WebSocketHandler{
         if (shareStatus == ShareArticleUtils.SHARE_READY || shareStatus == ShareArticleUtils.COLLECT_READY){
             int weight = ((Long)returnObject.get("weight")).intValue();
             //물건이 안 나감
-            if (weight > 0){ // 초기값 받아야함
+            if (weight > 11){ // 초기값 받아야함
                 log.info("무게 {}로, 물건이 회수되지 않았습니다", weight);
                 try {
                     session.sendMessage(new TextMessage(lockerNum + " " + "open"));
@@ -153,10 +136,21 @@ public class LockerControlHandler implements WebSocketHandler{
                     throw new RuntimeException(e);
                 }
                 //공유상태(물건 및 사물함정보) 변경 로직
-                if(shareStatus == ShareArticleUtils.SHARE_READY) {
-                    userBorrowService.receiveProduct(shareArticle.getId());
-                } else {
-                    userCollectService.collectProduct(shareArticle.getId());
+                String loginId = SecurityUtil.getCurrentUserId();
+                AccountUtils.checkLogin(loginId);
+                Account account = accountRepository.findByUserId(loginId);
+
+                // 관리자
+                if (account.getRole().value().equals("ROLE_ADMIN")){
+                    adminLockerService.adminCollectProduct(lockerNum);
+                }
+                // 일반 유저
+                else{
+                    if(shareStatus == ShareArticleUtils.SHARE_READY) {
+                        userBorrowService.receiveProduct(shareArticle.getId());
+                    } else {
+                        userCollectService.collectProduct(shareArticle.getId());
+                    }
                 }
             }
         }
@@ -166,7 +160,7 @@ public class LockerControlHandler implements WebSocketHandler{
                 case "close":
                     int weight = ((Long)returnObject.get("weight")).intValue();
                     // 물건이 안들어옴
-                    if (weight <= 0){// 초기값 받아야함
+                    if (weight <= 11){// 초기값 받아야함
                         log.info("물건이 들어오지 않았습니다");
                         try {
                             session.sendMessage(new TextMessage(lockerNum + " " + "open"));

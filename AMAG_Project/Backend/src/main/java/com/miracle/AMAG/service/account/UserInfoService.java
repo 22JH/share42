@@ -169,6 +169,11 @@ public class UserInfoService {
         String receiptId = "";
         try {
             HashMap res = bootpay.requestSubscribe(payload);
+            log.debug("res 키값: ");
+            for(Object key : res.keySet()) {
+                System.out.println(key + " : " + res.get(key));
+            }
+            System.out.println("헤헤==========");
             JSONObject json =  new JSONObject(res);
             receiptId = json.get("receipt_id").toString();
             if(res.get("error_code") == null) { //success

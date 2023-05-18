@@ -7,6 +7,7 @@ import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.Borrow;
 import com.miracle.AMAG.entity.user.Collect;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.handler.socket.LockerControlHandler;
 import com.miracle.AMAG.mapping.locker.LockerListMapping;
 import com.miracle.AMAG.mapping.locker.LockerStationListMapping;
 import com.miracle.AMAG.repository.account.AccountRepository;
@@ -59,6 +60,9 @@ public class AdminLockerService {
 
     @Autowired
     private KlaytnService klaytnService;
+
+    @Autowired
+    private final LockerControlHandler lockerControlHandler;
 
 
     public List<LockerStationListMapping> getLockerStationList(String sido){
@@ -251,7 +255,7 @@ public class AdminLockerService {
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }
 
-    public String openLocker(String nfcData) {
+    public String openLocker(String nfcData) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
         Account account = accountRepository.findByUserId(loginId);
@@ -273,7 +277,8 @@ public class AdminLockerService {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 
-        //////// 대여함 오픈 로직 추가 필요 //////////////
+        //대여함 오픈
+        lockerControlHandler.getSession(locker.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

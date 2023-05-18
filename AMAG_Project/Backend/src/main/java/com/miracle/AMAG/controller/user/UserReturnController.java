@@ -1,5 +1,6 @@
 package com.miracle.AMAG.controller.user;
 
+import com.miracle.AMAG.dto.requestDTO.user.UserReturnProductDTO;
 import com.miracle.AMAG.dto.requestDTO.user.UserReturnRequestDTO;
 import com.miracle.AMAG.service.user.UserReturnService;
 import com.miracle.AMAG.util.network.CUDResponse;
@@ -71,8 +72,8 @@ public class UserReturnController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 반납", description = "공유 물품 반납을 진행합니다.")
-    public ResponseEntity<?> returnProduct(@ModelAttribute @Valid UserReturnRequestDTO userReturnRequestDTO) throws IOException {
-        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(userReturnRequestDTO));
+    public ResponseEntity<?> returnProduct(@ModelAttribute @Valid UserReturnProductDTO userReturnProductDTO) throws IOException {
+        return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(userReturnProductDTO));
     }
 
     @PostMapping("/nfc/open/{nfc_data}")

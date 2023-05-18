@@ -197,6 +197,7 @@ public class UserBorrowService {
         borrowDTO.setShareArticleName(shareArticle.getName());
         borrowDTO.setLockerLockerNumber(locker.getLockerNumber());
         borrowDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+        borrowDTO.setRegDt(curTime);
 
         // 블록체인 관련 항목
         String alias = "bd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();

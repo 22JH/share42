@@ -1,7 +1,7 @@
 package com.miracle.AMAG.handler.socket;
 
 import com.miracle.AMAG.dto.requestDTO.user.UserKeepRequestDTO;
-import com.miracle.AMAG.dto.requestDTO.user.UserReturnRequestDTO;
+import com.miracle.AMAG.dto.requestDTO.user.UserReturnProductDTO;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.service.user.*;
@@ -219,10 +219,10 @@ public class LockerControlHandler implements WebSocketHandler{
                             userKeepRequestDTO.setImgFile(new MockMultipartFile("file", tempFile.getName(), "image/jpeg", FileUtils.readFileToByteArray(tempFile)));
                             userKeepService.keepProduct(userKeepRequestDTO);
                         } else {
-                            UserReturnRequestDTO userReturnRequestDTO = new UserReturnRequestDTO();
-                            userReturnRequestDTO.setShareArticleId(shareArticle.getId());
-                            userReturnRequestDTO.setImgFile(new MockMultipartFile("file", tempFile.getName(), "image/jpeg", FileUtils.readFileToByteArray(tempFile)));
-                            userReturnService.returnProduct(userReturnRequestDTO);
+                            UserReturnProductDTO userReturnProductDTO = new UserReturnProductDTO();
+                            userReturnProductDTO.setShareArticleId(shareArticle.getId());
+                            userReturnProductDTO.setImgFile(new MockMultipartFile("file", tempFile.getName(), "image/jpeg", FileUtils.readFileToByteArray(tempFile)));
+                            userReturnService.returnProduct(userReturnProductDTO);
                         }
                     }
                     break;

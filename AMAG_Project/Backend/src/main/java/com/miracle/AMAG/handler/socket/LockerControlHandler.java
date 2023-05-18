@@ -68,6 +68,7 @@ public class LockerControlHandler implements WebSocketHandler{
         }
         if (!flag){
             log.info("열려있는 세션이 없음");
+            throw new RuntimeException("통신할 수 있는 웹소켓 세션이 없습니다");
         }
     }
 
@@ -118,7 +119,7 @@ public class LockerControlHandler implements WebSocketHandler{
         if (shareStatus == ShareArticleUtils.SHARE_READY || shareStatus == ShareArticleUtils.COLLECT_READY){
             int weight = ((Long)returnObject.get("weight")).intValue();
             //물건이 안 나감
-            if (weight > 0){ // 초기값 받아야함
+            if (weight > 11){ // 초기값 받아야함
                 log.info("무게 {}로, 물건이 회수되지 않았습니다", weight);
                 try {
                     session.sendMessage(new TextMessage(lockerNum + " " + "open"));
@@ -159,7 +160,7 @@ public class LockerControlHandler implements WebSocketHandler{
                 case "close":
                     int weight = ((Long)returnObject.get("weight")).intValue();
                     // 물건이 안들어옴
-                    if (weight <= 0){// 초기값 받아야함
+                    if (weight <= 11){// 초기값 받아야함
                         log.info("물건이 들어오지 않았습니다");
                         try {
                             session.sendMessage(new TextMessage(lockerNum + " " + "open"));

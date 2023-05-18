@@ -42,22 +42,6 @@ const UserShareReg = () => {
   const formData = useMemo(() => new FormData(), []);
 
   useEffect(() => {
-    if (preview) {
-      formData.append("imgFile", preview);
-    }
-    formData.append("name", title);
-    formData.append("sharePrice", String(price));
-    formData.append("price", String(sharePrice));
-    formData.append(
-      "category",
-      location?.state?.data?.category
-        ? location?.state?.data?.category
-        : location?.state?.category
-    );
-    formData.append("content", content);
-    if (location?.state?.editStatus !== true) {
-      formData.append("lockerStationId", String(branchChoice?.id));
-    }
     if (
       preview &&
       title &&
@@ -73,11 +57,34 @@ const UserShareReg = () => {
     preview,
     title,
     price,
+    sharePrice,
     location.state.category,
     content,
-    branchChoice,
-    formData,
+    branchChoice.id,
   ]);
+
+  useEffect(() => {
+    if (isFull) {
+      if (preview) {
+        formData.append("imgFile", preview);
+      }
+      formData.append("name", title);
+      formData.append("sharePrice", String(price));
+      formData.append("price", String(sharePrice));
+      formData.append(
+        "category",
+        location?.state?.data?.category
+          ? location?.state?.data?.category
+          : location?.state?.category
+      );
+      formData.append("content", content);
+      if (location?.state?.editStatus !== true) {
+        formData.append("lockerStationId", String(branchChoice?.id));
+      }
+    }
+  }, [isFull]);
+
+  console.log(typeof location.state.category);
 
   const handleShareTitle = (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
@@ -109,6 +116,7 @@ const UserShareReg = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    for (let i of formData) console.log(i);
     if (location?.state?.editStatus === true) {
       await fetch(
         `https://www.share42-together.com/api/user/share/share-articles/${location?.state?.id}`,
@@ -124,6 +132,7 @@ const UserShareReg = () => {
           return response.json();
         })
         .then((data) => {
+          console.log(data);
           if (data.status === 200) {
             swal("변경 완료", "게시물 내용 변경이 완료되었습니다.", "success");
             navigate(`/user/share-post/${location?.state?.id}`);
@@ -132,6 +141,7 @@ const UserShareReg = () => {
           }
         })
         .catch((e) => {
+          console.log(e);
           swal("서버 오류", "서버 오류가 발생했습니다.", "error");
         });
     } else {
@@ -158,24 +168,11 @@ const UserShareReg = () => {
         })
         .catch((e) => {
           setBranchChoice({ name: "", id: null });
+          console.log(e);
           swal("서버 오류", "서버 오류가 발생했습니다.", "error");
         });
     }
   };
-
-  useEffect(() => {
-    for (let i of formData) {
-      console.log(i);
-    }
-  }, [
-    preview,
-    title,
-    price,
-    location.state.category,
-    content,
-    branchChoice,
-    formData,
-  ]);
 
   return (
     <section

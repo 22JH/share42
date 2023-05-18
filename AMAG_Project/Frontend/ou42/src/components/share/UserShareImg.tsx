@@ -43,7 +43,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             if (preview) {
               formData.append("imgFile", preview);
             }
-            formData.append("category", state);
+            // formData.append("category", state.category);
             setDetecImg(false);
           } else {
             setPreview(null);
@@ -65,13 +65,17 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             if (preview) {
               formData.append("imgFile", preview);
             }
-            formData.append("category", state);
-            swal("Detection Clear", "이미지를 검증 완료 했습니다.", "success");
+            // formData.append("category", state);
+            // swal("Detection Clear", "이미지를 검증 완료 했습니다.", "success");
             setDetecImg(false);
           } else {
             setPreview(null);
             setDetecImg(false);
-            swal("Detection error", "이미지 검증에 실패 했습니다.", "error");
+            swal(
+              "등록할 수 없는 물품",
+              "이미지 검증에 실패 했습니다.",
+              "error"
+            );
           }
         })
         .catch();
@@ -143,7 +147,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
               height: "250px",
               borderRadius: "20px",
             }}
-            src={`${process.env.REACT_APP_IMAGE_URL}${state?.data?.img}`}
+            src={`${process.env.REACT_APP_IMAGE_URL}${state?.data?.article?.img}`}
             alt="기존이미지"
           />
         ) : (

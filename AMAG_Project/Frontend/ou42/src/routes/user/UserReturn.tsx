@@ -123,13 +123,6 @@ const UserReturn = () => {
     }
   }, [preview, state, selectId, formData, returnStatus]);
 
-  // formData 확인
-  useEffect(() => {
-    for (let i of formData) {
-      console.log(i);
-    }
-  }, [formData, preview, state, selectId]);
-
   // 반납 신청하기
   const handleSubmit = async () => {
     await fetch(RETURN_SUBMIT_API(), {

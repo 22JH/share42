@@ -154,12 +154,6 @@ const UserReport = () => {
       });
   };
 
-  // useEffect(() => {
-  //   for(let i of formData) {
-  //     console.log(i)
-  //   }
-  // }, [file, category, title, content, formData, lockerSelect, state])
-
   useEffect(() => {
     axios({
       method: "GET",

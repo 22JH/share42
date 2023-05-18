@@ -71,7 +71,6 @@ export default function UserPay() {
       },
       function (error) {}
     );
-    console.log(name);
   }, [name, phNumber]);
 
   return <></>;

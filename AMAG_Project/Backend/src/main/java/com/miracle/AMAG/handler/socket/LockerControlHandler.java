@@ -140,17 +140,16 @@ public class LockerControlHandler implements WebSocketHandler{
                 AccountUtils.checkLogin(loginId);
                 Account account = accountRepository.findByUserId(loginId);
 
-                // 관리자
-                if (account.getRole().value().equals("ROLE_ADMIN")){
-                    adminLockerService.adminCollectProduct(lockerNum);
-                }
+//                // 관리자
+//                if (account.getRole().value().equals("ROLE_ADMIN")){
+//                    adminLockerService.adminCollectProduct(lockerNum);
+//                }
                 // 일반 유저
-                else{
-                    if(shareStatus == ShareArticleUtils.SHARE_READY) {
-                        userBorrowService.receiveProduct(shareArticle.getId());
-                    } else {
-                        userCollectService.collectProduct(shareArticle.getId());
-                    }
+
+                if(shareStatus == ShareArticleUtils.SHARE_READY) {
+                    userBorrowService.receiveProduct(shareArticle.getId());
+                } else {
+                    userCollectService.collectProduct(shareArticle.getId());
                 }
             }
         }

@@ -76,7 +76,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
         ON l.SHARE_ARTICLE_ID = sa.ID
         inner join LOCKER_STATION ls
         on ls.ID = l.LOCKER_STATION_ID
-        WHERE a.USER_ID = :userId
+        WHERE a.USER_ID = :userId AND sa.SHARE_STATUS = 1
         group by t.SHARE_ARTICLE_ID
         HAVING useType = 0)
 
@@ -111,7 +111,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
         on l.SHARE_ARTICLE_ID = sa.ID
         inner join LOCKER_STATION ls
         on ls.ID = l.LOCKER_STATION_ID
-        WHERE a.USER_ID = :userId
+        WHERE a.USER_ID = :userId AND sa.SHARE_STATUS = 3
         group by t.SHARE_ARTICLE_ID
         HAVING returnType=0);
     """, nativeQuery = true)
@@ -147,12 +147,12 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
         ON l.SHARE_ARTICLE_ID = sa.ID
         inner join LOCKER_STATION ls
         on ls.ID = l.LOCKER_STATION_ID
-        WHERE a.USER_ID = :userId
+        WHERE a.USER_ID = :userId AND sa.SHARE_STATUS = 0
         group by t.SHARE_ARTICLE_ID
         HAVING keepType = 0)
-
+    
         UNION
-
+    
            (select
           sa.ID as shareArticleId,
           sa.NAME as shareArticleName,
@@ -182,7 +182,7 @@ public interface LockerRepository extends JpaRepository<Locker, Integer> {
         on l.SHARE_ARTICLE_ID = sa.ID
         inner join LOCKER_STATION ls
         on ls.ID = l.LOCKER_STATION_ID
-        WHERE a.USER_ID = :userId
+        WHERE a.USER_ID = :userId AND sa.SHARE_STATUS = 4
         group by t.SHARE_ARTICLE_ID
         HAVING collectType=0);
     """, nativeQuery = true)

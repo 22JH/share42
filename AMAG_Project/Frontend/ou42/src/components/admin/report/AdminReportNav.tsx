@@ -42,7 +42,7 @@ const titleStyle = (contentName: string) => css`
   }
 `;
 
-function AdminReportNav() {
+function AdminReportNav({ count }: { count: number }) {
   const [contentName, setContentName] = useState<string>("파손");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -75,9 +75,9 @@ function AdminReportNav() {
           queryClient.invalidateQueries(["admin-report"]);
         }}
       >
-        <li value={2}>파손(2)</li>
-        <li value={0}>분실</li>
-        <li value={1}>고장</li>
+        <li value={2}>파손{contentName === "파손" ? `${count}` : null}</li>
+        <li value={0}>분실{contentName === "분실" ? `${count}` : null}</li>
+        <li value={1}>고장{contentName === "고장" ? `${count}` : null}</li>
       </ul>
     </div>
   );

@@ -60,9 +60,9 @@ const MarkerInfoComponent = ({
 
   const handleReturnNavigate = () => {
     navigate("/user/return", {
-      state : id
-    })
-  }
+      state: id,
+    });
+  };
 
   useEffect(() => {
     axios({
@@ -76,7 +76,7 @@ const MarkerInfoComponent = ({
         const lst = res.data.message[0].content.split("\r\n");
         setTermsContent(lst.slice(0, lst.length - 1));
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, []);
 
   return (
@@ -247,13 +247,13 @@ const MarkerInfoComponent = ({
                 backgroundColor: "#c74695",
                 borderRadius: "5px",
                 color: "white",
-                border: 'none',
-                cursor: 'pointer'
+                border: "none",
+                cursor: "pointer",
               }}
               onClick={() => {
                 dialogRef?.current.showModal();
               }}
-              >
+            >
               반납 하기
             </button>
           </div>
@@ -265,47 +265,50 @@ const MarkerInfoComponent = ({
         }}
         css={dialog}
         style={{
-          textAlign: 'center'
+          textAlign: "center",
         }}
-        >
+      >
         <h1>HOW TO 반납신청?</h1>
         <button
           onClick={() => {
             (dialogRef.current as any).close();
           }}
           style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            border: 'none',
-            backgroundColor: '#ffffff'
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            border: "none",
+            backgroundColor: "#ffffff",
           }}
-          >
+        >
           X
         </button>
         <ul
           style={{
-            textAlign: 'left',
-            paddingLeft: '20px'
+            textAlign: "left",
+            paddingLeft: "20px",
           }}
         >
           {termsContent.map((term, index) => (
-            <li 
-            style={{
-              listStyleType: 'dicimal',
-              whiteSpace: 'normal'
-            }}
-            key={index}>{term}</li>
-            ))}
+            <li
+              style={{
+                listStyleType: "dicimal",
+                whiteSpace: "normal",
+              }}
+              key={index}
+            >
+              {term}
+            </li>
+          ))}
         </ul>
         <button
           style={{
-            padding: '3% 6%',
-            fontWeight: '900',
-            color: '#ffffff',
-            backgroundColor: '#FFABAB',
-            border: 'none',
-            borderRadius: '12px'
+            padding: "3% 6%",
+            fontWeight: "900",
+            color: "#ffffff",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            borderRadius: "12px",
           }}
           onClick={handleReturnNavigate}
         >

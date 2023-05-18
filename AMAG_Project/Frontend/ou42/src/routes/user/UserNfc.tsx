@@ -132,7 +132,6 @@ export default function UserNfc() {
     enabled: !selectType,
     suspense: false,
   });
-  console.log(items);
   return (
     <div css={container(selectType, selectItem)}>
       <div className="selectType">

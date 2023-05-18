@@ -9,24 +9,38 @@ const container = css`
   flex-direction: column;
   align-items: center;
   position: relative;
+  animation-name: show;
+  animation-duration: 3s;
+
+  @keyframes show {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
   .logo {
     position: absolute;
-    top: 15%;
+    top: 25%;
   }
 
   .font {
     text-align: center;
     bottom: 20%;
     position: absolute;
-    top: 38%;
+    top: 50%;
 
     p:nth-of-type(1) {
       font-weight: 900;
-      font-size: 1.3rem;
-      margin-bottom: 5%;
+      font-size: 1.4rem;
+      margin-bottom: 7%;
     }
     p:nth-of-type(2) {
+      margin: 0;
+    }
+    p:nth-of-type(3) {
       margin: 0;
     }
   }
@@ -86,7 +100,8 @@ function UserBeforeMain() {
 
       <div className="font">
         <p>비대면 물품 공유 플랫폼</p>
-        <p>우리서비스는 이런거에요 설명문구 두줄정도!</p>
+        <p>시간 제약없이 공유하는</p>
+        <p>새로운 플랫폼</p>
       </div>
 
       <button className="btn" onClick={goLogin}>

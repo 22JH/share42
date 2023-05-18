@@ -73,7 +73,6 @@ export default function ChatListDetail({ data }: any) {
 
   useQuery(["getUserProfile", otherUserProfile], getUserProfile, {
     select: (res) => res,
-    onSuccess: (res) => console.log(res),
     enabled: !!otherUserProfile,
   });
   return (

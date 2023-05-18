@@ -49,7 +49,7 @@ const UserShareDetailRequest = ({
   handleNFC,
   handleChating,
   data,
-  billing
+  billing,
 }: UserShareDetailRequestProps) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ const UserShareDetailRequest = ({
         const lst = res.data.message[0].content.split("\r\n");
         setTermsContent(lst.slice(0, lst.length - 1));
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, []);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const UserShareDetailRequest = ({
         const lst = res.data.message[0].content.split("\r\n");
         setCollectContent(lst.slice(0, lst.length - 1));
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, []);
 
   const handleUserCollect = (id: string | undefined) => {
@@ -108,12 +108,9 @@ const UserShareDetailRequest = ({
         return res.data.message;
       })
       .catch((e) => {
-        console.log(e);
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       });
   };
-
-  console.log(data?.article.shareStatus)
 
   return (
     <div
@@ -147,42 +144,44 @@ const UserShareDetailRequest = ({
         <div>
           {useRequest ? (
             <>
-              {data?.article.accountUserId === userId ? <>
-                <button
-                  style={{
-                    color: "#ffffff",
-                    backgroundColor: "#909090",
-                    border: "none",
-                    borderRadius: "5px",
-                    boxShadow: "2px 2px 5px #00000051",
-                    padding: "1.4vh 4vw",
-                  }}
-                  onClick={() => handleUseCancel(id)}
-                >
-                  사용취소
-                </button>
-                <div
-                  style={{
-                    position: "fixed",
-                    bottom: "12vh",
-                    right: "8vw",
-                    width: "5rem",
-                    height: "5rem",
-                    borderRadius: "50%",
-                    textAlign: "center",
-                    lineHeight: "5rem",
-                    backgroundColor: "red",
-                    color: "white",
-                    fontWeight: "900",
-                  }}
-                  onClick={handleNFC}
-                >
-                  NFC
-                </div>
-              </> : null}
+              {data?.article.accountUserId === userId ? (
+                <>
+                  <button
+                    style={{
+                      color: "#ffffff",
+                      backgroundColor: "#909090",
+                      border: "none",
+                      borderRadius: "5px",
+                      boxShadow: "2px 2px 5px #00000051",
+                      padding: "1.4vh 4vw",
+                    }}
+                    onClick={() => handleUseCancel(id)}
+                  >
+                    사용취소
+                  </button>
+                  <div
+                    style={{
+                      position: "fixed",
+                      bottom: "12vh",
+                      right: "8vw",
+                      width: "5rem",
+                      height: "5rem",
+                      borderRadius: "50%",
+                      textAlign: "center",
+                      lineHeight: "5rem",
+                      backgroundColor: "red",
+                      color: "white",
+                      fontWeight: "900",
+                    }}
+                    onClick={handleNFC}
+                  >
+                    NFC
+                  </div>
+                </>
+              ) : null}
             </>
-          ) : (
-            data?.article?.shareStatus === 1 ? <button
+          ) : data?.article?.shareStatus === 1 ? (
+            <button
               style={{
                 color: "#ffffff",
                 backgroundColor: "#FFABAB",
@@ -196,8 +195,8 @@ const UserShareDetailRequest = ({
               }}
             >
               사용신청
-            </button> : null
-          )}
+            </button>
+          ) : null}
           <button
             style={{
               marginLeft: "3vw",
@@ -272,31 +271,35 @@ const UserShareDetailRequest = ({
             </li>
           ))}
         </ul>
-        {billing === 'SUCCESS' ? <button
-          style={{
-            padding: "3% 6%",
-            fontWeight: "900",
-            color: "#ffffff",
-            backgroundColor: "#FFABAB",
-            border: "none",
-            borderRadius: "12px",
-          }}
-          onClick={() => handleUseRequest(id)}
-        >
-          사용 신청하기
-        </button> : <button
-          style={{
-            padding: "3% 6%",
-            fontWeight: "900",
-            color: "#ffffff",
-            backgroundColor: "#FFABAB",
-            border: "none",
-            borderRadius: "12px",
-          }}
-          onClick={() => navigate('/home')}
-        >
-          계좌 인증을 진행해주세요!
-        </button>}
+        {billing === "SUCCESS" ? (
+          <button
+            style={{
+              padding: "3% 6%",
+              fontWeight: "900",
+              color: "#ffffff",
+              backgroundColor: "#FFABAB",
+              border: "none",
+              borderRadius: "12px",
+            }}
+            onClick={() => handleUseRequest(id)}
+          >
+            사용 신청하기
+          </button>
+        ) : (
+          <button
+            style={{
+              padding: "3% 6%",
+              fontWeight: "900",
+              color: "#ffffff",
+              backgroundColor: "#FFABAB",
+              border: "none",
+              borderRadius: "12px",
+            }}
+            onClick={() => navigate("/home")}
+          >
+            계좌 인증을 진행해주세요!
+          </button>
+        )}
       </dialog>
       <dialog
         ref={(ref) => {

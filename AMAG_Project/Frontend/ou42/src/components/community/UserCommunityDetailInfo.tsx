@@ -41,7 +41,6 @@ const UserCommunityDetailInfo = ({
         }
       )
       .then((res) => {
-        console.log(res.data.status);
         if (res.data.status === 200) {
           swal("삭제 완료", "게시물 삭제가 완료되었습니다.", "success");
         } else {
@@ -50,7 +49,6 @@ const UserCommunityDetailInfo = ({
       })
       .then((status) => navigate(`/user/community`))
       .catch((e) => {
-        console.log(e);
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       })
   );

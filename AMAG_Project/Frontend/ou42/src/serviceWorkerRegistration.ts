@@ -65,7 +65,7 @@ export function register(config?: Config) {
       navigator.serviceWorker
         .register(swUrl) // serviceWorker 파일 경로
         .then(async function (registration) {
-          console.log("서비스 워커 등록 성공:", registration.scope);
+          console.log("서비스 워커 등록 성공:");
           await requestPushPermission(registration);
 
           // push 알림 코드
@@ -185,10 +185,7 @@ export async function requestPushPermission(registration: any) {
     if (!response.ok) {
       throw new Error("구독 정보를 저장하는 중 문제가 발생했습니다.");
     }
-
-    console.log("Push 알림 구독 성공:", subscription);
   } else {
-    console.error("알림 권한을 허용해주세요.");
   }
 }
 

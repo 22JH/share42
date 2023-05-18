@@ -47,15 +47,10 @@ export default function UserPay() {
             .then(() => {
               Alert("success", "카드가 등록되었습니다.", navigate("/home"));
             })
-            .catch((error) => {
-              console.error(error);
-            });
-          console.log(response);
+            .catch((error) => {});
         }
       },
-      function (error) {
-        console.log(error.message);
-      }
+      function (error) {}
     );
   }, []);
 

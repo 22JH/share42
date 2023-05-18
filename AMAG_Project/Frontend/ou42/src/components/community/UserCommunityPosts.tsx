@@ -43,8 +43,6 @@ const UserCommunityPosts = ({
     }
   }, [data]);
 
-  console.log(data);
-
   return (
     <div
       style={{

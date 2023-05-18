@@ -59,10 +59,19 @@ const UserCommunityReg = () => {
   const { token } = loginObject ? JSON.parse(loginObject) : null;
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log(state)
-  const [title, setTitle] = useState<string>(state?.data?.communityDetail?.title ? state.data.communityDetail.title: "");
-  const [category, setCategory] = useState<string>(state?.data?.communityDetail?.category ? state.data.communityDetail.category : "");
-  const [content, setContent] = useState<string>(state?.data?.communityDetail?.content ? state.data.communityDetail.content: "");
+  const [title, setTitle] = useState<string>(
+    state?.data?.communityDetail?.title ? state.data.communityDetail.title : ""
+  );
+  const [category, setCategory] = useState<string>(
+    state?.data?.communityDetail?.category
+      ? state.data.communityDetail.category
+      : ""
+  );
+  const [content, setContent] = useState<string>(
+    state?.data?.communityDetail?.content
+      ? state.data.communityDetail.content
+      : ""
+  );
   const [isSubmit, setIsSubmit] = useState<boolean | null>(null);
 
   const handleCommunityTitle = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -83,7 +92,7 @@ const UserCommunityReg = () => {
     setContent(e?.target?.value);
   };
 
-  const { mutate:communityPost } = useMutation((postData: SubmitDataType) =>
+  const { mutate: communityPost } = useMutation((postData: SubmitDataType) =>
     axios
       .post(
         "https://www.share42-together.com/api/user/community/posts",
@@ -96,20 +105,19 @@ const UserCommunityReg = () => {
         }
       )
       .then((res) => {
-        if(res.data.status === 200) {
+        if (res.data.status === 200) {
           swal("등록 성공", "게시물 등록이 완료되었습니다.", "success");
         } else {
           swal("등록 실패", "게시물 등록이 실패되었습니다.", "error");
         }
       })
-      .then((status) => navigate('/user/community/'))
+      .then((status) => navigate("/user/community/"))
       .catch((e) => {
-        console.log(e)
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       })
   );
 
-  const { mutate:communityPatch } = useMutation((postData: SubmitDataType) =>
+  const { mutate: communityPatch } = useMutation((postData: SubmitDataType) =>
     axios
       .patch(
         `https://www.share42-together.com:8088/api/user/community/posts/${state.id}`,
@@ -122,7 +130,7 @@ const UserCommunityReg = () => {
         }
       )
       .then((res) => {
-        if(res.data.status === 200) {
+        if (res.data.status === 200) {
           swal("변경 성공", "게시물 변경이 완료되었습니다.", "success");
         } else {
           swal("변경 실패", "게시물 변경이 실패되었습니다.", "error");
@@ -130,7 +138,6 @@ const UserCommunityReg = () => {
       })
       .then((status) => navigate(`/user/community/${state.id}`))
       .catch((e) => {
-        console.log(e)
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       })
   );
@@ -142,7 +149,7 @@ const UserCommunityReg = () => {
         category,
         title,
         content,
-      })
+      });
     } else {
       communityPost({
         category,

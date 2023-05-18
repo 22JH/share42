@@ -19,11 +19,12 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
       setPreview(files[0]);
       setDetectData((prev) => {
         newDetectData.append("imgFile", files[0]);
-        newDetectData.append("category", state);
+        newDetectData.append("category", state.category);
         return newDetectData;
       });
       setDetecImg(true);
     }
+    e.target.value = "";
   };
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
         },
         body: detectData,
       })
@@ -48,7 +50,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             setDetecImg(false);
           }
         })
-        .catch((error) => console.log(error));
+        .catch();
     } else if (detecImg === false) {
       fetch("https://www.share42-together.com/api/common/detection", {
         method: "POST",
@@ -72,7 +74,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             swal("Detection error", "이미지 검증에 실패 했습니다.", "error");
           }
         })
-        .catch((error) => console.log(error));
+        .catch();
     }
   }, [state, formData, detectData, preview, detecImg, token, setPreview]);
 

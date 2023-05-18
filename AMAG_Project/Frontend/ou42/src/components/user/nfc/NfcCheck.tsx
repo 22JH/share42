@@ -32,13 +32,13 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
   const TOKEN = useGetUserToken();
   const url = (status: number) => {
     if (status == 0) {
-      return `/api/user/share/borrow/nfc/open/${nfcData}`;
+      return `/api/user/share/borrow/nfc/open`;
     } else if (status == 1) {
-      return `/api/user/share/return/nfc/open/${nfcData}`;
+      return `/api/user/share/return/nfc/open`;
     } else if (status == 2) {
-      return `/api/user/share/keep/nfc/open/${nfcData}`;
+      return `/api/user/share/keep/nfc/open`;
     } else if (status == 3) {
-      return `/api/user/share/collect/nfc/open/${nfcData}`;
+      return `/api/user/share/collect/nfc/open`;
     }
   };
 
@@ -51,6 +51,28 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       reader.addEventListener("reading", (res: Res) => {
         // NFC 태그를 읽은 후 처리할 코드를 작성합니다.
         setNfcData(res.serialNumber);
+        if (res.serialNumber) {
+          axios({
+            method: "post",
+            url: `https://www.share42-together.com/${url(status)}/${
+              res.serialNumber
+            }`,
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+            },
+          })
+            .then(() => {
+              navigate("/home");
+            })
+            .catch((err) => {
+              console.log(err, "nfc post 요청 실패");
+              Alert(
+                "error",
+                "다시 시도해 주세요",
+                setOpen(() => false)
+              );
+            });
+        }
       });
     } catch (error: any) {
       console.error(error);
@@ -61,26 +83,7 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
     // 브라우저가 Web NFC API를 지원하는지 확인합니다.
     if ("NDEFReader" in window) {
       setNfcSupported(true);
-      startNfcReading().then(() => {
-        axios({
-          method: "post",
-          url: `https://www.share42-together.com/${url(status)}`,
-          headers: {
-            Authorization: `Bearer ${TOKEN}`,
-          },
-        })
-          .then(() => {
-            navigate("/home");
-          })
-          .catch((err) => {
-            console.log(err, "nfc post 요청 실패");
-            Alert(
-              "error",
-              "다시 시도해 주세요",
-              setOpen(() => false)
-            );
-          });
-      });
+      startNfcReading();
     }
   }, []);
   useEffect((): any => {
@@ -97,7 +100,7 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
     <AlertDialogSlide
       open={open}
       setOpen={setOpen}
-      title={"asdf"}
+      title={""}
       content={nfcSupported ? <NfcSvg /> : <p>Web NFC API is not supported.</p>}
     />
     // {/* <p>asdasdasd</p> */}

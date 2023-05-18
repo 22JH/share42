@@ -20,6 +20,7 @@ function UserMyPageFetcher({
   children: React.PropsWithChildren<ReactJSXElement>;
 }) {
   const TOKEN = useGetUserToken();
+  const queryClient = useQueryClient();
 
   // 사용자 정보 받는 API 함수
   const userInfo = () => {
@@ -40,6 +41,10 @@ function UserMyPageFetcher({
       return data.data.message;
     },
   });
+
+  useEffect(() => {
+    queryClient.prefetchQuery(["user-info"], userInfo);
+  }, []);
 
   return cloneElement(children, { info: message });
 }

@@ -7,6 +7,7 @@ import com.miracle.AMAG.entity.account.Account;
 import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.Keep;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.handler.socket.LockerControlHandler;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.KeepRepository;
@@ -47,6 +48,9 @@ public class UserKeepService {
 
     @Autowired
     private KlaytnService klaytnService;
+
+    @Autowired
+    private LockerControlHandler lockerControlHandler;
 
     public String applyKeep(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
@@ -226,14 +230,14 @@ public class UserKeepService {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 
-        //////// 대여함 오픈 로직 추가 필요 //////////////
+        // 대여함 오픈
+        lockerControlHandler.getSession(locker.getId());
 
-
-        // 물품 수납 처리전 이미지와 shareArticleId를 받아야 함.
-        UserKeepRequestDTO userKeepRequestDTO = new UserKeepRequestDTO();
-        userKeepRequestDTO.setShareArticleId(shareArticle.getId());
-        userKeepRequestDTO.setImgFile(null);    // 수정해야함.
-        keepProduct(userKeepRequestDTO);
+//        // 물품 수납 처리전 이미지와 shareArticleId를 받아야 함.
+//        UserKeepRequestDTO userKeepRequestDTO = new UserKeepRequestDTO();
+//        userKeepRequestDTO.setShareArticleId(shareArticle.getId());
+//        userKeepRequestDTO.setImgFile(null);    // 수정해야함.
+//        keepProduct(userKeepRequestDTO);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

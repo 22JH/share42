@@ -7,6 +7,7 @@ import com.miracle.AMAG.entity.locker.Locker;
 import com.miracle.AMAG.entity.user.Borrow;
 import com.miracle.AMAG.entity.user.Collect;
 import com.miracle.AMAG.entity.user.ShareArticle;
+import com.miracle.AMAG.handler.socket.LockerControlHandler;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
 import com.miracle.AMAG.repository.user.BorrowRepository;
@@ -52,6 +53,9 @@ public class UserBorrowService {
 
     @Autowired
     private KlaytnService klaytnService;
+
+    @Autowired
+    private LockerControlHandler lockerControlHandler;
 
 
     public String applyBorrow(int shareArticleId) throws IOException {
@@ -233,11 +237,8 @@ public class UserBorrowService {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 
-        //////// 대여함 오픈 로직 추가 필요 //////////////
-
-        
-        // 실제 대여처리
-        receiveProduct(shareArticle.getId());
+        // 대여함 오픈
+        lockerControlHandler.getSession(locker.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

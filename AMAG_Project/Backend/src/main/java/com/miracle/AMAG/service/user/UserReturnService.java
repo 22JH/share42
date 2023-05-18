@@ -12,6 +12,7 @@ import com.miracle.AMAG.entity.user.Borrow;
 import com.miracle.AMAG.entity.user.Payment;
 import com.miracle.AMAG.entity.user.ShareArticle;
 import com.miracle.AMAG.entity.user.ShareReturn;
+import com.miracle.AMAG.handler.socket.LockerControlHandler;
 import com.miracle.AMAG.repository.account.AccountRepository;
 import com.miracle.AMAG.repository.account.PaymentMethodRepository;
 import com.miracle.AMAG.repository.locker.LockerRepository;
@@ -69,6 +70,9 @@ public class UserReturnService {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private LockerControlHandler lockerControlHandler;
 
     public String applyReturn(UserReturnRequestDTO userReturnRequestDTO) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
@@ -304,8 +308,8 @@ public class UserReturnService {
             throw new RuntimeException("해당 대여함을 열 수 있는 권한이 없습니다.");
         }
 
-        //////// 대여함 오픈 로직 추가 필요 //////////////
-
+        // 대여함 오픈
+        lockerControlHandler.getSession(locker.getId());
 
         return BoardUtils.BOARD_CRUD_SUCCESS;
     }

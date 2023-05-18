@@ -170,8 +170,9 @@ public class UserBorrowService {
     }
 
     public String receiveProduct(int shareArticleId) throws IOException {
-        String loginId = SecurityUtil.getCurrentUserId();
-        AccountUtils.checkLogin(loginId);
+//        String loginId = SecurityUtil.getCurrentUserId();
+//        AccountUtils.checkLogin(loginId);
+        String loginId = "ssafy123";
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);

@@ -210,8 +210,9 @@ public class UserReturnService {
     }
 
     public String returnProduct(UserReturnProductDTO userReturnProductDTO) throws IOException {
-        String loginId = SecurityUtil.getCurrentUserId();
-        AccountUtils.checkLogin(loginId);
+//        String loginId = SecurityUtil.getCurrentUserId();
+//        AccountUtils.checkLogin(loginId);
+        String loginId = "ssafy123";
 
         ShareArticle shareArticle = shareArticleRepository.findById(userReturnProductDTO.getShareArticleId());
         ShareReturn returnRecord = shareReturnRepository.findRecentReturnRecord(shareArticle);

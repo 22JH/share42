@@ -136,9 +136,9 @@ public class LockerControlHandler implements WebSocketHandler{
                     throw new RuntimeException(e);
                 }
                 //공유상태(물건 및 사물함정보) 변경 로직
-                String loginId = SecurityUtil.getCurrentUserId();
-                AccountUtils.checkLogin(loginId);
-                Account account = accountRepository.findByUserId(loginId);
+//                String loginId = SecurityUtil.getCurrentUserId();
+//                AccountUtils.checkLogin(loginId);
+//                Account account = accountRepository.findByUserId(loginId);
 
 //                // 관리자
 //                if (account.getRole().value().equals("ROLE_ADMIN")){

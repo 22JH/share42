@@ -18,8 +18,11 @@ class ErrorBoundary extends React.Component<Props, State> {
     this.state = initialState;
   }
 
-  public static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: any): State {
     // 다음 렌더링에서 폴백 UI가 보이도록 상태를 업데이트 합니다.
+    if (error.response.status === 403) {
+      localStorage.removeItem("loginInfo");
+    }
     return { hasError: true };
   }
 

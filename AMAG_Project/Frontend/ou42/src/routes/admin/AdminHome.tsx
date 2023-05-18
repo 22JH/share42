@@ -48,7 +48,6 @@ function AdminHomeCircleChartFetchter({
 
   return cloneElement(children, { data });
 }
-
 function AdminHomeBarChartFetchter({
   children,
   change,
@@ -76,6 +75,7 @@ function AdminHomeBarChartFetchter({
       select: (data) => {
         return data.data.message;
       },
+
       enabled: !!change.region,
     }
   );

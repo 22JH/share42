@@ -148,7 +148,7 @@ function App() {
               <Route path="/admin/map" element={<AdminMap />} />
             </Route>
 
-            {/* 관리 */}
+            {/* 관리자 */}
             <Route path="/admin/home" element={<AdminHome />} />
             <Route path="/admin/report" element={<AdminReport />} />
             <Route path="/admin/log" element={<AdminLog />} />

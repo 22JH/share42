@@ -19,11 +19,12 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
       setPreview(files[0]);
       setDetectData((prev) => {
         newDetectData.append("imgFile", files[0]);
-        newDetectData.append("category", state);
+        newDetectData.append("category", state.category);
         return newDetectData;
       });
       setDetecImg(true);
     }
+    e.target.value = "";
   };
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+          // "Content-Type": "multipart/form-data",
         },
         body: detectData,
       })

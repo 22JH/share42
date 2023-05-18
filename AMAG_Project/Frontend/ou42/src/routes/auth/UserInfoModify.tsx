@@ -207,17 +207,12 @@ export default function UserInfoModify() {
       formData.append("img", data?.img);
     }
 
-    // for (let i of formData) {
-    //   console.log(i);
-    // }
-
     return fetch(PATCH_USER_DATA, {
       method: "PATCH",
       body: formData,
       ...getUserDataOptions,
     });
   };
-  ///////////
 
   // 닉네임/////
   const handleNickName = (

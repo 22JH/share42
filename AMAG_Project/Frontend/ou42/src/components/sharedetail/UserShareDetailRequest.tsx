@@ -60,6 +60,7 @@ const UserShareDetailRequest = ({
   const [termsContent, setTermsContent] = useState<string[]>([]);
   const [collectContent, setCollectContent] = useState<string[]>([]);
 
+  console.log(data);
   useEffect(() => {
     axios({
       method: "GET",
@@ -196,7 +197,9 @@ const UserShareDetailRequest = ({
             >
               사용신청
             </button>
-          ) : null}
+          ) : (
+            "수납 대기 중"
+          )}
           <button
             style={{
               marginLeft: "3vw",

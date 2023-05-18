@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useEffect, useState } from "react";
-import {
-  MapMarker, useMap,
-} from "react-kakao-maps-sdk";
+import { MapMarker, useMap } from "react-kakao-maps-sdk";
 import { useLocation } from "react-router-dom";
 import pinkBox from "../../assets/pinkBox.png";
 import CustomOverlayMapComponent from "./CustomOverlayMapComponent";
@@ -11,9 +9,9 @@ import { EventMarkerComponentProps } from "./type/MapType";
 
 const EventMarkerComponent = ({
   marker,
-  position
+  position,
 }: EventMarkerComponentProps) => {
-  const map = useMap()
+  const map = useMap();
   const [isVisible, setIsVisible] = useState<Record<string, boolean>>({});
   const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
   const { pathname } = useLocation();
@@ -27,7 +25,7 @@ const EventMarkerComponent = ({
         // setIsOpen((prevState) => ({ ...prevState, [id]: true }));
         setIsVisible((prevState) => ({ ...prevState, [id]: true }));
       }
-      
+
       if (isOpen[id] === true) {
         setIsOpen((prevState) => ({ ...prevState, [id]: false }));
         setIsVisible((prevState) => ({ ...prevState, [id]: false }));
@@ -52,8 +50,8 @@ const EventMarkerComponent = ({
         image={{
           src: pinkBox,
           size: {
-            width: 100,
-            height: 100,
+            width: 60,
+            height: 60,
           },
           options: {
             offset: {

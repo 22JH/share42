@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 
-import { relative } from "path";
 import { useEffect } from "react";
 import { useMap } from "react-kakao-maps-sdk";
 import { useLocation } from "react-router";

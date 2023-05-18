@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { memo, useEffect, useRef, useState } from "react";
 import { AiOutlineHeart, AiOutlineEye } from "react-icons/ai";
 
-import testObject from "../../../assets/testObject.jpg";
+import logo from "../../../assets/logo.png";
 import { useLocation } from "react-router-dom";
 
 const container = (length: number, pathName: string) => css`
@@ -68,7 +68,7 @@ const container = (length: number, pathName: string) => css`
         p {
           margin: 0;
         }
-        margin-right: 15%;
+        margin-right: 10%;
       }
       .heart {
         display: flex;
@@ -83,18 +83,28 @@ const container = (length: number, pathName: string) => css`
 
 interface Data {
   articleUptDt?: string;
-  hits: number;
-  id: number;
-  img: string;
-  likeUptDt: string;
-  likecount: number;
-  nickname: string;
-  shareArticleId: number;
-  sharePrice: number;
-  shareStatus: number;
-  title: string;
-  userId: string;
-  name: string;
+  hits?: number;
+  id?: number;
+  img?: string;
+  likeUptDt?: string;
+  likecount?: number;
+  nickname?: string;
+  shareArticleId?: number;
+  sharePrice?: number;
+  shareStatus?: number;
+  title?: string;
+  userId?: string;
+  name?: string;
+  accountNickname?: string;
+  accountUserId?: string;
+  lockerLockerNumber?: number;
+  lockerLockerStationName?: string;
+  regDt?: string;
+  shareArticleCategory?: string;
+  shareArticleName?: string;
+  useType?: number;
+  price?: number;
+  returnTyle?: number;
 }
 
 interface Props {
@@ -107,8 +117,9 @@ interface Props {
 function UserMyPageList(props: Partial<Props>) {
   const divRef = useRef<any>({});
   const pathName = useLocation().pathname;
-  const [promiseData, setPromiseData] = useState<any[]>([]);
   const { data, fetchNextPage, hasNextPage } = props;
+  const [promiseData, setPromiseData] = useState<any[]>([]);
+  const imgUrl = process.env.REACT_APP_IMAGE_URL;
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -130,7 +141,7 @@ function UserMyPageList(props: Partial<Props>) {
   }, [data]);
 
   if (data?.pages.length !== 0 && data?.pages instanceof Promise) {
-    data.pages.then((res: any) => setPromiseData(res));
+    data?.pages.then((res: any) => setPromiseData(res));
   }
 
   console.log(data);
@@ -146,7 +157,7 @@ function UserMyPageList(props: Partial<Props>) {
     >
       {data?.pages?.length !== 0
         ? (data?.pages instanceof Promise ? promiseData : data?.pages).map(
-            (item: any, index: number) => {
+            (item: Data, index: number) => {
               return (
                 <div
                   className="container"
@@ -154,23 +165,67 @@ function UserMyPageList(props: Partial<Props>) {
                   key={`${item} / ${index}`}
                 >
                   <div className="img">
-                    <img src={testObject} alt="사진" />
+                    <img
+                      src={item?.img ? `${imgUrl}${item?.img}` : logo}
+                      alt="사진"
+                    />
                   </div>
                   <div className="content">
-                    <p>ssafy123</p>
-                    <p>드라이버 공유합니다</p>
-                    <p>사용 중</p>
+                    {/* <p>싸피맨</p> */}
+                    <p>
+                      {pathName === "/user/mypage/like" ||
+                      pathName === "/user/mypage/articles"
+                        ? item?.nickname
+                        : item?.accountNickname}
+                    </p>
+                    {/* <p>드라이버 공유합니다</p> */}
+                    <p>
+                      {pathName === "/user/mypage/like"
+                        ? item?.title
+                        : pathName === "/user/mypage/articles"
+                        ? item?.name
+                        : item?.lockerLockerStationName}
+                    </p>
+                    {/* <p>사용 중</p> */}
+                    <p>
+                      {pathName === "/user/mypage/like" ||
+                      pathName === "/user/mypage/articles"
+                        ? `${item?.sharePrice?.toLocaleString()}원`
+                        : `${item?.shareArticleName} · ${item?.shareArticleCategory}`}
+                    </p>
                   </div>
 
                   <div className="icon">
-                    <div className="eye">
-                      <AiOutlineEye />
-                      <p>30</p>
-                    </div>
-                    <div className="heart">
-                      <AiOutlineHeart />
-                      <p>12</p>
-                    </div>
+                    {pathName === "/user/mypage/like" ||
+                    pathName === "/user/mypage/articles" ? (
+                      <div className="eye">
+                        <AiOutlineEye />
+                        <p>{item?.hits}</p>
+                      </div>
+                    ) : (
+                      <div className="eye">
+                        <p>
+                          {item?.regDt
+                            ?.split(".")[0]
+                            .split("T")[0]
+                            .replaceAll("-", ".")}
+                        </p>
+                      </div>
+                    )}
+
+                    {pathName === "/user/mypage/like" ||
+                    pathName === "/user/mypage/articles" ? (
+                      <div className="heart">
+                        <AiOutlineHeart />
+                        <p>{item?.likecount ?? 0}</p>
+                      </div>
+                    ) : (
+                      <div className="heart">
+                        <p>
+                          {item?.regDt?.split(".")[0].split("T")[1].slice(0, 5)}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               );

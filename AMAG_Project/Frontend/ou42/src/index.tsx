@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import firebase from "firebase/app";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getMessaging, getToken } from "firebase/messaging";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration

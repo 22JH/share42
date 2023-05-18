@@ -12,6 +12,7 @@ import { ErrorMessage } from "../../components/ErrorMessage";
 import UserMyPageETC from "../../components/user/mypage/UserMyPageETC";
 import UserMyPageMyTrade from "../../components/user/mypage/UserMyPageMyTrade";
 import UserMyPageProfile from "../../components/user/mypage/UserMyPageProfile";
+import UserMyPageChart from "./../../components/user/mypage/UserMyPageChart";
 
 function UserMyPageFetcher({
   children,
@@ -56,6 +57,7 @@ function UserMyPage() {
         height: "85vh",
         position: "absolute",
         top: "7vh",
+        overflow: "auto",
       }}
     >
       <ErrorBoundary fallback={ErrorMessage}>
@@ -64,6 +66,9 @@ function UserMyPage() {
             {/* 프로필 */}
             <UserMyPageProfile />
           </UserMyPageFetcher>
+
+          {/* 수익 차트 */}
+          <UserMyPageChart />
 
           {/* 나의 거래 */}
           <UserMyPageMyTrade />

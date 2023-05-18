@@ -111,32 +111,56 @@ function AdminHomeCircleChart({
         return (t: any) => f(i(t));
       });
 
+    // g.selectAll("text")
+    //   .data(pieGraph(data))
+    //   .enter()
+    //   .append("text")
+    //   .attr(
+    //     "transform",
+    //     (d: any) => `translate(${f.centroid(d)[0] - 10}, ${f.centroid(d)[1]})`
+    //   )
+    //   .attr("fill", "black")
+    //   .attr("dy", "5.35rem")
+    //   .attr("font-size", "0.8rem")
+    //   .attr("font-weight", "900")
+    //   .attr("transform", "rotate(-20)")
+    //   .text((d: any) => {
+    //     if (Math.abs(d.endAngle - d.startAngle) >= 1) {
+    //       return d.data[1];
+    //     }
+    //     return;
+    //   })
+    //   .on("click", (event: any, d: any) => {
+    //     setChange((change) => {
+    //       return { region: d.data[1], isChange: !change.isChange };
+    //     });
+    //   })
+    //   .transition()
+    //   .duration(DURATION)
+    //   .attr("fill", "white");
+
+    function midAngle(d: any) {
+      return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    }
+
     g.selectAll("text")
       .data(pieGraph(data))
       .enter()
       .append("text")
-      .attr(
-        "transform",
-        (d: any) => `translate(${f.centroid(d)[0] - 10}, ${f.centroid(d)[1]})`
-      )
       .attr("fill", "black")
-      .attr("dy", "5.35rem")
+      .attr("dy", "0.35rem")
       .attr("font-size", "0.8rem")
       .attr("font-weight", "900")
-      .attr("transform", "rotate(-20)")
+      .style("text-anchor", (d) => (midAngle(d) < Math.PI ? "start" : "end"))
       .text((d: any) => {
-        if (Math.abs(d.endAngle - d.startAngle) >= 1) {
-          return d.data[1];
-        }
-        return;
-      })
-      .on("click", (event: any, d: any) => {
-        setChange((change) => {
-          return { region: d.data[1], isChange: !change.isChange };
-        });
+        return d.data[1];
       })
       .transition()
       .duration(DURATION)
+      .attr("transform", (d) => {
+        const [x, y] = f.centroid(d);
+        return `translate(${x},${y})`;
+      })
       .attr("fill", "white");
   }, []);
 

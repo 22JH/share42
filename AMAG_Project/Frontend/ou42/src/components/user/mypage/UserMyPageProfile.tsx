@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import testObject from "../../../assets/testObject.jpg";
 import { profileStyle } from "./UserMyPageStyle";
 import { CgProfile } from "react-icons/cg";
 import { useApi } from "./../../../hooks/useApi";

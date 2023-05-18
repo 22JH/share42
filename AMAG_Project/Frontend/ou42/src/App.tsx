@@ -38,7 +38,15 @@ import AdminLogin from "./routes/auth/AdminLogin";
 import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
+<<<<<<< HEAD
 import UserReturn from "./routes/user/UserReturn";
+=======
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { useGetUserToken } from "./hooks/useGetToken";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+>>>>>>> feature/FE/user-mypage-api
 
 const globalStyle = css`
   body {
@@ -49,6 +57,69 @@ const globalStyle = css`
 `;
 
 function App() {
+  const [permissionStatus, setPermissionStatus] = useState(null);
+  const TOKEN = useGetUserToken();
+
+  useEffect(() => {
+    // pwa 권한 설정
+    async function requestNotificationPermission() {
+      try {
+        const permission: any = await Notification.requestPermission();
+        setPermissionStatus(permission);
+      } catch (error) {
+        console.error("Error while requesting notification permission:", error);
+      }
+    }
+
+    if ("Notification" in window) {
+      requestNotificationPermission();
+    } else {
+      console.error("This browser does not support notifications.");
+    }
+
+    if (permissionStatus === "granted") {
+      const notification = new Notification("알림 예제입니다", {
+        body: "Wrtn 봇 측으로부터 오는 알림입니다.",
+      });
+      axios({
+        method: "get",
+        url: `https://www.share42-together.com/api/common/pwa`,
+      }).then((res) => {
+        localStorage.setItem("VAPID", res.data.message.publicKey);
+
+        const messaging = getMessaging();
+
+        getToken(messaging, {
+          vapidKey: process.env.REACT_APP_FIREBASE_PUBLIC_KEY,
+        })
+          .then((currentToken) => {
+            console.log("여기온다.");
+            if (currentToken) {
+              // Send the token to your server and update the UI if necessary
+              // ...
+              console.log(currentToken, "==============");
+            } else {
+              // Show permission request UI
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+              // ...
+            }
+          })
+          .catch((err) => {
+            console.log("An error occurred while retrieving token. ", err);
+            // ...
+          });
+        onMessage(messaging, (payload) => {
+          console.log("Message received. ", payload);
+          // ...
+        });
+      });
+    } else {
+      console.error("알림 권한을 허용해주세요.");
+    }
+  }, [permissionStatus]);
+
   return (
     <>
       <Global styles={globalStyle} />

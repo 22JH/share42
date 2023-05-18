@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Circle from "../../components/UI/Circle";
 import { useApi } from "./../../hooks/useApi";
 import Alert from "../../components/UI/Alert";
+import { useLayoutEffect } from "react";
 
 const URL = "https://www.share42-together.com/api/login";
 
@@ -115,6 +116,9 @@ export default function Login() {
       handleLogin();
     }
   };
+
+  useLayoutEffect(() => {}, []);
+
   return (
     <div css={container}>
       <div className="back"></div>

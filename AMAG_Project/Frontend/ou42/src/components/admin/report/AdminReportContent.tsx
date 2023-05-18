@@ -131,8 +131,9 @@ const SIZE = 20;
 // api 받는 컴포넌트
 function AdminReportFatcher(props: {
   children: React.PropsWithChildren<ReactJSXElement>;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const { children } = props;
+  const { children, setCount } = props;
   const { category } = adminStore();
   const queryClient = useQueryClient();
   const TOKEN = useGetUserToken();
@@ -164,6 +165,9 @@ function AdminReportFatcher(props: {
           pages: newPages(data.pages),
           pageParams: data.pageParams,
         };
+      },
+      onSuccess: (data) => {
+        setCount(data.pages.length);
       },
       cacheTime: 1000 * 300,
       staleTime: 1000 * 300,
@@ -281,12 +285,16 @@ function AdminReportContainer({ data, hasNextPage, fetchNextPage }: Data) {
   );
 }
 
-function AdminReportContent() {
+function AdminReportContent({
+  setCount,
+}: {
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}) {
   return (
     <>
       <ErrorBoundary fallback={ErrorMessage}>
         <Suspense fallback={<Loading />}>
-          <AdminReportFatcher>
+          <AdminReportFatcher setCount={setCount}>
             <MemoizedContainer />
           </AdminReportFatcher>
         </Suspense>

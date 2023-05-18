@@ -35,11 +35,11 @@ public class ShareArticleRequestDTO {
 
     @Schema(title = "공유 물품의 대여 비용", description = "작성할 공유 물품의 대여 비용")
     @NotNull
-    private int price;
+    private String price;
 
     @Schema(title = "공유 물품의 정가", description = "공유할 물품 정가 데이터")
     @NotNull
-    private int sharePrice;
+    private String sharePrice;
 
     @Schema(title = "공유 물품 글의 이미지 파일", description = "공유할 물품 글의 사진 파일")
     @NotNull
@@ -47,5 +47,5 @@ public class ShareArticleRequestDTO {
 
     @Schema(title = "보관할 대여함 지점", description = "공유할 물품을 보관할 대여함 지점의 ID값")
     @NotNull
-    private int lockerStationId;
+    private String lockerStationId;
 }

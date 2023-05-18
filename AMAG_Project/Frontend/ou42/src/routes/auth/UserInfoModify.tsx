@@ -150,7 +150,6 @@ export default function UserInfoModify() {
   });
 
   const { data } = useQuery("getUserData", getUserData, {
-    onError: (err) => console.log(err),
     select: (res) => res.data.message,
     onSuccess: (res) => {
       setNickName(() => res.nickname);
@@ -240,7 +239,7 @@ export default function UserInfoModify() {
         .then((res) =>
           Alert("success", "회원정보가 수정되었습니다.", navigate("/home"))
         )
-        .catch((err) => console.log(err));
+        .catch();
     } else {
       Alert("error", "주소를 올바르게 선택해 주세요.");
     }

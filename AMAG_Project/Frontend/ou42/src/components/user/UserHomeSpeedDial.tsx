@@ -74,7 +74,7 @@ function UserHomeSpeedDial() {
         const lst = res.data.message[0].content.split("\r\n");
         setTermsContent(lst.slice(0, lst.length - 1));
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, []);
 
   return (

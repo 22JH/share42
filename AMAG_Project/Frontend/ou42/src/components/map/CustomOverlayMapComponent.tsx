@@ -39,7 +39,6 @@ const CustomOverlayMapComponent = ({
   const [totalCount, setTotalCount] = useState<number>(0);
   const [useCount, setUseCount] = useState<number>(0);
 
-
   // 해당 마커 상세 정보 가져오기
   useEffect(() => {
     axios({
@@ -50,22 +49,23 @@ const CustomOverlayMapComponent = ({
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((response) => {
-      console.log(response)
-      setTotalCount(response.data.message.totalCount);
-      setUseCount(response.data.message.useCount);
-      setTempArray(response.data.message.lockerList)
-    })
-    .catch((e) => console.log(e))
+      .then((response) => {
+        setTotalCount(response.data.message.totalCount);
+        setUseCount(response.data.message.useCount);
+        setTempArray(response.data.message.lockerList);
+      })
+      .catch();
   }, []);
 
   useEffect(() => {
     if (tempArray.length > 0) {
-      const copyArray = [...tempArray]
-      const sortedData = copyArray.sort((a, b) => a.lockerNumber - b.lockerNumber);
+      const copyArray = [...tempArray];
+      const sortedData = copyArray.sort(
+        (a, b) => a.lockerNumber - b.lockerNumber
+      );
       setMarkerInfo(sortedData);
     }
-  }, [tempArray])
+  }, [tempArray]);
 
   return (
     <>

@@ -77,16 +77,13 @@ export default function PhoneNumber({ setPhoneNumber, phoneNumber }: PropType) {
       postConfigNum()
         .then((res) => {
           if (res.data.message) {
-            console.log("인증 성공", res);
             setNumCheck(() => 1);
           } else {
-            console.log("인증실패 (성공했으나 반환값이 false)");
             setNumCheck(() => 2);
           }
         })
         .catch((err) => {
           setNumCheck(() => 2);
-          console.log(err, "sms인증 실패");
         });
     }
   }, [configNum]);

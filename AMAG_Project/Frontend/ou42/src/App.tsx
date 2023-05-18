@@ -90,11 +90,9 @@ function App() {
           vapidKey: process.env.REACT_APP_FIREBASE_PUBLIC_KEY,
         })
           .then((currentToken) => {
-            console.log("여기온다.");
             if (currentToken) {
               // Send the token to your server and update the UI if necessary
               // ...
-              console.log(currentToken, "==============");
             } else {
               // Show permission request UI
               console.log(
@@ -104,11 +102,11 @@ function App() {
             }
           })
           .catch((err) => {
-            console.log("An error occurred while retrieving token. ", err);
+            console.log("An error occurred while retrieving token. ");
             // ...
           });
         onMessage(messaging, (payload) => {
-          console.log("Message received. ", payload);
+          console.log("Message received. ");
           // ...
         });
       });

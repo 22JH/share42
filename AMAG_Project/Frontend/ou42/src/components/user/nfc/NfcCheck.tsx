@@ -48,7 +48,6 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       // console.log(reader)
       reader.addEventListener("reading", (res: Res) => {
         // NFC 태그를 읽은 후 처리할 코드를 작성합니다.
-        console.log(res.serialNumber);
         setNfcData(res.serialNumber);
       });
     } catch (error: any) {
@@ -71,9 +70,7 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
           .then(() => {
             navigate("/home");
           })
-          .catch((err) => {
-            console.log(err, "nfc post 요청 실패");
-          });
+          .catch((err) => {});
       });
     }
   }, []);

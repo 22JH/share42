@@ -82,28 +82,6 @@ export default function SignUp() {
   const submitSignUp = useApi("post", URL, options);
   // 회원가입 버튼 클릭시
   const submit = () => {
-    console.log(
-      "id",
-      id,
-      "pd",
-      pd,
-      "name",
-      name,
-      "nickName",
-      nickName,
-      "phoneNumber",
-      phoneNumber,
-      "birth",
-      birth,
-      "si",
-      si,
-      "goon",
-      goon,
-      "dong",
-      dong,
-      "addrDetail",
-      dong
-    );
     if (
       id &&
       pd &&
@@ -131,7 +109,7 @@ export default function SignUp() {
                 );
               });
             })
-            .catch((err) => console.log("firebase 에러 ", err));
+            .catch();
         })
         .catch((err) => Alert("error", err.response.data.message));
     } else {

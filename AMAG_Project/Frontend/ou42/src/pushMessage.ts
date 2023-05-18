@@ -35,17 +35,17 @@ Notification.requestPermission().then((permission) => {
   messaging
     .getToken()
     .then((token: string) => {
-      console.log("기기 등록 성공:", token);
+      console.log("기기 등록 성공:");
       // 서버로 기기 등록 정보를 전달하는 등 로직을 수행할 수 있음
     })
     .catch((error: Error) => {
-      console.error("기기 등록 실패:", error);
+      console.error("기기 등록 실패:");
     });
 });
 
 // 백그라운드 메시지 핸들러 등록
 messaging.onBackgroundMessage((payload: any) => {
-  console.log("백그라운드 메시지 수신:", payload);
+  console.log("백그라운드 메시지 수신:");
   // 포그라운드에서 알림 처리, 페이지 새로고침 등
 });
 

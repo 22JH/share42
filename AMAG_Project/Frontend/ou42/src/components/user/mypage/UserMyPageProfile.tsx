@@ -36,7 +36,7 @@ function UserMyPageProfile({ info }: { info?: Info }) {
         localStorage.removeItem("loginInfo");
         navigate("/");
       })
-      .catch((err) => console.log(err));
+      .catch();
   };
   return (
     <>

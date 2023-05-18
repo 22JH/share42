@@ -48,7 +48,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             setDetecImg(false);
           }
         })
-        .catch((error) => console.log(error));
+        .catch();
     } else if (detecImg === false) {
       fetch("https://www.share42-together.com/api/common/detection", {
         method: "POST",
@@ -72,7 +72,7 @@ const UserShareImg = ({ preview, setPreview, formData }: UserShareImgProps) => {
             swal("Detection error", "이미지 검증에 실패 했습니다.", "error");
           }
         })
-        .catch((error) => console.log(error));
+        .catch();
     }
   }, [state, formData, detectData, preview, detecImg, token, setPreview]);
 

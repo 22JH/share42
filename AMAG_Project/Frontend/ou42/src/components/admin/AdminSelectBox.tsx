@@ -122,9 +122,7 @@ function AdminSelectBox(props: Props) {
   };
 
   // 열기 버튼 함튼
-  const open = () => {
-    console.log("열기");
-  };
+  const open = () => {};
 
   return (
     <div css={container(pathName)}>

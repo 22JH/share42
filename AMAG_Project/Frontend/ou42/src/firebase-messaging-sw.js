@@ -5,12 +5,12 @@
 // });
 // const messaging = firebase.messaging();
 self.addEventListener("install", function (e) {
-  console.log("fcm sw install..");
+  console.log("fcm install..");
   self.skipWaiting();
 });
 
 self.addEventListener("activate", function (e) {
-  console.log("fcm sw activate..");
+  console.log("fcm activate..");
 });
 self.addEventListener("push", function (e) {
   if (!e.data.json()) return;

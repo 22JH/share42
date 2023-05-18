@@ -46,7 +46,6 @@ export default function DropDownNFC({
     setValue(() => event.target.value);
 
     setStatus(() => event.target.value.requestType);
-    console.log(event.target.value.requestType);
   };
   return (
     <div>

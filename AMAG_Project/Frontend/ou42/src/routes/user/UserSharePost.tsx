@@ -72,10 +72,9 @@ const UserSharePost = () => {
       },
     })
       .then((res: any) => {
-        console.log(res.data.message);
         setBilling(res.data.message);
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, []);
 
   // 점 클릭하면 넘어가게 일단 기능 구현
@@ -136,7 +135,6 @@ const UserSharePost = () => {
   // 사용신청 하기
   const handleUseRequest = async (id: string | undefined) => {
     if (billing === "FAIL") {
-      console.log("Welcome to the home");
       // navigate('/home')
       return;
     }
@@ -159,7 +157,6 @@ const UserSharePost = () => {
         refetch();
       }
     } catch (e) {
-      console.log(e);
       swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
     }
   };
@@ -184,7 +181,6 @@ const UserSharePost = () => {
         refetch();
       }
     } catch (e) {
-      console.log(e);
       swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
     }
   };
@@ -246,9 +242,7 @@ const UserSharePost = () => {
           setLikeCount(res.data.message.likeCount);
           return res.data.message;
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     },
     {
       suspense: false,

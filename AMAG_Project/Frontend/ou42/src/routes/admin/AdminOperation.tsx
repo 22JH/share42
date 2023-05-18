@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useQuery, useQueryClient } from "react-query";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import {
   cloneElement,
@@ -6,16 +8,15 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import axios from "axios";
 
-import AdminSelectBox from "../../components/admin/AdminSelectBox";
+import { Area } from "./AdminLog";
+import Loading from "./../../components/Loading";
+import AdminNav from "../../components/admin/AdminNav";
+import { useGetUserToken } from "../../hooks/useGetToken";
 import BottomMenuBar from "../../components/BottomMenuBar";
 import ErrorBoundary from "../../components/ErrorBoundary";
-import { useGetUserToken } from "../../hooks/useGetToken";
-import AdminNav from "../../components/admin/AdminNav";
-import Loading from "./../../components/Loading";
-import { Area } from "./AdminLog";
+import { ErrorMessage } from "./../../components/ErrorMessage";
+import AdminSelectBox from "../../components/admin/AdminSelectBox";
 
 function AdminOperationFetcher({
   children,
@@ -68,7 +69,7 @@ function AdminOperationFetcher({
   const numberAPI = () => {
     return axios({
       method: "get",
-      url: `https://jsonplaceholder.typicode.com/todos/1`,
+      url: `https://www.share42-together.com/api/admin/lockers/${areaInfo.point}`,
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
@@ -91,14 +92,6 @@ function AdminOperationFetcher({
   }, [areaInfo]);
 
   return cloneElement(children, { regionData, pointData, numberData });
-}
-
-function ErrorMessage() {
-  return (
-    <>
-      <p>에러입니다.</p>
-    </>
-  );
 }
 
 function AdminOperation() {

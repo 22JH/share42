@@ -6,6 +6,7 @@ import { useApi } from "../../hooks/useApi";
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../..";
+import navStore from "../../store/navStore";
 
 const container = css`
   width: 100%;
@@ -30,11 +31,13 @@ interface PropType {
 
 export default function UserChatList() {
   const [chats, setChats] = useState<any>(null);
+  const { setPathTitle } = navStore();
 
   const loginObject = localStorage.getItem("loginInfo");
   const { userId } = loginObject ? JSON.parse(loginObject) : null;
 
   useEffect(() => {
+    setPathTitle("채팅");
     const getChats = () => {
       const unsub = onSnapshot(doc(db, "userChats", userId), (doc) => {
         setChats(doc.data());

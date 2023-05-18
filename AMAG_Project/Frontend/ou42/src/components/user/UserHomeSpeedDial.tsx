@@ -28,10 +28,12 @@ export const dialog = css`
 
   @keyframes show {
     0% {
-      transform: translate(0, 800px);
+      transform: translate(0, 300px);
+      opacity: 0;
     }
     100% {
       transform: translate(0, 0);
+      opacity: 1;
     }
   }
 `;

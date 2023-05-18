@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropDown from "../../components/UI/DropDown";
 import Btn from "./../../components/UI/Btn";
 import pinkBox from "../../assets/pinkBox.png";
@@ -11,6 +11,7 @@ import { useApi } from "../../hooks/useApi";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import { useQuery } from "react-query";
 import DropDownNFC from "../../components/UI/DropDownNFC";
+import navStore from "../../store/navStore";
 
 const useURL =
   "https://www.share42-together.com/api/user/share/nfc/keep/collect";
@@ -82,6 +83,8 @@ const container = (selectType: boolean, selectItem: string) => css`
 `;
 
 export default function UserNfc() {
+  const { setPathTitle } = navStore();
+
   const [status, setStatus] = useState<number>(0);
 
   const [items, setItems] = useState<string[]>();
@@ -132,6 +135,10 @@ export default function UserNfc() {
     enabled: !selectType,
     suspense: false,
   });
+
+  useEffect(() => {
+    setPathTitle("이용");
+  }, []);
   return (
     <div css={container(selectType, selectItem)}>
       <div className="selectType">

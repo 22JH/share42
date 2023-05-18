@@ -56,6 +56,16 @@ const container = css`
     .signUp {
       margin-top: 10px;
       font-weight: bold;
+      margin-right: 20px;
+    }
+    .admin {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
     }
   }
 `;
@@ -155,8 +165,13 @@ export default function Login() {
           color={"white"}
           onClick={handleLogin}
         />
-        <div className="signUp" onClick={() => navigate("/signup")}>
-          회원가입
+        <div className="link">
+          <div className="signUp" onClick={() => navigate("/signup")}>
+            회원가입
+          </div>
+          <div className="admin" onClick={() => navigate("/admin/login")}>
+            관리자 로그인
+          </div>
         </div>
       </div>
       <Circle />

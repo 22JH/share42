@@ -49,7 +49,7 @@ function BottomMenuBar() {
       Icon: BsFillMenuButtonWideFill,
       url: "/user/community",
     },
-    { title: "NFC", Icon: TbNfc, url: "/user/nfc" },
+    { title: "이용", Icon: TbNfc, url: "/user/nfc" },
     { title: "채팅", Icon: BsChatRightHeart, url: "/user/chatlist" },
     { title: "내 프로필", Icon: RxPerson, url: "/user/mypage" },
   ];

@@ -113,7 +113,19 @@ function UserHomeSpeedDial() {
       <SpeedDial
         ariaLabel="SpeedDial controlled open example"
         sx={{ position: "absolute", bottom: 16, right: 7 }}
-        icon={<SpeedDialIcon />}
+        icon={
+          <SpeedDialIcon
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "50%",
+              backgroundColor: "#FFABAB",
+            }}
+          />
+        }
         onClose={() => handleClose()}
         onOpen={handleOpen}
         open={open}

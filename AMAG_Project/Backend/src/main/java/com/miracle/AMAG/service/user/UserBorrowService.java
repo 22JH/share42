@@ -120,17 +120,17 @@ public class UserBorrowService {
         AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
+        Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
+        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
+            throw new RuntimeException("취소 가능한 물품이 아닙니다.");
+        }
+
+        if(!borrowRecord.getAccount().getUserId().equals(loginId)) {
             throw new RuntimeException("해당 물품을 대여 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
         }
 
         if(shareArticle.isStatus()){
             throw new RuntimeException("이미 삭제된 글입니다.");
-        }
-
-        Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
-        if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
-            throw new RuntimeException("취소 가능한 물품이 아닙니다.");
         }
 
         Account account = accountRepository.findByUserId(loginId);
@@ -176,12 +176,13 @@ public class UserBorrowService {
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         Borrow borrowRecord = borrowRepository.findRecentBorrowRecord(shareArticle);
         Account account = accountRepository.findByUserId(loginId);
-        if(!shareArticle.getAccount().getUserId().equals(loginId)) {
-            throw new RuntimeException("해당 물품을 대여 신청한 사용자와 인수 요청을 보낸 사용자가 다릅니다.");
-        }
 
         if(shareArticle.getShareStatus() != ShareArticleUtils.SHARE_READY || borrowRecord.getUseType() != BorrowUtils.BORROW_READY) {
             throw new RuntimeException("해당 물품은 인수 처리를 진행할 수 없는 물품입니다.");
+        }
+
+        if(!borrowRecord.getAccount().getUserId().equals(loginId)) {
+            throw new RuntimeException("해당 물품을 인수 신청한 사용자와 취소 요청을 보낸 사용자가 다릅니다.");
         }
 
         Borrow borrow = new Borrow();

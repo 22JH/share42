@@ -24,10 +24,18 @@ const UserShareReg = () => {
   // 아예 상태관리를 통해서 화면 구분 짓기
   const { isOpenShareMap, setIsOpenShareMap } = shareIsOpenStore();
   const [preview, setPreview] = useState<null | File>(null);
-  const [title, setTitle] = useState<string>(location?.state?.data?.name ? location?.state?.data?.name : "");
-  const [price, setPrice] = useState<string>(location?.state?.data?.sharePrice ? location?.state?.data?.sharePrice : "");
-  const [sharePrice, setSharePrice] = useState<string>(location?.state?.data?.price ? location?.state?.data?.price : "");
-  const [content, setContent] = useState<string>(location?.state?.data?.content ? location?.state?.data?.content : "");
+  const [title, setTitle] = useState<string>(
+    location?.state?.data?.name ? location?.state?.data?.name : ""
+  );
+  const [price, setPrice] = useState<string>(
+    location?.state?.data?.sharePrice ? location?.state?.data?.sharePrice : ""
+  );
+  const [sharePrice, setSharePrice] = useState<string>(
+    location?.state?.data?.price ? location?.state?.data?.price : ""
+  );
+  const [content, setContent] = useState<string>(
+    location?.state?.data?.content ? location?.state?.data?.content : ""
+  );
   const [isFull, setIsFull] = useState<boolean>(false);
   const { branchChoice, setBranchChoice } = useBranchChoiceStore();
 
@@ -102,33 +110,30 @@ const UserShareReg = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (location?.state?.editStatus === true) {
-      console.log(location?.state?.editStatus)
       await fetch(
         `https://www.share42-together.com:8088/api/user/share/share-articles/${location?.state?.id}`,
         {
           method: "PATCH",
           body: formData,
-          headers : {
+          headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
         }
       )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data)
-        if (data.status === 200) {
-          swal("변경 완료", "게시물 내용 변경이 완료되었습니다.", "success");
-          navigate(`/user/share-post/${location?.state?.id}`);
-        } else {
-          swal("변경 실패", "게시물 내용 변경에 실패하였습니다.", "error");
-        }
-      })
-      .catch((e) => {
-        console.log(e)
-        swal("서버 오류", "서버 오류가 발생했습니다.", "error");
-      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.status === 200) {
+            swal("변경 완료", "게시물 내용 변경이 완료되었습니다.", "success");
+            navigate(`/user/share-post/${location?.state?.id}`);
+          } else {
+            swal("변경 실패", "게시물 내용 변경에 실패하였습니다.", "error");
+          }
+        })
+        .catch((e) => {
+          swal("서버 오류", "서버 오류가 발생했습니다.", "error");
+        });
     } else {
       await fetch(
         `https://www.share42-together.com:8088/api/user/share/share-articles`,
@@ -140,22 +145,21 @@ const UserShareReg = () => {
           },
         }
       )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        if (data.status === 200) {
-          swal("등록 완료", "게시물 등록이 완료되었습니다.", "success");
-          navigate("/home");
-        } else {
-          swal("등록 실패", "게시물 등록에 실패하였습니다.", "error");
-        }
-      })
-      .catch((e) => {
-        setBranchChoice({ name: "", id: null });
-        console.log(e)
-        swal("서버 오류", "서버 오류가 발생했습니다.", "error");
-      });
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.status === 200) {
+            swal("등록 완료", "게시물 등록이 완료되었습니다.", "success");
+            navigate("/home");
+          } else {
+            swal("등록 실패", "게시물 등록에 실패하였습니다.", "error");
+          }
+        })
+        .catch((e) => {
+          setBranchChoice({ name: "", id: null });
+          swal("서버 오류", "서버 오류가 발생했습니다.", "error");
+        });
     }
   };
 
@@ -212,10 +216,12 @@ const UserShareReg = () => {
             content={content}
             handleShareArea={handleShareArea}
           />
-          {location?.state?.editStatus ? null : <UserShareChoiceName
-            handleShareMapNavigate={handleShareMapNavigate}
-          />}
-          {location?.state?.editStatus === true ?
+          {location?.state?.editStatus ? null : (
+            <UserShareChoiceName
+              handleShareMapNavigate={handleShareMapNavigate}
+            />
+          )}
+          {location?.state?.editStatus === true ? (
             <button
               style={{
                 position: "absolute",
@@ -233,25 +239,26 @@ const UserShareReg = () => {
             >
               완료
             </button>
-          :
-          <button
-            style={{
-              position: "absolute",
-              bottom: "0px",
-              width: "100%",
-              height: "6vh",
-              backgroundColor: isFull ? "#FFABAB" : "#F0F0F0",
-              color: isFull ? "#D14D72" : "#B2B2B2",
-              fontSize: "1.5rem",
-              fontWeight: "900",
-              border: "none",
-            }}
-            type="submit"
-            disabled={!isFull}
-            onClick={handleSubmit}
-          >
-            완료
-          </button>}
+          ) : (
+            <button
+              style={{
+                position: "absolute",
+                bottom: "0px",
+                width: "100%",
+                height: "6vh",
+                backgroundColor: isFull ? "#FFABAB" : "#F0F0F0",
+                color: isFull ? "#D14D72" : "#B2B2B2",
+                fontSize: "1.5rem",
+                fontWeight: "900",
+                border: "none",
+              }}
+              type="submit"
+              disabled={!isFull}
+              onClick={handleSubmit}
+            >
+              완료
+            </button>
+          )}
         </>
       )}
     </section>

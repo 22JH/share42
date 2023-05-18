@@ -5,6 +5,24 @@ export const content = (value: string) => css`
   position: absolute;
   overflow: auto;
   height: auto;
+  width: 100%;
+
+  animation-name: homeShow;
+  animation-duration: 3s;
+
+  @keyframes homeShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .recommend {
+    position: absolute;
+    right: 5%;
+  }
 
   .sort-bar {
     display: flex;

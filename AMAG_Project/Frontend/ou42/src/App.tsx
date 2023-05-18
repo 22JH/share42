@@ -44,6 +44,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useGetUserToken } from "./hooks/useGetToken";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import EnterRaouterGuard from "./components/auth/EnterRouterGuard";
 
 const globalStyle = css`
   body {
@@ -57,65 +58,63 @@ function App() {
   const [permissionStatus, setPermissionStatus] = useState(null);
   const TOKEN = useGetUserToken();
 
-  useEffect(() => {
-    // pwa 권한 설정
-    async function requestNotificationPermission() {
-      try {
-        const permission: any = await Notification.requestPermission();
-        setPermissionStatus(permission);
-      } catch (error) {
-        console.error("Error while requesting notification permission:", error);
-      }
-    }
+  // useEffect(() => {
+  //   // pwa 권한 설정
+  //   async function requestNotificationPermission() {
+  //     try {
+  //       const permission: any = await Notification.requestPermission();
+  //       setPermissionStatus(permission);
+  //     } catch (error) {
+  //       console.error("Error while requesting notification permission:", error);
+  //     }
+  //   }
 
-    if ("Notification" in window) {
-      requestNotificationPermission();
-    } else {
-      console.error("This browser does not support notifications.");
-    }
+  //   if ("Notification" in window) {
+  //     requestNotificationPermission();
+  //   } else {
+  //     console.error("This browser does not support notifications.");
+  //   }
 
-    if (permissionStatus === "granted") {
-      const notification = new Notification("알림 예제입니다", {
-        body: "Wrtn 봇 측으로부터 오는 알림입니다.",
-      });
-      axios({
-        method: "get",
-        url: `https://www.share42-together.com/api/common/pwa`,
-      }).then((res) => {
-        localStorage.setItem("VAPID", res.data.message.publicKey);
+  //   if (permissionStatus === "granted") {
+  //     const notification = new Notification("알림 예제입니다", {
+  //       body: "Wrtn 봇 측으로부터 오는 알림입니다.",
+  //     });
+  //     axios({
+  //       method: "get",
+  //       url: `https://www.share42-together.com/api/common/pwa`,
+  //     }).then((res) => {
+  //       localStorage.setItem("VAPID", res.data.message.publicKey);
 
-        const messaging = getMessaging();
+  //       const messaging = getMessaging();
 
-        getToken(messaging, {
-          vapidKey: process.env.REACT_APP_FIREBASE_PUBLIC_KEY,
-        })
-          .then((currentToken) => {
-            console.log("여기온다.");
-            if (currentToken) {
-              // Send the token to your server and update the UI if necessary
-              // ...
-              console.log(currentToken, "==============");
-            } else {
-              // Show permission request UI
-              console.log(
-                "No registration token available. Request permission to generate one."
-              );
-              // ...
-            }
-          })
-          .catch((err) => {
-            console.log("An error occurred while retrieving token. ", err);
-            // ...
-          });
-        onMessage(messaging, (payload) => {
-          console.log("Message received. ", payload);
-          // ...
-        });
-      });
-    } else {
-      console.error("알림 권한을 허용해주세요.");
-    }
-  }, [permissionStatus]);
+  //       getToken(messaging, {
+  //         vapidKey: process.env.REACT_APP_FIREBASE_PUBLIC_KEY,
+  //       })
+  //         .then((currentToken) => {
+  //           if (currentToken) {
+  //             // Send the token to your server and update the UI if necessary
+  //             // ...
+  //           } else {
+  //             // Show permission request UI
+  //             console.log(
+  //               "No registration token available. Request permission to generate one."
+  //             );
+  //             // ...
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log("An error occurred while retrieving token. ");
+  //           // ...
+  //         });
+  //       onMessage(messaging, (payload) => {
+  //         console.log("Message received. ");
+  //         // ...
+  //       });
+  //     });
+  //   } else {
+  //     console.error("알림 권한을 허용해주세요.");
+  //   }
+  // }, [permissionStatus]);
 
   return (
     <>
@@ -124,6 +123,7 @@ function App() {
         <Routes>
           {/* 유저 홈 */}
           <Route element={<RouterGuard />}>
+            {/* 홈 */}
             <Route element={<HomeNavBar />}>
               <Route path="/home" element={<UserHome />} />
             </Route>
@@ -144,7 +144,15 @@ function App() {
               <Route path="/user/mypage/modify" element={<UserInfoModify />} />
               <Route path="/user/payment" element={<UserPay />} />
               <Route path="/user/report" element={<UserReport />} />
+              <Route path="/user/map" element={<UserMap />} />
+              <Route path="/admin/map" element={<AdminMap />} />
             </Route>
+
+            {/* 관리자 */}
+            <Route path="/admin/home" element={<AdminHome />} />
+            <Route path="/admin/report" element={<AdminReport />} />
+            <Route path="/admin/log" element={<AdminLog />} />
+            <Route path="/admin/operation" element={<AdminOperation />} />
           </Route>
 
           {/* 공유 등록 페이지, 등록된 공유 상세 페이지*/}
@@ -157,6 +165,8 @@ function App() {
             <Route path="/user/return" element={<UserReturn />} />
             <Route path="/user/share-post/:id" element={<UserSharePost />} />
           </Route>
+
+          {/* 커뮤니티 */}
           <Route element={<CommunityNavBar />}>
             <Route path="/user/community" element={<UserCommunity />} />
             <Route path="/user/community/reg" element={<UserCommunityReg />} />
@@ -170,16 +180,14 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/admin/login" element={<AdminLogin />} />
           </Route>
-          <Route path="/" element={<UserWelcome />} />
-          <Route path="/start" element={<UserBeforeMain />} />
-          <Route path="/admin/home" element={<AdminHome />} />
-          <Route path="/admin/report" element={<AdminReport />} />
-          <Route path="/admin/log" element={<AdminLog />} />
-          <Route path="/admin/operation" element={<AdminOperation />} />
-          <Route path="/user/map" element={<UserMap />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin/map" element={<AdminMap />} />
+
+          {/* 다시 홈으로 들어오면 토큰 검사 */}
+          <Route element={<EnterRaouterGuard />}>
+            <Route path="/" element={<UserWelcome />} />
+            <Route path="/start" element={<UserBeforeMain />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
         </Routes>
       </Router>
     </>

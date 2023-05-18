@@ -88,9 +88,7 @@ const UserReturn = () => {
           options.push(option);
         });
         return options;
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     },
     {
       suspense: false,
@@ -143,7 +141,6 @@ const UserReturn = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.status === 200) {
           setDeleteBtn(true);
           swal("신청 성공", "반납 신청이 완료되었습니다.", "success");
@@ -152,7 +149,6 @@ const UserReturn = () => {
         }
       })
       .catch((e) => {
-        console.log(e);
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       });
   };
@@ -168,7 +164,6 @@ const UserReturn = () => {
       },
     })
       .then((res) => {
-        console.log(res);
         if (res.data.status === 200) {
           setDeleteBtn(false);
           swal("취소 성공", "반납 취소가 완료되었습니다.", "success");
@@ -178,7 +173,6 @@ const UserReturn = () => {
         return res.data.message;
       })
       .catch((e) => {
-        console.log(e);
         swal("서버 오류", "서버 오류로 신청이 실패되었습니다.", "error");
       });
   };

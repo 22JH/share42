@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { memo, useEffect, useRef, useState } from "react";
 import { AiOutlineHeart, AiOutlineEye } from "react-icons/ai";
 
 import logo from "../../../assets/logo.png";
-import { useLocation } from "react-router-dom";
 
 const container = (length: number, pathName: string) => css`
   width: 100%;
@@ -115,11 +116,12 @@ interface Props {
 }
 
 function UserMyPageList(props: Partial<Props>) {
+  const navigate = useNavigate();
   const divRef = useRef<any>({});
   const pathName = useLocation().pathname;
+  const imgUrl = process.env.REACT_APP_IMAGE_URL;
   const { data, fetchNextPage, hasNextPage } = props;
   const [promiseData, setPromiseData] = useState<any[]>([]);
-  const imgUrl = process.env.REACT_APP_IMAGE_URL;
 
   // 생성된 객체 중 마지막 객체가 인식되면 다시 query를 호출한다.
   const intersection = new IntersectionObserver((entries, observer) => {
@@ -144,8 +146,6 @@ function UserMyPageList(props: Partial<Props>) {
     data?.pages.then((res: any) => setPromiseData(res));
   }
 
-  console.log(data);
-
   return (
     <div
       css={container(
@@ -163,6 +163,11 @@ function UserMyPageList(props: Partial<Props>) {
                   className="container"
                   ref={(ref) => (divRef.current[index] = ref)}
                   key={`${item} / ${index}`}
+                  onClick={
+                    item.id
+                      ? () => navigate(`/user/share-post/${item.id}`)
+                      : () => {}
+                  }
                 >
                   <div className="img">
                     <img

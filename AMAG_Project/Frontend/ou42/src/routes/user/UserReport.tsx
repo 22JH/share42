@@ -59,8 +59,8 @@ const UserReport = () => {
     category && formData.append("category", category);
     title && formData.append("title", title);
     content && formData.append("content", content);
-    state && formData.append("shareArticleId", state)
-    lockerSelect && formData.append("lockerId", lockerSelect)
+    state && formData.append("shareArticleId", state);
+    lockerSelect && formData.append("lockerId", lockerSelect);
     setReportData(formData);
   }, [file, category, title, content, formData, lockerSelect, state]);
 
@@ -127,29 +127,31 @@ const UserReport = () => {
   const handleReportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // post로 보내기 / multipart
     e.preventDefault();
-    fetch(`https://www.share42-together.com:8088/api/user/reports/${typeSelect}` ,{
-      method : 'POST',
-      headers : {
-        Authorization : `Bearer ${token}`
-      },
-      body: formData
-    })
-    .then((res) => {
-      const data =  res.json()
-      return data
-    })
-    .then((data) => {
-      if (data?.status === 200) {
-        swal("신고 완료", "신고가 완료되었습니다.", "success");
-        navigate('/home')
-      } else {
-        swal("신고 실패", "신고가 실패되었습니다.", "error");
+    fetch(
+      `https://www.share42-together.com:8088/api/user/reports/${typeSelect}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       }
-    })
-    .catch((e) => {
-      console.log(e)
-      swal("서버 오류", "서버 접속이 실패되었습니다.", "error");
-    })
+    )
+      .then((res) => {
+        const data = res.json();
+        return data;
+      })
+      .then((data) => {
+        if (data?.status === 200) {
+          swal("신고 완료", "신고가 완료되었습니다.", "success");
+          navigate("/home");
+        } else {
+          swal("신고 실패", "신고가 실패되었습니다.", "error");
+        }
+      })
+      .catch((e) => {
+        swal("서버 오류", "서버 접속이 실패되었습니다.", "error");
+      });
   };
 
   // useEffect(() => {
@@ -180,7 +182,7 @@ const UserReport = () => {
       .then((lst) => {
         setStationLst(lst);
       })
-      .catch((e) => console.log(e));
+      .catch();
   }, [token]);
 
   useEffect(() => {
@@ -205,7 +207,7 @@ const UserReport = () => {
         .then((lst) => {
           setLockerLst(lst);
         })
-        .catch((e) => console.log(e));
+        .catch();
     }
   }, [stationSelect, token]);
 

@@ -42,7 +42,6 @@ export default function PasswordCheck({ setPd }: PropType) {
   };
 
   useEffect(() => {
-    console.log(pdCheck1, pdCheck2);
     if (!pdCheck1 && !pdCheck2) {
       setValidPd(() => 0);
     } else if (pdCheck1 === pdCheck2 && reg.test(pdCheck1)) {

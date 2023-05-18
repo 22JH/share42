@@ -1,15 +1,34 @@
 import { Bootpay } from "@bootpay/client-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../../components/UI/Alert";
 import { useNavigate } from "react-router-dom";
 import { useGetUserToken } from "../../hooks/useGetToken";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { useApi } from "../../hooks/useApi";
 
 const URL = "https://www.share42-together.com/api/user/info/pay-method";
-
 export default function UserPay() {
   const token = useGetUserToken();
   const navigate = useNavigate();
+  const infoURL = "https://www.share42-together.com/api/user/info";
+  const options = {
+    headers: { Authorization: `Bearer ${useGetUserToken()}` },
+  };
+  const getInfoUrl = useApi("get", infoURL, options);
+
+  const [name, setName] = useState();
+  const [phNumber, setPhNumber] = useState();
+
+  useQuery(["getInfoUrl"], getInfoUrl, {
+    select: (res) => res.data.message,
+    onSuccess: (res) => {
+      setName(() => res.name);
+      setPhNumber(() => res.phoneNumber);
+    },
+    enabled: !!token,
+    suspense: false,
+  });
   useEffect(() => {
     Bootpay.requestSubscription({
       application_id: "6449e6343049c8001c9e071d",
@@ -19,8 +38,8 @@ export default function UserPay() {
       order_name: "정기결제 입니다",
       subscription_id: new Date().getTime(),
       user: {
-        username: "홍길동",
-        phone: "01000000000",
+        username: name,
+        phone: phNumber,
       },
       extra: {
         subscription_comment: "결제 수단 등록시 100원이 결제됩니다.",
@@ -47,17 +66,13 @@ export default function UserPay() {
             .then(() => {
               Alert("success", "카드가 등록되었습니다.", navigate("/home"));
             })
-            .catch((error) => {
-              console.error(error);
-            });
-          console.log(response);
+            .catch((error) => {});
         }
       },
-      function (error) {
-        console.log(error.message);
-      }
+      function (error) {}
     );
-  }, []);
+    console.log(name);
+  }, [name, phNumber]);
 
   return <></>;
 }

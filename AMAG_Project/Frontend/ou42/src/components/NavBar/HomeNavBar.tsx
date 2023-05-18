@@ -23,6 +23,20 @@ const homeNavStyle = (isScroll: boolean) => css`
   margin-bottom: 7%;
   transition: height 0.3s;
 
+  animation-name: homeNavShow;
+  animation-duration: 1s;
+
+  @keyframes homeNavShow {
+    from {
+      transform: translate(0, -100px);
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0);
+      opacity: 1;
+    }
+  }
+
   .top {
     display: flex;
     justify-content: space-between;
@@ -59,12 +73,15 @@ const homeNavStyle = (isScroll: boolean) => css`
     }
 
     p:nth-of-type(1) {
-      top: 60%;
+      top: 55%;
       font-weight: 900;
       font-size: 1.3rem;
     }
     p:nth-of-type(2) {
-      top: 70%;
+      top: 68%;
+    }
+    p:nth-of-type(3) {
+      top: 75%;
     }
   }
 
@@ -195,7 +212,8 @@ export default function HomeNavBar() {
             </defs>
           </svg>
           <p>비대면 물품 공유 플랫폼</p>
-          <p>우리서비스는 이런거에요 설명문구 두줄정도!</p>
+          <p>사용자가 안전하게 자원을 교환하고</p>
+          <p>공유할 수 있는 온라인 서비스입니다.</p>
         </div>
 
         {/* 하단 검색창 */}

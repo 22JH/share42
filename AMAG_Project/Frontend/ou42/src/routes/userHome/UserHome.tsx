@@ -11,8 +11,11 @@ import {
   useState,
 } from "react";
 import { AiOutlineHeart, AiTwotoneHeart, AiOutlineEye } from "react-icons/ai";
+import { GiRoundStar } from "react-icons/gi";
 import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 import axios from "axios";
 
 import { useBranchChoiceStore } from "../../components/map/store/useBranchChoiceStore";
@@ -27,7 +30,6 @@ import DropDown from "../../components/UI/DropDown";
 import Loading from "../../components/Loading";
 import pinkBox from "../../assets/pinkBox.png";
 import homeStore from "../../store/homeStore";
-import { useMutation } from "react-query";
 
 interface Props {
   fetchNextPage: any;
@@ -55,6 +57,7 @@ interface Data {
   uptDt: string;
   userId: string;
   likeCheck: null | number;
+  recommendation?: boolean;
 }
 
 // intersaction 옵션
@@ -155,7 +158,6 @@ function UserHomeFetcher({
     getListFnc,
     {
       getNextPageParam: (lastPage, allPage) => {
-        console.log(allPage)
         if (allPage[0].data.message.article.totalPages > allPage.length) {
           return allPage.length + 1;
         }
@@ -252,10 +254,11 @@ function UserHomeFetcher({
 function UserHomeList(props: Partial<Props>) {
   const { fetchNextPage, data, hasNextPage } = props;
   const { setBranchChoice } = useBranchChoiceStore();
-  const queryClient = useQueryClient();
   const divRef = useRef<HTMLDivElement | any>({});
   const ImgUrl = process.env.REACT_APP_IMAGE_URL;
+  const queryClient = useQueryClient();
   const TOKEN = useGetUserToken();
+  const navigate = useNavigate();
 
   const { mutate: setLike } = useMutation(
     (id) => {
@@ -312,7 +315,12 @@ function UserHomeList(props: Partial<Props>) {
   }, [data]);
 
   // 좋아요 버튼 누름
-  const like = (id: any, likeCheck: null | number) => {
+  const like = (
+    e: React.MouseEvent<SVGElement, MouseEvent>,
+    id: any,
+    likeCheck: null | number
+  ) => {
+    e.stopPropagation();
     if (likeCheck) {
       setUnLike(id);
     } else {
@@ -323,8 +331,6 @@ function UserHomeList(props: Partial<Props>) {
   useEffect(() => {
     setBranchChoice({ name: "", id: null });
   }, []);
-
-  console.log(data)
 
   return (
     <>
@@ -340,6 +346,7 @@ function UserHomeList(props: Partial<Props>) {
             uptDt,
             likeCheck,
             id,
+            recommendation,
           } = data;
           const date = new Date();
           let time = "";
@@ -387,13 +394,14 @@ function UserHomeList(props: Partial<Props>) {
               ref={(ref) => {
                 return (divRef.current[index] = ref);
               }}
+              onClick={() => navigate(`/user/share-post/${id}`)}
             >
               {likeCheck ? (
                 <div className="img-icon">
                   <AiTwotoneHeart
                     className="redHeart"
                     size="30"
-                    onClick={() => like(id, likeCheck)}
+                    onClick={(e) => like(e, id, likeCheck)}
                   />
                 </div>
               ) : (
@@ -402,10 +410,18 @@ function UserHomeList(props: Partial<Props>) {
                     className="blankHeart"
                     style={{ fill: "black" }}
                     size="30"
-                    onClick={() => like(id, likeCheck)}
+                    onClick={(e) => like(e, id, likeCheck)}
                   />
                 </div>
               )}
+
+              {/* 추천 표시 */}
+              {recommendation ? (
+                <div className="recommend">
+                  <GiRoundStar style={{ fill: "orange" }} size={30} />
+                </div>
+              ) : null}
+
               <img src={`${ImgUrl}${img}`} alt="test" className="img" />
 
               <p>{`${sharePrice.toLocaleString()}원`}</p>

@@ -4,6 +4,7 @@ import NfcSvg from "./NfcSvg";
 import axios from "axios";
 import { useGetUserToken } from "../../../hooks/useGetToken";
 import { useNavigate } from "react-router-dom";
+import Alert from "./../../UI/Alert";
 
 declare global {
   interface Window {
@@ -36,8 +37,9 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       return `/api/user/share/return/nfc/open/${nfcData}`;
     } else if (status == 2) {
       return `/api/user/share/keep/nfc/open/${nfcData}`;
-    } else if (status == 3)
+    } else if (status == 3) {
       return `/api/user/share/collect/nfc/open/${nfcData}`;
+    }
   };
 
   const startNfcReading = async () => {
@@ -48,7 +50,6 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       // console.log(reader)
       reader.addEventListener("reading", (res: Res) => {
         // NFC 태그를 읽은 후 처리할 코드를 작성합니다.
-        console.log(res.serialNumber);
         setNfcData(res.serialNumber);
       });
     } catch (error: any) {
@@ -63,7 +64,7 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
       startNfcReading().then(() => {
         axios({
           method: "post",
-          url: `https://www.share42-together.com${url(status)}`,
+          url: `https://www.share42-together.com/${url(status)}`,
           headers: {
             Authorization: `Bearer ${TOKEN}`,
           },
@@ -73,6 +74,11 @@ export default function NfcCheck({ open, setOpen, status }: PropType) {
           })
           .catch((err) => {
             console.log(err, "nfc post 요청 실패");
+            Alert(
+              "error",
+              "다시 시도해 주세요",
+              setOpen(() => false)
+            );
           });
       });
     }

@@ -36,10 +36,9 @@ const UserShareCategorySelect = () => {
       },
     })
       .then((res) => {
-        console.log(res.data.message);
         setOptions(res.data.message);
       })
-      .catch((error) => console.log(error));
+      .catch();
   }, []);
 
   const handleCategorySelector = (category: string) => {
@@ -59,12 +58,14 @@ const UserShareCategorySelect = () => {
       ></div>
       <h2
         style={{
-          marginTop: '5vh',
-          marginBottom: '5vh',
-          textAlign: 'center',
-          fontSize: '1.2rem'
+          marginTop: "5vh",
+          marginBottom: "5vh",
+          textAlign: "center",
+          fontSize: "1.2rem",
         }}
-      >공유하실 물품의 종류를 선택해주세요</h2>
+      >
+        공유하실 물품의 종류를 선택해주세요
+      </h2>
       <div
         css={{ CategoryDiv }}
         style={{
@@ -72,7 +73,7 @@ const UserShareCategorySelect = () => {
           display: "flex",
           flexWrap: "wrap",
           backgroundColor: "#fcc8d181",
-          borderRadius: '12px'
+          borderRadius: "12px",
         }}
       >
         {options.map((item, index) => (
@@ -89,31 +90,31 @@ const UserShareCategorySelect = () => {
               height: "19.3vh",
               fontSize: "1.5rem",
               fontWeight: "900",
-              display:'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'space-evenly',
-              boxShadow: '3px 3px 0px #8f8f8f50'
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              boxShadow: "3px 3px 0px #8f8f8f50",
             }}
             onClick={() => handleCategorySelector(item.category)}
           >
             <div
               style={{
-                width: '100%',
-                textAlign: 'center',
-
+                width: "100%",
+                textAlign: "center",
               }}
-            >
-            </div>
+            ></div>
             <img
               src={`${process.env.REACT_APP_IMAGE_URL}${item.img}`}
               alt={`${item.img}`}
             />
             <span
               style={{
-                fontSize: '1.2rem'
+                fontSize: "1.2rem",
               }}
-            >{item.category}</span>
+            >
+              {item.category}
+            </span>
           </div>
         ))}
       </div>

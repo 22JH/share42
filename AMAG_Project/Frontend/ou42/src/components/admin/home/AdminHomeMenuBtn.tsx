@@ -38,7 +38,7 @@ const adminIcons = [
   { title: "신고내역", Icon: RiAlarmWarningLine, url: "/admin/report" },
   { title: "로그조회", Icon: RiFileListLine, url: "/admin/log" },
   { title: "기기조작", Icon: MdDevices, url: "/admin/operation" },
-  { title: "맵", Icon: BsMap, url: "/user/map" },
+  { title: "맵", Icon: BsMap, url: "/admin/map" },
 ];
 
 function AdminHomeMenuBtn() {

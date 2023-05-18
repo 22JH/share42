@@ -16,7 +16,7 @@ export default function RaouterGuard() {
         Alert(
           "error",
           "로그인이 만료되었습니다. 다시 로그인 해주세요.",
-          navigate("/login")
+          navigate(url.includes("admin") ? "/admin/login" : "/login")
         );
       }
     } else {

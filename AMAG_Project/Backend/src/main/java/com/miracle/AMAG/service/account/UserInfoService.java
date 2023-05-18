@@ -75,11 +75,11 @@ public class UserInfoService {
         if(paymentMethodRequestDTO.getType()==PayMethodUtils.BILLING_KEY){
             if(data == null){
                 result.setAccount(account);
-                result.setBillingKey(paymentMethodRequestDTO.getReceiptId());
+                result.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
                 paymentMethodRepository.save(result);
             }
             else {
-                data.setBillingKey(paymentMethodRequestDTO.getReceiptId());
+                data.setBillingKey(getBillingKey(paymentMethodRequestDTO.getReceiptId()));
                 paymentMethodRepository.save(data);
             }
         }

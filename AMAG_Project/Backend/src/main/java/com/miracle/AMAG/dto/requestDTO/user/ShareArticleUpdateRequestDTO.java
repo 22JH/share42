@@ -36,11 +36,11 @@ public class ShareArticleUpdateRequestDTO {
 
     @Schema(title = "공유 물품의 대여 비용", description = "수정할 공유 물품의 대여 비용(수정 사항이 그대로 인 경우 원래 데이터 입력)")
     @NotNull
-    private int price;
+    private String price;
 
     @Schema(title = "공유 물품의 정가", description = "수정할 공유 물품 정가 데이터(수정 사항이 그대로 인 경우 원래 데이터 입력)")
     @NotNull
-    private int sharePrice;
+    private String sharePrice;
 
     @Schema(title = "공유 물품 글의 이미지 파일", description = "수정할 공유 물품 글의 사진 파일(수정할 사진이 있는 경우만)",
             nullable = true)

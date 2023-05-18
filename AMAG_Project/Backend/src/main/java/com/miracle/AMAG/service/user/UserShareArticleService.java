@@ -128,6 +128,8 @@ public class UserShareArticleService {
         BeanUtils.copyProperties(shareArticleUpdateRequestDTO, shareArticle);
 
         shareArticle.setUptDt(LocalDateTime.now());
+        shareArticle.setSharePrice(Integer.parseInt(shareArticleUpdateRequestDTO.getSharePrice()));
+        shareArticle.setPrice(Integer.parseInt(shareArticleUpdateRequestDTO.getPrice()));
         shareArticleRepository.save(shareArticle);
 
         return BoardUtils.BOARD_CRUD_SUCCESS;

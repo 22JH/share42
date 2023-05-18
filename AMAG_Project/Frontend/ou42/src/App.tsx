@@ -38,15 +38,12 @@ import AdminLogin from "./routes/auth/AdminLogin";
 import LoginRaouterGuard from "./components/auth/LoginRouterGuard";
 import SharePageNavBar from "./components/NavBar/SharePageNavBar";
 import UserShareCategorySelect from "./routes/user/UserShareCategorySelect";
-<<<<<<< HEAD
 import UserReturn from "./routes/user/UserReturn";
-=======
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useGetUserToken } from "./hooks/useGetToken";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
->>>>>>> feature/FE/user-mypage-api
 
 const globalStyle = css`
   body {

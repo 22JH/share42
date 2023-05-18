@@ -228,6 +228,7 @@ public class UserReturnService {
 
 
         shareArticle.setShareStatus(ShareArticleUtils.SHARE_READY);
+        shareArticle.setUptDt(curTime);
         ShareReturn shareReturn = new ShareReturn();
         BeanUtils.copyProperties(returnRecord, shareReturn);
         shareReturn.setId(0);
@@ -257,6 +258,7 @@ public class UserReturnService {
         shareReturnDTO.setPrice(payment.getPrice());
         shareReturnDTO.setLockerLockerNumber(locker.getLockerNumber());
         shareReturnDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+        shareReturnDTO.setRegDt(curTime);
 
         String alias = "rd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
         String metadataUri = klaytnService.getUri(shareReturnDTO);
@@ -269,6 +271,7 @@ public class UserReturnService {
         PaymentDTO paymentDTO = new PaymentDTO();
         BeanUtils.copyProperties(payment, paymentDTO);
         paymentDTO.setShareReturn(shareReturn.getId());
+        paymentDTO.setRegDt(curTime);
 
         alias = "p0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();
         metadataUri = klaytnService.getUri(paymentDTO);

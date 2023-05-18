@@ -199,6 +199,7 @@ public class UserCollectService {
         collectDTO.setShareArticleName(shareArticle.getName());
         collectDTO.setLockerLockerNumber(locker.getLockerNumber());
         collectDTO.setLockerLockerStationName(locker.getLockerStation().getName());
+        collectDTO.setRegDt(curTime);
 
         // 블록체인 관련 항목
         String alias = "cd0-" + account.getId() + "-" + curTime.format(DateTimeFormatter.ISO_LOCAL_DATE)+curTime.getHour()+curTime.getMinute()+curTime.getSecond();

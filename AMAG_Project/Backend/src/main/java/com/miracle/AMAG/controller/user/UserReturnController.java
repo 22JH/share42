@@ -61,7 +61,9 @@ public class UserReturnController {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.cancelReturn(shareArticleId));
     }
 
-    @PostMapping("/put/{share_article_id}")
+    @PostMapping(value = "/put", consumes = {
+            "multipart/form-data"
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "공유 물품 반납 성공", content = @Content(schema = @Schema(implementation = CUDResponse.class))),
             @ApiResponse(responseCode = "500", description = "공유 물품 반납 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -69,10 +71,7 @@ public class UserReturnController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "405", description = "요청이 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
     @Operation(summary = "공유 물품 반납", description = "공유 물품 반납을 진행합니다.")
-    @Parameters({
-            @Parameter(name = "share_article_id", description = "반납할 공유 글 번호", in = ParameterIn.PATH)
-    })
-    public ResponseEntity<?> returnProduct(@PathVariable("share_article_id") UserReturnRequestDTO userReturnRequestDTO) throws IOException {
+    public ResponseEntity<?> returnProduct(@ModelAttribute @Valid UserReturnRequestDTO userReturnRequestDTO) throws IOException {
         return NormalResponse.toResponseEntity(HttpStatus.OK, userReturnService.returnProduct(userReturnRequestDTO));
     }
 

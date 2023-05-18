@@ -153,7 +153,9 @@ function AdminHomeCircleChart({
       .attr("font-weight", "900")
       .style("text-anchor", (d) => (midAngle(d) < Math.PI ? "start" : "end"))
       .text((d: any) => {
-        return d.data[1];
+        if (d.endAngle - d.startAngle >= 2) {
+          return d.data[1];
+        }
       })
       .transition()
       .duration(DURATION)

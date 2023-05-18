@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { AiFillCamera } from "react-icons/ai";
 import { TextField } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useApi } from "./../../hooks/useApi";
 import { prePro } from "../../components/auth/Address";
@@ -12,6 +12,7 @@ import profile from "../../assets/testObject.jpg";
 import DropDown from "../../components/UI/DropDown";
 import Btn from "../../components/UI/Btn";
 import Alert from "./../../components/UI/Alert";
+import navStore from "../../store/navStore";
 
 const container = css`
   width: 100%;
@@ -98,6 +99,7 @@ const container = css`
 
 export default function UserInfoModify() {
   const navigate = useNavigate();
+  const { setPathTitle } = navStore();
 
   const [siData, setSiData] = useState<string[]>([]);
   const [guData, setGuData] = useState<string[]>([]);
@@ -244,6 +246,10 @@ export default function UserInfoModify() {
       Alert("error", "주소를 올바르게 선택해 주세요.");
     }
   };
+
+  useEffect(() => {
+    setPathTitle("회원 정보 수정");
+  }, []);
   ///////////////////
   return (
     <div css={container}>

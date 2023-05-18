@@ -175,6 +175,7 @@ public class UserCollectService {
     public String collectProduct(int shareArticleId) throws IOException {
         String loginId = SecurityUtil.getCurrentUserId();
         AccountUtils.checkLogin(loginId);
+        log.info("loginId : {}",loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(shareArticleId);
         Collect collectRecord = collectRepository.findRecentCollectRecord(shareArticle);

@@ -57,6 +57,7 @@ export const content = (value: string) => css`
   .container {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
   }
   .item {
     flex: 1 1 35%;

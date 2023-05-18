@@ -47,10 +47,15 @@ interface Point {
   name: string;
 }
 
+interface Number {
+  id: number;
+  lockerNumber: number;
+}
+
 interface Props {
   regionData?: Sido[];
   pointData?: Point[];
-  numberData?: AxiosResponse<any, any>;
+  numberData?: Number[];
   listData?: AxiosResponse<any, any>;
   setAreaInfo: React.Dispatch<React.SetStateAction<Area>>;
   areaInfo: Area;
@@ -93,21 +98,41 @@ function AdminSelectBox(props: Props) {
     const SIZE = 20;
 
     // 리스트 요청 API 함수
-    const listAPI = ({ pageParam = 1 }) => {
-      return axios({
-        method: "get",
-        url: `https://www.share42-together.com/api/admin/log/${value}/${pageParam}/${SIZE}`,
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
-      });
-    };
+    if (pathName !== "/admin/operation") {
+      const listAPI = ({ pageParam = 1 }) => {
+        return axios({
+          method: "get",
+          url: `https://www.share42-together.com/api/admin/log/${value}/${pageParam}/${SIZE}`,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+      };
 
-    if (areaInfo?.point !== value && value) {
-      queryClient.prefetchInfiniteQuery(["admin-list"], listAPI);
-      setAreaInfo!((info) => {
-        return { ...info, point: value };
-      });
+      if (areaInfo?.point !== value && value) {
+        queryClient.prefetchInfiniteQuery(["admin-list"], listAPI);
+        setAreaInfo!((info) => {
+          return { ...info, point: value };
+        });
+      }
+    } else {
+      console.log("여기오나");
+      const listAPI = () => {
+        return axios({
+          method: "get",
+          url: `https://www.share42-together.com/api/admin/lockers/${value}`,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        });
+      };
+
+      if (areaInfo?.point !== value && value) {
+        queryClient.prefetchQuery(["admin-number"], listAPI);
+        setAreaInfo!((info) => {
+          return { ...info, point: value };
+        });
+      }
     }
   };
 
@@ -157,11 +182,11 @@ function AdminSelectBox(props: Props) {
           <p>번호선택</p>
           <select onClick={clickNumber}>
             <option value="">번호를 선택해주세요</option>
-            {/* {options.map((option, index) => (
-              <option key={option.value} value={option.value}>
-                {option.text}
+            {numberData?.map((option, index) => (
+              <option key={option.id} value={option.lockerNumber}>
+                {option.lockerNumber}
               </option>
-            ))} */}
+            ))}
           </select>
           <Btn
             width={100}

@@ -47,10 +47,18 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import EnterRaouterGuard from "./components/auth/EnterRouterGuard";
 
 const globalStyle = css`
+  @font-face {
+    font-family: "GangwonEdu_OTFBoldA";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff")
+      format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
   body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "GangwonEdu_OTFBoldA", sans-serif;
   }
 `;
 

@@ -89,7 +89,6 @@ self.addEventListener("push", (event: any) => {
     tag: data.notification.tag,
   };
 
-  console.log(data, options, "==============");
   event.waitUntil(
     self.registration.showNotification(data.notification.title, options)
   );

@@ -332,8 +332,6 @@ function UserHomeList(props: Partial<Props>) {
     setBranchChoice({ name: "", id: null });
   }, []);
 
-  console.log(data);
-
   return (
     <>
       {data?.pages.length ? (

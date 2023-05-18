@@ -23,9 +23,9 @@ const nav = css`
     display: flex;
     align-items: center;
     p {
-      font-size: 1.25rem;
+      font-size: 1.4rem;
       font-weight: 900;
-      margin-left: 2%;
+      margin: 2% 0 0 2%;
     }
   }
   div {

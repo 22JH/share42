@@ -2,9 +2,10 @@
 import { css } from "@emotion/react";
 
 import { BsPersonVcard } from "react-icons/bs";
-import { RiErrorWarningLine } from "react-icons/ri";
-import { contentStyle } from "./UserMyPageStyle";
 import { useNavigate } from "react-router-dom";
+import { contentStyle } from "./UserMyPageStyle";
+import { RiErrorWarningLine } from "react-icons/ri";
+import { MdPayment } from "react-icons/md";
 
 function UserMyPageETC() {
   const navigate = useNavigate();
@@ -15,10 +16,11 @@ function UserMyPageETC() {
       Icon: BsPersonVcard,
       url: "/user/mypage/modify",
     },
+    { title: "결제 수단 등록", Icon: MdPayment, url: "/user/payment" },
     { title: "신고하기", Icon: RiErrorWarningLine, url: "/user/report" },
   ];
   return (
-    <div css={contentStyle(18)}>
+    <div css={contentStyle(22)}>
       <p className="main">기타</p>
       {contents.map((content, index) => {
         const { title, Icon, url } = content;

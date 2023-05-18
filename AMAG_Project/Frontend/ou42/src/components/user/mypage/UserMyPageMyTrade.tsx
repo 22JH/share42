@@ -18,7 +18,7 @@ function UserMyPageMyTrade() {
   const navigate = useNavigate();
 
   return (
-    <div css={contentStyle(40)}>
+    <div css={contentStyle(36)}>
       <p className="main">나의 거래</p>
 
       {contents.map((content, index) => {

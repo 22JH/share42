@@ -116,7 +116,6 @@ function AdminSelectBox(props: Props) {
         });
       }
     } else {
-      console.log("여기오나");
       const listAPI = () => {
         return axios({
           method: "get",

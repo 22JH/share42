@@ -278,7 +278,7 @@ function UserMyPageChart() {
 
       <div css={date}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label={'"year"'} views={["year"]} onChange={getYear} />
+          <DatePicker label={"YEAR"} views={["year"]} onChange={getYear} />
         </LocalizationProvider>
       </div>
 

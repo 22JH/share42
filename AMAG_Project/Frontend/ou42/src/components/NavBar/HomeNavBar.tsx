@@ -23,7 +23,7 @@ const homeNavStyle = (isScroll: boolean) => css`
   margin-bottom: 7%;
   transition: height 0.3s;
 
-  animation-name: homeNavShow;
+  /* animation-name: homeNavShow;
   animation-duration: 1s;
 
   @keyframes homeNavShow {
@@ -35,7 +35,7 @@ const homeNavStyle = (isScroll: boolean) => css`
       transform: translate(0, 0);
       opacity: 1;
     }
-  }
+  } */
 
   .top {
     display: flex;

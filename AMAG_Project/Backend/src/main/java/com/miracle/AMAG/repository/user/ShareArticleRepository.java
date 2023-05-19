@@ -77,7 +77,7 @@ public interface ShareArticleRepository extends JpaRepository<ShareArticle,Integ
                                      FROM
                                          (SELECT *
                                          FROM SHARE42_TOGETHER.SHARE_ARTICLE sa
-                                         WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID != :accountId
+                                         WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu And sa.ACCOUNT_ID != :accountId
                                          And
                                          CASE
                                              WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
@@ -121,7 +121,7 @@ FROM
 	FROM
 		(SELECT *
 		FROM SHARE42_TOGETHER.SHARE_ARTICLE sa\s
-		WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu AND sa.DONG = :dong And sa.ACCOUNT_ID != :accountId
+		WHERE sa.STATUS = :status And sa.SIGUNGU = :sigungu And sa.ACCOUNT_ID != :accountId
 		And\s
 		CASE
 			WHEN :category = 'base' THEN sa.CATEGORY IS NOT NULL
@@ -146,7 +146,7 @@ LEFT JOIN\s
 ON saAlData.ACCOUNT_ID = aData.ID;
 """, nativeQuery = true)
     Page<Object[]> getShareArticleList(@Param("accountId") int accountId, @Param("status") boolean status, @Param("sigungu") String sigungu,
-                                       @Param("dong") String dong, @Param("category") String category, @Param("query") String query,
+                                       @Param("category") String category, @Param("query") String query,
                                        @Param("orderStandard") int orderStandard, Pageable pageable);
 
     @Query(value = """

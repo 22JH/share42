@@ -50,6 +50,8 @@ const MarkerInfoComponent = ({
   const { token } = loginObject ? JSON.parse(loginObject) : null;
   const [termsContent, setTermsContent] = useState<string[]>([]);
 
+  console.log(id)
+
   const handleLogNavigate = () => {
     navigate("/admin/log");
   };

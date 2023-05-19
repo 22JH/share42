@@ -59,8 +59,8 @@ const UserShareDetailRequest = ({
   const dialogRef = useRef<HTMLDialogElement | any>({});
   const [termsContent, setTermsContent] = useState<string[]>([]);
   const [collectContent, setCollectContent] = useState<string[]>([]);
+  const [apply, setApply] = useState<boolean>(false);
 
-  console.log(data);
   useEffect(() => {
     axios({
       method: "GET",
@@ -113,6 +113,8 @@ const UserShareDetailRequest = ({
       });
   };
 
+  console.log(data)
+
   return (
     <div
       style={{
@@ -141,7 +143,193 @@ const UserShareDetailRequest = ({
           {data?.article.accountSigungu} {data?.article.accountDong}
         </span>
       </div>
-      {userId !== data?.article.accountUserId ? (
+      {/* 로그인한 사람(대여자)이랑 글쓴이(공유자)랑 다른 경우 */}
+      {userId !== data?.article.accountUserId && (
+        // 수납 대기인 경우
+        <>
+          {data?.article?.shareStatus === 0 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              수납대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 1 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+              onClick={() => {
+                dialogRef?.current.showModal();
+              }}
+            >
+              사용신청
+            </button>
+          )}
+          {data?.article?.shareStatus === 2 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              공유중
+            </button>
+          )}
+          {data?.article?.shareStatus === 3 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              반납 대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 4 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              회수 대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 5 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              
+            </button>
+          )}
+        </>
+      )}
+      {userId === data?.article.accountUserId && (
+        // 수납 대기인 경우
+        <>
+          {data?.article?.shareStatus === 0 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              수납대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 1 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+              onClick={() => {
+                dialogRef?.current.showModal();
+              }}
+            >
+              수납완료
+            </button>
+          )}
+          {data?.article?.shareStatus === 2 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              공유중
+            </button>
+          )}
+          {data?.article?.shareStatus === 3 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              회수신청
+            </button>
+          )}
+          {data?.article?.shareStatus === 4 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              회수 대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 5 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              회수
+            </button>
+          )}
+        </>
+      )}
+      {/*           
+        
         <div>
           {useRequest ? (
             <>
@@ -198,7 +386,10 @@ const UserShareDetailRequest = ({
               사용신청
             </button>
           ) : (
-            "수납 대기 중"
+            <div className="box">
+              수납 대기 중
+            </div>
+            
           )}
           <button
             style={{
@@ -358,7 +549,95 @@ const UserShareDetailRequest = ({
         >
           회수 신청하기
         </button>
+      </dialog> */}
+      <dialog
+        ref={(ref) => {
+          return (dialogRef.current = ref);
+        }}
+        css={dialog}
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <h1>HOW TO 사용신청?</h1>
+        <button
+          onClick={() => {
+            (dialogRef.current as any).close();
+          }}
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            border: "none",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          X
+        </button>
+        <ul
+          style={{
+            textAlign: "left",
+            paddingLeft: "20px",
+          }}
+        >
+          {termsContent.map((term, index) => (
+            <li
+              style={{
+                listStyleType: "dicimal",
+              }}
+              key={index}
+            >
+              {term}
+            </li>
+          ))}
+        </ul>
+        {billing === "OK" ? (
+          <button
+            style={{
+              padding: "3% 6%",
+              fontWeight: "900",
+              color: "#ffffff",
+              backgroundColor: "#FFABAB",
+              border: "none",
+              borderRadius: "12px",
+            }}
+            onClick={() => {
+              handleUseRequest(id);
+              dialogRef.current.close();
+            }}
+          >
+            사용 신청하기
+          </button>
+        ) : (
+          <button
+            style={{
+              padding: "3% 6%",
+              fontWeight: "900",
+              color: "#ffffff",
+              backgroundColor: "#FFABAB",
+              border: "none",
+              borderRadius: "12px",
+            }}
+            onClick={() => navigate("/user/payment")}
+          >
+            계좌 인증을 진행해주세요!
+          </button>
+        )}
       </dialog>
+      <button
+        style={{
+          marginLeft: "3vw",
+          color: "#ffffff",
+          backgroundColor: "#FFABAB",
+          border: "none",
+          borderRadius: "5px",
+          boxShadow: "2px 2px 5px #00000051",
+          padding: "1.4vh 4vw",
+        }}
+        onClick={handleChating}
+      >
+        채팅하기
+      </button>
     </div>
   );
 };

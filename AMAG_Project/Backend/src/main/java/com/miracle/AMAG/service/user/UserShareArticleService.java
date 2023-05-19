@@ -245,7 +245,7 @@ public class UserShareArticleService {
             recommendationRepository.save(recommendation);
         }
         if(page>1 || query != null || !category.equals("base")){
-            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, category,
                     query, orderStandard,pageable);
 
             Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
@@ -282,7 +282,7 @@ public class UserShareArticleService {
                 sagim = shareArticleRepository.getCFRecommendation(BoardUtils.BOARD_STATUS_FALSE,ShareArticleUtils.COLLECT_READY, keys.get(0), keys.get(0), sigungu, dong, lat, lng);
             }
 
-            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu,category,
                     query, orderStandard,pageable);
 
             Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {
@@ -343,7 +343,7 @@ public class UserShareArticleService {
             resultData.put("CFRecommendation", resultRecmmendation);
         }
         else{
-            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, dong, category,
+            Page<Object[]> result = shareArticleRepository.getShareArticleList(account.getId(), BoardUtils.BOARD_STATUS_FALSE, sigungu, category,
                     query, orderStandard,pageable);
 
             Page<ShareArticleResponseDTO> resultResponse = result.map(objects -> {

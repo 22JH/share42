@@ -143,7 +143,7 @@ const UserShareDetailRequest = ({
           {data?.article.accountSigungu} {data?.article.accountDong}
         </span>
       </div>
-      {/* 로그인한 사람(대여자)이랑 글쓴이(공유자)랑 다른 경우 */}
+      {/* 대여자 기준 */}
       {userId !== data?.article.accountUserId && (
         // 수납 대기인 경우
         <>
@@ -206,36 +206,9 @@ const UserShareDetailRequest = ({
               반납 대기
             </button>
           )}
-          {data?.article?.shareStatus === 4 && (
-            <button
-              style={{
-                color: "#ffffff",
-                backgroundColor: "#909090",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-            >
-              회수 대기
-            </button>
-          )}
-          {data?.article?.shareStatus === 5 && (
-            <button
-              style={{
-                color: "#ffffff",
-                backgroundColor: "#909090",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-            >
-              
-            </button>
-          )}
         </>
       )}
+      {/* 공유자의 경우 */}
       {userId === data?.article.accountUserId && (
         // 수납 대기인 경우
         <>
@@ -267,7 +240,7 @@ const UserShareDetailRequest = ({
                 dialogRef?.current.showModal();
               }}
             >
-              수납완료
+              회수하기
             </button>
           )}
           {data?.article?.shareStatus === 2 && (
@@ -295,262 +268,12 @@ const UserShareDetailRequest = ({
                 padding: "1.4vh 4vw",
               }}
             >
-              회수신청
-            </button>
-          )}
-          {data?.article?.shareStatus === 4 && (
-            <button
-              style={{
-                color: "#ffffff",
-                backgroundColor: "#909090",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-            >
-              회수 대기
-            </button>
-          )}
-          {data?.article?.shareStatus === 5 && (
-            <button
-              style={{
-                color: "#ffffff",
-                backgroundColor: "#909090",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-            >
-              회수
+              회수가능
             </button>
           )}
         </>
       )}
-      {/*           
-        
-        <div>
-          {useRequest ? (
-            <>
-              {data?.article.accountUserId === userId ? (
-                <>
-                  <button
-                    style={{
-                      color: "#ffffff",
-                      backgroundColor: "#909090",
-                      border: "none",
-                      borderRadius: "5px",
-                      boxShadow: "2px 2px 5px #00000051",
-                      padding: "1.4vh 4vw",
-                    }}
-                    onClick={() => handleUseCancel(id)}
-                  >
-                    사용취소
-                  </button>
-                  <div
-                    style={{
-                      position: "fixed",
-                      bottom: "12vh",
-                      right: "8vw",
-                      width: "5rem",
-                      height: "5rem",
-                      borderRadius: "50%",
-                      textAlign: "center",
-                      lineHeight: "5rem",
-                      backgroundColor: "red",
-                      color: "white",
-                      fontWeight: "900",
-                    }}
-                    onClick={handleNFC}
-                  >
-                    NFC
-                  </div>
-                </>
-              ) : null}
-            </>
-          ) : data?.article?.shareStatus === 1 ? (
-            <button
-              style={{
-                color: "#ffffff",
-                backgroundColor: "#FFABAB",
-                border: "none",
-                borderRadius: "5px",
-                boxShadow: "2px 2px 5px #00000051",
-                padding: "1.4vh 4vw",
-              }}
-              onClick={() => {
-                dialogRef?.current.showModal();
-              }}
-            >
-              사용신청
-            </button>
-          ) : (
-            <div className="box">
-              수납 대기 중
-            </div>
-            
-          )}
-          <button
-            style={{
-              marginLeft: "3vw",
-              color: "#ffffff",
-              backgroundColor: "#FFABAB",
-              border: "none",
-              borderRadius: "5px",
-              boxShadow: "2px 2px 5px #00000051",
-              padding: "1.4vh 4vw",
-            }}
-            onClick={handleChating}
-          >
-            채팅하기
-          </button>
-        </div>
-      ) : data?.article.shareStatus === 1 ? (
-        <button
-          style={{
-            marginLeft: "3vw",
-            color: "#ffffff",
-            backgroundColor: "#1f7500",
-            border: "none",
-            borderRadius: "5px",
-            boxShadow: "2px 2px 5px #00000051",
-            padding: "1.4vh 4vw",
-          }}
-          onClick={() => {
-            dialogRef?.current.showModal();
-          }}
-        >
-          회수하기
-        </button>
-      ) : null}
-      <dialog
-        ref={(ref) => {
-          return (dialogRef.current = ref);
-        }}
-        css={dialog}
-        style={{
-          textAlign: "center",
-        }}
-      >
-        <h1>HOW TO 사용신청?</h1>
-        <button
-          onClick={() => {
-            (dialogRef.current as any).close();
-          }}
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            border: "none",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          X
-        </button>
-        <ul
-          style={{
-            textAlign: "left",
-            paddingLeft: "20px",
-          }}
-        >
-          {termsContent.map((term, index) => (
-            <li
-              style={{
-                listStyleType: "dicimal",
-              }}
-              key={index}
-            >
-              {term}
-            </li>
-          ))}
-        </ul>
-        {billing === "SUCCESS" ? (
-          <button
-            style={{
-              padding: "3% 6%",
-              fontWeight: "900",
-              color: "#ffffff",
-              backgroundColor: "#FFABAB",
-              border: "none",
-              borderRadius: "12px",
-            }}
-            onClick={() => handleUseRequest(id)}
-          >
-            사용 신청하기
-          </button>
-        ) : (
-          <button
-            style={{
-              padding: "3% 6%",
-              fontWeight: "900",
-              color: "#ffffff",
-              backgroundColor: "#FFABAB",
-              border: "none",
-              borderRadius: "12px",
-            }}
-            onClick={() => navigate("/home")}
-          >
-            계좌 인증을 진행해주세요!
-          </button>
-        )}
-      </dialog>
-      <dialog
-        ref={(ref) => {
-          return (dialogRef.current = ref);
-        }}
-        css={dialog}
-        style={{
-          textAlign: "center",
-        }}
-      >
-        <h1>HOW TO 회수신청?</h1>
-        <button
-          onClick={() => {
-            (dialogRef.current as any).close();
-          }}
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            border: "none",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          X
-        </button>
-        <ul
-          style={{
-            textAlign: "left",
-            paddingLeft: "20px",
-          }}
-        >
-          {collectContent.map((term, index) => (
-            <li
-              style={{
-                listStyleType: "dicimal",
-              }}
-              key={index}
-            >
-              {term}
-            </li>
-          ))}
-        </ul>
-        <button
-          style={{
-            padding: "3% 6%",
-            fontWeight: "900",
-            color: "#ffffff",
-            backgroundColor: "#FFABAB",
-            border: "none",
-            borderRadius: "12px",
-          }}
-          onClick={() => handleUserCollect(id)}
-        >
-          회수 신청하기
-        </button>
-      </dialog> */}
-      <dialog
+      {userId !== data?.article.accountUserId && <dialog
         ref={(ref) => {
           return (dialogRef.current = ref);
         }}
@@ -623,7 +346,7 @@ const UserShareDetailRequest = ({
             계좌 인증을 진행해주세요!
           </button>
         )}
-      </dialog>
+      </dialog>}
       <button
         style={{
           marginLeft: "3vw",
@@ -638,6 +361,61 @@ const UserShareDetailRequest = ({
       >
         채팅하기
       </button>
+      {userId === data?.article.accountUserId && <dialog
+        ref={(ref) => {
+          return (dialogRef.current = ref);
+        }}
+        css={dialog}
+        style={{
+          textAlign: "center",
+        }}
+      >
+        <h1>HOW TO 회수신청?</h1>
+        <button
+          onClick={() => {
+            (dialogRef.current as any).close();
+          }}
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            border: "none",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          X
+        </button>
+        <ul
+          style={{
+            textAlign: "left",
+            paddingLeft: "20px",
+          }}
+        >
+          {collectContent.map((term, index) => (
+            <li
+              style={{
+                listStyleType: "dicimal",
+              }}
+              key={index}
+            >
+              {term}
+            </li>
+          ))}
+        </ul>
+        <button
+          style={{
+            padding: "3% 6%",
+            fontWeight: "900",
+            color: "#ffffff",
+            backgroundColor: "#FFABAB",
+            border: "none",
+            borderRadius: "12px",
+          }}
+          onClick={() => handleUserCollect(id)}
+        >
+          회수 신청하기
+        </button>
+      </dialog>}
     </div>
   );
 };

@@ -7,7 +7,7 @@ export const content = (value: string) => css`
   height: auto;
   width: 100%;
 
-  animation-name: homeShow;
+  /* animation-name: homeShow;
   animation-duration: 3s;
 
   @keyframes homeShow {
@@ -17,7 +17,7 @@ export const content = (value: string) => css`
     to {
       opacity: 1;
     }
-  }
+  } */
 
   .recommend {
     position: absolute;

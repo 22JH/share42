@@ -1,0 +1,81 @@
+import java.net.URLEncoder
+
+pipeline {
+    agent any
+
+    tools {
+        jdk 'JDK 17'
+    }
+
+    environment {
+        REPOSITORY_NAME = 'S08P31D102'
+        REPOSITORY_ADDRESS = 'lab.ssafy.com/s08-final/S08P31D102.git'
+        DOCKER_REGISTRY_URL = 'https://registry.hub.docker.com'
+        DOCKER_HUB_CREDENTIALS = 'DockerHub_Account'
+        DOCKER_NETWORK_NAME = 'ubuntu_share42_net'
+
+        REACT_ROOT_PATH = 'S08P31D102/AMAG_Project/Frontend/ou42'
+        REACT_IMAGE_NAME = 'miracle3070/share42-react:latest'
+        REACT_CONTAINER_NAME = 'react-server'
+        REACT_CONTAINER_PORT = '3000'
+        REACT_CONTAINER_IP = '172.42.1.2'
+
+        SPRING_PICTURE_PATH = '/home/ubuntu/images'
+        NGINX_PICTURE_PATH = '/usr/share/nginx/html/images'
+    }
+
+    stages {
+        stage('Remove Existing Environment') {
+            steps {
+                catchError {
+                    echo 'Removing Existing Project Files'
+                    sh "rm -rf ${env.REPOSITORY_NAME}"
+
+                    echo 'Removing Existing Project Containers'
+                    sh "docker rm -f ${env.REACT_CONTAINER_NAME}"
+
+                    echo 'Removing Existing Project Images'
+                    sh "docker rmi ${env.REACT_IMAGE_NAME}"
+                    sh "docker rmi registry.hub.docker.com/${env.REACT_IMAGE_NAME}"
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                echo 'Checking out the Git repository using git clone...'
+                withCredentials([usernamePassword(credentialsId: 'GitLab_Account', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    script {
+                        // URL 인코딩을 위해 비밀번호를 인코딩합니다.
+                        String encodedPassword = URLEncoder.encode(GIT_PASSWORD, "UTF-8")
+                        sh "git clone https://${GIT_USERNAME}:${encodedPassword}@${env.REPOSITORY_ADDRESS}"
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build React') {
+            steps {
+                dir(path: "${env.REACT_ROOT_PATH}") {
+                    script {
+                        docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
+                            def dockerImage = docker.build("${env.REACT_IMAGE_NAME}")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Deploy React') {
+            steps {
+                script {
+                    def dockerImage = docker.image("${env.REACT_IMAGE_NAME}")
+                    docker.withRegistry("${env.DOCKER_REGISTRY_URL}", "${env.DOCKER_HUB_CREDENTIALS}") {
+                        dockerImage.push()
+                    }
+                    dockerImage.run("-p ${env.REACT_CONTAINER_PORT}:${env.REACT_CONTAINER_PORT} --ip ${env.REACT_CONTAINER_IP} --network ${env.DOCKER_NETWORK_NAME} -v ${env.SPRING_PICTURE_PATH}:${env.NGINX_PICTURE_PATH} --name ${env.REACT_CONTAINER_NAME} --hostname ${REACT_CONTAINER_NAME}")
+                }
+            }
+        }
+    }
+}

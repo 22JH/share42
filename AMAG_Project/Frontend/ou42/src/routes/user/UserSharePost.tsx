@@ -211,9 +211,19 @@ const UserSharePost = () => {
         },
         [chatName + ".date"]: serverTimestamp(),
       });
+      await updateDoc(doc(db, "userChats", data?.article.accountUserId), {
+        [chatName + ".userInfo"]: {
+          id: userId,
+          /// 프로필 받아와야함
+          // profile: `https://www.share42-together.com/images/${data?.article.accountImg}`,
+        },
+        [chatName + ".date"]: serverTimestamp(),
+      });
     }
 
-    navigate(`/user/chat/${chatName}`);
+    navigate(`/user/chat/${chatName}`, {
+      state: { nickName: data?.article.accountUserId },
+    });
   };
 
   // NFC 화면으로

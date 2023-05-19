@@ -166,12 +166,12 @@ export default function HomeNavBar() {
     if (e.key === "Enter") {
       setSearch(input);
       // (inputRef?.current as any).value = "";
-      queryClient.invalidateQueries();
+      queryClient.refetchQueries(["get-object-list"], { exact: true });
     }
   };
   const searchClick = () => {
     setSearch(input);
-    queryClient.invalidateQueries();
+    queryClient.refetchQueries(["get-object-list"], { exact: true });
     // (inputRef?.current as any).value = "";
   };
   const searchInput = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -54,7 +54,7 @@ export default function UserChat() {
   const loginObject = localStorage.getItem("loginInfo")!;
   const { userId } = JSON.parse(loginObject);
   const { state } = useLocation();
-
+  console.log(state);
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatName), (doc: any) => {
       doc.exists() && setMessages(doc.data().messages);
@@ -71,8 +71,10 @@ export default function UserChat() {
   };
 
   const handleSend = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log("호출됨");
+
     if (e.code === "Enter") {
-      e.preventDefault();
       send();
     }
   };
@@ -96,14 +98,13 @@ export default function UserChat() {
       [chatName + ".date"]: serverTimestamp(),
     });
 
-    await updateDoc(doc(db, "userChats", state), {
+    await updateDoc(doc(db, "userChats", state.nickName), {
       [chatName + ".lastMessage"]: {
         msg,
       },
       [chatName + ".date"]: serverTimestamp(),
     });
   };
-
   return (
     <div css={container}>
       <div className="chatSection">
@@ -116,10 +117,10 @@ export default function UserChat() {
           placeholder="메세지를 입력해 주세요"
           onChange={handleMsg}
           className="sendField"
-          onKeyUp={handleSend}
+          onKeyPress={handleSend}
         />
         <RiSendPlaneFill
-          onClick={send}
+          // onClick={(e) => send()}
           css={{ width: "10%", height: "23%", color: "tomato" }}
         />
       </div>

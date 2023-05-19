@@ -40,7 +40,7 @@ export default function DropDownNFC({
   setStatus,
 }: PropType) {
   const [current, setCurrent] = React.useState("");
-
+  console.log(data);
   const handleChange = (event: SelectChangeEvent<string | any>) => {
     setCurrent(() => event.target.value);
     setValue(() => event.target.value);
@@ -66,7 +66,9 @@ export default function DropDownNFC({
           {data?.map((ele: any, idx: number) => (
             <MenuItem value={ele} key={idx}>
               {ele
-                ? `${ele.shareArticleName} (${prePro(ele.requestType)})`
+                ? `${ele.shareArticleName} (${ele.lockerStationName} ${
+                    ele.lockerNumber
+                  }번 락커 (${prePro(ele.requestType)})) `
                 : null}
             </MenuItem>
           ))}

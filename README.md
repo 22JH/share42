@@ -134,7 +134,7 @@
 <br/>
 
 ## UCC
-추가 필요
+[![Video Label](http://img.youtube.com/vi/AO7gHPbdjEc/0.jpg)](https://youtu.be/AO7gHPbdjEc)
 
 <br/>
 

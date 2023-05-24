@@ -109,6 +109,16 @@
 |<img width="250" src="image/screenshot/01_login,search.gif">|<img width="250" src="image/screenshot/02_enrollProduct.gif">|<img width="250" src="image/screenshot/03_chat.gif">|
 
 
+|🖥️ 마이페이지|🖥️ 마이페이지: 공유내역|🖥️ 마이페이지: 사용내역|
+|------|---|---|
+|<img width="250" src="image/screenshot/08-1_mypage.gif">|<img width="250" src="image/screenshot/08-2_mypage-shareList.gif">|<img width="250" src="image/screenshot/08-3_mypage-usedList.gif">|
+
+
+|🖥️ 커뮤니티|🖥️ 커뮤니티: 게시글 작성|🖥️ 커뮤니티: 댓글 작성|
+|------|---|---|
+|<img width="250" src="image/screenshot/09-1_community.gif">|<img width="250" src="image/screenshot/09-2_community-write.gif">|<img width="250" src="image/screenshot/09-3_community-comment.gif">|
+
+
 |🖥️ 관리자 로그|🖥️ 관리자 통계|
 |------|---|
 |<img width="250" src="image/screenshot/04_admin-log.gif">|<img width="250" src="image/screenshot/05_admin-stats.gif">|

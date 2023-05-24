@@ -106,18 +106,18 @@
 
 |🖥️ 로그인 / 물품 검색|🖥️ 공유 물품 등록|🖥️ 채팅|
 |------|---|---|
-|<img width="250" src="image/screenshot/01_로그인,게시글조회.gif">|<img width="250" src="image/screenshot/02_공유물품등록.gif">|<img width="250" src="image/screenshot/03_채팅기능.gif">|
+|<img width="250" src="image/screenshot/01_login,search.gif">|<img width="250" src="image/screenshot/02_enrollProduct.gif">|<img width="250" src="image/screenshot/03_chat.gif">|
 
 
 |🖥️ 관리자 로그|🖥️ 관리자 통계|
 |------|---|
-|<img width="250" src="image/screenshot/04_관리자로그.gif">|<img width="250" src="image/screenshot/05_관리자통계.gif">|
+|<img width="250" src="image/screenshot/04_admin-log.gif">|<img width="250" src="image/screenshot/05_admin-stats.gif">|
 
 
 
 |🖥️ NFC를 활용한 물품 보관|
 |------|
-|<img width="250" src="image/screenshot/06_NFC를활용한물품보관.gif">|
+|<img width="250" src="image/screenshot/06_putProduct.gif">|
 
 
 ### 

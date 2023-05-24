@@ -134,11 +134,6 @@ const UserSharePost = () => {
 
   // 사용신청 하기
   const handleUseRequest = async (id: string | undefined) => {
-    if (billing === "FAIL") {
-      // navigate('/home')
-      return;
-    }
-
     try {
       const res = await axios({
         method: "POST",
@@ -148,6 +143,7 @@ const UserSharePost = () => {
           "Content-Type": "application/json",
         },
       });
+      console.log(res.data)
       if (res?.data?.status === 200) {
         swal("신청 성공", "사용 신청이 완료되었습니다.", "success");
         refetch();
@@ -211,9 +207,19 @@ const UserSharePost = () => {
         },
         [chatName + ".date"]: serverTimestamp(),
       });
+      await updateDoc(doc(db, "userChats", data?.article.accountUserId), {
+        [chatName + ".userInfo"]: {
+          id: userId,
+          /// 프로필 받아와야함
+          // profile: `https://www.share42-together.com/images/${data?.article.accountImg}`,
+        },
+        [chatName + ".date"]: serverTimestamp(),
+      });
     }
 
-    navigate(`/user/chat/${chatName}`);
+    navigate(`/user/chat/${chatName}`, {
+      state: { nickName: data?.article.accountUserId },
+    });
   };
 
   // NFC 화면으로
@@ -250,13 +256,15 @@ const UserSharePost = () => {
   );
 
   // 사용 신청 상태 저장
-  useEffect(() => {
-    if (data && data.article.shareStatus === 2) {
-      setUserRequest(true);
-    } else if (data && data.article.shareStatus === 1) {
-      setUserRequest(false);
-    }
-  }, [data?.article.shareStatus, data]);
+  // useEffect(() => {
+  //   if (data && data.article.shareStatus === 2) {
+  //     setUserRequest(true);
+  //   } else if (data && data.article.shareStatus === 1) {
+  //     setUserRequest(false);
+  //   }
+  // }, [data?.article.shareStatus, data]);
+
+  console.log(data)
 
   return (
     <>

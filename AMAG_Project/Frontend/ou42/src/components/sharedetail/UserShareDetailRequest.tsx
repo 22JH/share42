@@ -59,8 +59,8 @@ const UserShareDetailRequest = ({
   const dialogRef = useRef<HTMLDialogElement | any>({});
   const [termsContent, setTermsContent] = useState<string[]>([]);
   const [collectContent, setCollectContent] = useState<string[]>([]);
+  const [apply, setApply] = useState<boolean>(false);
 
-  console.log(data);
   useEffect(() => {
     axios({
       method: "GET",
@@ -113,6 +113,8 @@ const UserShareDetailRequest = ({
       });
   };
 
+  console.log(data)
+
   return (
     <div
       style={{
@@ -141,51 +143,29 @@ const UserShareDetailRequest = ({
           {data?.article.accountSigungu} {data?.article.accountDong}
         </span>
       </div>
-      {userId !== data?.article.accountUserId ? (
-        <div>
-          {useRequest ? (
-            <>
-              {data?.article.accountUserId === userId ? (
-                <>
-                  <button
-                    style={{
-                      color: "#ffffff",
-                      backgroundColor: "#909090",
-                      border: "none",
-                      borderRadius: "5px",
-                      boxShadow: "2px 2px 5px #00000051",
-                      padding: "1.4vh 4vw",
-                    }}
-                    onClick={() => handleUseCancel(id)}
-                  >
-                    사용취소
-                  </button>
-                  <div
-                    style={{
-                      position: "fixed",
-                      bottom: "12vh",
-                      right: "8vw",
-                      width: "5rem",
-                      height: "5rem",
-                      borderRadius: "50%",
-                      textAlign: "center",
-                      lineHeight: "5rem",
-                      backgroundColor: "red",
-                      color: "white",
-                      fontWeight: "900",
-                    }}
-                    onClick={handleNFC}
-                  >
-                    NFC
-                  </div>
-                </>
-              ) : null}
-            </>
-          ) : data?.article?.shareStatus === 1 ? (
+      {/* 대여자 기준 */}
+      {userId !== data?.article.accountUserId && (
+        // 수납 대기인 경우
+        <>
+          {data?.article?.shareStatus === 0 && (
             <button
               style={{
                 color: "#ffffff",
-                backgroundColor: "#FFABAB",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              수납대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 1 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
                 border: "none",
                 borderRadius: "5px",
                 boxShadow: "2px 2px 5px #00000051",
@@ -197,43 +177,103 @@ const UserShareDetailRequest = ({
             >
               사용신청
             </button>
-          ) : (
-            "수납 대기 중"
           )}
-          <button
-            style={{
-              marginLeft: "3vw",
-              color: "#ffffff",
-              backgroundColor: "#FFABAB",
-              border: "none",
-              borderRadius: "5px",
-              boxShadow: "2px 2px 5px #00000051",
-              padding: "1.4vh 4vw",
-            }}
-            onClick={handleChating}
-          >
-            채팅하기
-          </button>
-        </div>
-      ) : data?.article.shareStatus === 1 ? (
-        <button
-          style={{
-            marginLeft: "3vw",
-            color: "#ffffff",
-            backgroundColor: "#1f7500",
-            border: "none",
-            borderRadius: "5px",
-            boxShadow: "2px 2px 5px #00000051",
-            padding: "1.4vh 4vw",
-          }}
-          onClick={() => {
-            dialogRef?.current.showModal();
-          }}
-        >
-          회수하기
-        </button>
-      ) : null}
-      <dialog
+          {data?.article?.shareStatus === 2 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              공유중
+            </button>
+          )}
+          {data?.article?.shareStatus === 3 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              반납 대기
+            </button>
+          )}
+        </>
+      )}
+      {/* 공유자의 경우 */}
+      {userId === data?.article.accountUserId && (
+        // 수납 대기인 경우
+        <>
+          {data?.article?.shareStatus === 0 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              수납대기
+            </button>
+          )}
+          {data?.article?.shareStatus === 1 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+              onClick={() => {
+                dialogRef?.current.showModal();
+              }}
+            >
+              회수하기
+            </button>
+          )}
+          {data?.article?.shareStatus === 2 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              공유중
+            </button>
+          )}
+          {data?.article?.shareStatus === 3 && (
+            <button
+              style={{
+                color: "#ffffff",
+                backgroundColor: "#909090",
+                border: "none",
+                borderRadius: "5px",
+                boxShadow: "2px 2px 5px #00000051",
+                padding: "1.4vh 4vw",
+              }}
+            >
+              회수가능
+            </button>
+          )}
+        </>
+      )}
+      {userId !== data?.article.accountUserId && <dialog
         ref={(ref) => {
           return (dialogRef.current = ref);
         }}
@@ -274,7 +314,7 @@ const UserShareDetailRequest = ({
             </li>
           ))}
         </ul>
-        {billing === "SUCCESS" ? (
+        {billing === "OK" ? (
           <button
             style={{
               padding: "3% 6%",
@@ -284,7 +324,10 @@ const UserShareDetailRequest = ({
               border: "none",
               borderRadius: "12px",
             }}
-            onClick={() => handleUseRequest(id)}
+            onClick={() => {
+              handleUseRequest(id);
+              dialogRef.current.close();
+            }}
           >
             사용 신청하기
           </button>
@@ -298,13 +341,27 @@ const UserShareDetailRequest = ({
               border: "none",
               borderRadius: "12px",
             }}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/user/payment")}
           >
             계좌 인증을 진행해주세요!
           </button>
         )}
-      </dialog>
-      <dialog
+      </dialog>}
+      <button
+        style={{
+          marginLeft: "3vw",
+          color: "#ffffff",
+          backgroundColor: "#FFABAB",
+          border: "none",
+          borderRadius: "5px",
+          boxShadow: "2px 2px 5px #00000051",
+          padding: "1.4vh 4vw",
+        }}
+        onClick={handleChating}
+      >
+        채팅하기
+      </button>
+      {userId === data?.article.accountUserId && <dialog
         ref={(ref) => {
           return (dialogRef.current = ref);
         }}
@@ -358,7 +415,7 @@ const UserShareDetailRequest = ({
         >
           회수 신청하기
         </button>
-      </dialog>
+      </dialog>}
     </div>
   );
 };

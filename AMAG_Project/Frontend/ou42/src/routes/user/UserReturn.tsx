@@ -85,7 +85,9 @@ const UserReturn = () => {
           },
         ];
         res.data.message.lockerList.forEach((option: any) => {
-          options.push(option);
+          if (option.shareArticleShareStatus === 2) {
+            options.push(option);
+          }
         });
         return options;
       } catch (e) {}
@@ -94,6 +96,8 @@ const UserReturn = () => {
       suspense: false,
     }
   );
+
+  console.log(data)
 
   useEffect(() => {
     const ans = data?.find((item) => item.shareArticleId === Number(selectId));
@@ -110,12 +114,16 @@ const UserReturn = () => {
     }
   };
 
+  console.log(selectId)
+  console.log(state)
+  console.log(preview)
+
   // formData에 담기
   useEffect(() => {
     if (preview) {
       formData.append("imgFile", preview);
       formData.append("lockerStationId", state);
-      formData.append("selectId", selectId);
+      formData.append("shareArticleId", selectId);
     }
 
     if (preview && state && selectId && returnStatus === "2") {
@@ -124,7 +132,9 @@ const UserReturn = () => {
   }, [preview, state, selectId, formData, returnStatus]);
 
   // 반납 신청하기
-  const handleSubmit = async () => {
+  const handleSubmit = async (e:any) => {
+    e.preventDefault()
+
     await fetch(RETURN_SUBMIT_API(), {
       method: "POST",
       headers: {
@@ -134,6 +144,7 @@ const UserReturn = () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         if (data.status === 200) {
           setDeleteBtn(true);
           swal("신청 성공", "반납 신청이 완료되었습니다.", "success");
@@ -187,7 +198,7 @@ const UserReturn = () => {
           marginTop: "2vh",
         }}
         css={ReturnSelectStyle}
-        onSubmit={handleSubmit}
+        onSubmit={(e) => handleSubmit(e)}
       >
         <div
           style={{
@@ -283,44 +294,23 @@ const UserReturn = () => {
             onChange={handleFileSelection}
           />
         </div>
-        {deleteBtn ? (
-          <button
-            style={{
-              width: "100%",
-              height: "7vh",
-              position: "fixed",
-              bottom: "0px",
-              fontSize: "1.3rem",
-              fontWeight: "900",
-              textAlign: "center",
-              border: "none",
-              backgroundColor: "#ff2f00",
-              color: "#ffffff",
-            }}
-            onClick={(e) => handleCancel(selectId)}
-          >
-            반납 취소
-          </button>
-        ) : (
-          <button
-            style={{
-              width: "100%",
-              height: "7vh",
-              position: "fixed",
-              bottom: "0px",
-              fontSize: "1.3rem",
-              fontWeight: "900",
-              textAlign: "center",
-              border: "none",
-              backgroundColor: isBtn ? "#FFABAB" : "#c9c9c9",
-              color: isBtn ? "#ffffff" : "#343434",
-            }}
-            disabled={!isBtn}
-            type="submit"
-          >
-            반납 신청
-          </button>
-        )}
+        <button
+          style={{
+            width: "100%",
+            height: "7vh",
+            position: "fixed",
+            bottom: "0px",
+            fontSize: "1.3rem",
+            fontWeight: "900",
+            textAlign: "center",
+            border: "none",
+            backgroundColor: "#FFABAB",
+            color: "#ffffff"
+          }}
+          type="submit"
+        >
+          반납 신청
+        </button>
       </form>
     </>
   );

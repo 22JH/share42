@@ -160,9 +160,8 @@ public class UserKeepService {
     }
 
     public String keepProduct(UserKeepRequestDTO userKeepRequestDTO) throws IOException {
-//        String loginId = SecurityUtil.getCurrentUserId();
-//        AccountUtils.checkLogin(loginId);
-        String loginId = "ssafy123";
+        String loginId = SecurityUtil.getCurrentUserId();
+        AccountUtils.checkLogin(loginId);
 
         ShareArticle shareArticle = shareArticleRepository.findById(userKeepRequestDTO.getShareArticleId());
         Keep keepRecord = keepRepository.findRecentKeepRecord(shareArticle);
